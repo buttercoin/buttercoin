@@ -1,0 +1,33 @@
+{
+  "name": "buttercoin",
+  "version": "0.0.0",
+  "description": "Open Source Bitcoin Exchange",
+  "main": "./lib/",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/enki/buttercoin.git"
+  },
+  "dependencies": {
+    "isnode": "*",
+    "ws": "*",
+    "wsany": "*",
+    "stump": "*",
+    "enkihelpers": "*",
+    "q": "*",
+    "eemitterport": "*"
+  },
+  "devDependencies": {
+    "chai": "*",
+    "mocha": "*"
+  },
+  "keywords": [
+    "bitcoin",
+    "buttercoin"
+  ],
+  "author": "Paul Bohm <enki@bbq.io> (http://paulbohm.com/)",
+  "license": "MIT",
+  "readmeFilename": "README.md"
+}
