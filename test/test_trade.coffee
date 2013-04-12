@@ -1,3 +1,5 @@
+BD = require('bigdecimal')
+
 chai = require 'chai'  
 chai.should()
 expect = chai.expect
@@ -7,6 +9,6 @@ Buttercoin = require('../lib/buttercoin')
 
 describe 'TradeEngine', ->
   it 'can initialize', (finish) ->
-    butter = new Buttercoin
+    butter = new Buttercoin()
 
-    finish()
+    butter.api.add_deposit {'account': 'Peter', 'currency': 'USD', 'amount': 200.0, 'callback': finish}
