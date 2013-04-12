@@ -1,11 +1,21 @@
 fs = require 'fs'
 
+jspack = require('jspack').jspack
+
 module.exports = class TransactionLog
-  constructor: ->
+  constructor: (engine) ->
     @filename = 'transaction.log'
 
-  record: (message) =>
-    l = len(message)
-    buf = new Buffer( 4 + l )
+    @writestream = fs.createWriteStream(@filename)
 
-    fs.appendFileSync(@filename, message)
+  read: =>
+    data = fs.readFileSync(@filename)
+
+  record: (message) =>
+    l = message.length
+
+    part = jspack.Pack('I', [l])
+
+    buf = Buffer.concat [ Buffer(part), Buffer(message)]
+
+    @writestream.write(buf)

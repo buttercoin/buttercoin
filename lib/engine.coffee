@@ -11,10 +11,13 @@ module.exports = class Engine
     @datastore = new DataStore()
     @dequeue = new Dequeue()
 
+  read_log: (cb) =>
+    @transaction_log.read(cb)
+
   receive_message: (message) =>
     # journal + replicate
 
-    @transaction_log.record(message)
+    @transaction_log.record( JSON.stringify(message) )
 
     # deserialize (skipping this for now)
 
