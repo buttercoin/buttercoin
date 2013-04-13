@@ -9,5 +9,3 @@ module.exports = class Buttercoin
     @engine = new Engine()
     @api = new API(@engine)
     @front = new Front()
-
-    @engine.process_loop()
