@@ -2,8 +2,38 @@
 <html>
   <head>
     <title>Buttercoin</title>
+    <script>
+      var host = window.document.location.host.replace(/:.*/, '');
+      var ws = new WebSocket('ws://' + host + ':3000');
+      ws.onmessage = function (event) {
+        document.forms[0].response.value = event.data;
+        //alert(event.data);
+      };
+      function sendMessage (data) {
+        ws.send(data);
+        document.forms[0].response.value = "";
+        document.forms[0].message.value = "";
+      }
+    </script>
   </head>
   <body>
-    <h1>This is the static html home page for Buttercoin.</h1> 
+    <h1>This is the static html home page for Buttercoin.</h1>
+    <form onsubmit="return false;">
+      <table>
+        <tr>
+          <td>Payload</td>
+          <td>Response</td>
+        </tr>
+        <tr valign="top">
+          <td>
+            <textarea name="message" cols="80" rows="20"></textarea><br/>
+            <button onclick="sendMessage(document.forms[0].message.value);">Send test message</button>
+          </td>
+          <td>
+            <textarea name="response" cols="80" rows="20"></textarea><br/>
+          </td>
+        </tr>
+      </table>
+    </form>
   </body>
 </html>
