@@ -3,4 +3,7 @@
 # Buttercoin API binary script
 # This binary will start a single instance of a Buttercoin websocket API server
 
-console.log "server started!"
+Buttercoin = require('../lib/buttercoin')
+butter = new Buttercoin();
+butter.api.start (err, server) =>
+  console.log "Buttercoin api server started on http://" + server.address().address + ":" + server.address().port
