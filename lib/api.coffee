@@ -10,15 +10,16 @@ module.exports = class API
 
   start: ( callback ) ->
 
-    express = require('express');
+    WebSocketServer = require('ws').Server
+    wss = new WebSocketServer({port: 3001});
 
-    # Create a new express app
-    app = express();
+    wss.on 'connection', (ws) ->
 
-    app.get '/', (req, res) ->
-      res.end 'Buttercoin websocket API endpoint'
+      console.log 'api: incoming wss connection from', ws.upgradeReq.headers.host
 
-    # Remark: express listen function doesn't continue with err and server,
-    # so we assign it to a value new value server instead
-    server = app.listen 3001, () =>
-      callback null, server
+      ws.on 'message', (message) ->
+        console.log('api: server ' + process.pid + ' received message: %s', message);
+
+      ws.send 'i am api server ' + process.pid
+
+    callback null, wss

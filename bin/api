@@ -6,4 +6,4 @@
 Buttercoin = require('../lib/buttercoin')
 butter = new Buttercoin();
 butter.api.start (err, server) =>
-  console.log "Buttercoin api server started on http://" + server.address().address + ":" + server.address().port
+  console.log "Buttercoin websocket api server started on ws://" + server.options.host + ":" + server.options.port
