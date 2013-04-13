@@ -17,6 +17,7 @@
     "stump": "*",
     "enkihelpers": "*",
     "q": "*",
+    "q-io": "*",
     "eemitterport": "*",
     "bigdecimal": "*",
     "deque": "*",
