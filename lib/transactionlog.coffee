@@ -1,4 +1,4 @@
-fs = require 'fs'
+fs = require('fs')
 
 jspack = require('jspack').jspack
 
