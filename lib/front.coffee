@@ -37,6 +37,13 @@ module.exports = class Front
 
     server = app.listen options.port, options.host, () ->
 
+      ###
+      # Simple method for announcing front-end
+      # @return {[type]} [description]
+      ###
+      @.announce = ()->
+        console.log "front: Buttercoin front-end server started on http://" + server.address().address + ":" + server.address().port
+
       #
       # Create public facing websocket server
       #
@@ -106,3 +113,4 @@ module.exports = class Front
           console.log('front: ' + process.pid +  ' received message: %s', message);
 
           callback null, server
+
