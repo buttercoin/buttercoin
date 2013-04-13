@@ -16,5 +16,4 @@ module.exports = class Front
     # Remark: express listen function doesn't continue with err and server,
     # so we assign it to a value new value server instead
     server = app.listen 3000, () =>
-      console.log "server started on http://" + server.address().address + ":" + server.address().port
       callback null, server
