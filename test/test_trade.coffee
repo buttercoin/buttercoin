@@ -1,6 +1,6 @@
 BD = require('bigdecimal')
 
-chai = require 'chai'  
+chai = require('chai')
 chai.should()
 expect = chai.expect
 assert = chai.assert
