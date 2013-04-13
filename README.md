@@ -1,6 +1,6 @@
 Buttercoin
 ==========
-### An open Source Bitcoin Exchange
+### An Open Source Bitcoin Exchange
 
 Copyright &copy; 2013 Buttercoin Developers
 
@@ -18,7 +18,7 @@ information or see http://opensource.org/licenses/MIT.
 Development process
 -------------------
 
-Developers work in their own trees, then submit pull requests when they are sure
+Developers work in their own trees, then submit pull requests when they are **sure**
 their feature or bug fix is ready.
 
 The patch will be accepted if there is broad consensus that it is a good thing.
@@ -39,3 +39,11 @@ Developers are strongly encouraged to write unit tests for new code, and to
 submit new unit tests for old code.
 
 Unit tests for the core code are in `test/`. 
+
+Discussion
+----------
+
+* [Original Post on Reddit](http://www.reddit.com/r/Bitcoin/comments/1c7v6z/buttercoin_open_source_highperformance_bitcoin/)
+* [/r/buttercoin](http://www.reddit.com/r/buttercoin)
+* [#buttercoin](irc://irc.freenode.org/buttercoin)
+* [#buttercoin-dev](irc://irc.freenode.org/buttercoin-dev)
