@@ -88,16 +88,21 @@ module.exports = class Front
       #
       # Establish outgoing connection to VLAN websocket API server
       #
-      endpoint = options.apiEndpoint;
-      wsClient = new WebSocket(endpoint)
+      console.log 'front: attempting to log in to ' + options.apiEndpoint
+      wsClient = new WebSocket(options.apiEndpoint)
+
+      wsClient.on 'error', (err) ->
+        console.log 'error: unable to connect to api server ' + options.apiEndpoint
+        console.log 'warn: throwing connection error!'
+        throw err;
 
       wsClient.on 'open', () ->
 
-        console.log 'front: connected to ' + endpoint
+        console.log 'front: connected to ' + options.apiEndpoint
 
         wsClient.send 'i am front-end ' + process.pid
 
         wsClient.on 'message', (message) ->
           console.log('front: ' + process.pid +  ' received message: %s', message);
 
-      callback null, server
+          callback null, server
