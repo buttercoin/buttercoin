@@ -3,14 +3,14 @@ module.exports = class Front
 
   start: ( options, callback ) ->
 
-    # Basic currying for api.start method
+    # Basic currying for front.start method
     if typeof options is 'function'
       callback = options
       options = {}
 
     options = options || {}
 
-    # Default api.start options
+    # Default front.start options
     options.port = options.port || 3000
     options.host = options.host || "0.0.0.0"
     options.apiEndpoint = options.apiEndpoint || "ws://localhost:3001"
