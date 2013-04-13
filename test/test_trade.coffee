@@ -11,4 +11,8 @@ describe 'TradeEngine', ->
   it 'can initialize', (finish) ->
     butter = new Buttercoin()
 
-    butter.api.add_deposit {'account': 'Peter', 'currency': 'USD', 'amount': 200.0, 'callback': finish}
+    butter.engine.start().then =>
+      butter.api.add_deposit {'account': 'Peter', 'currency': 'USD', 'amount': 200.0, 'callback': finish}
+    .then =>
+      finish()
+    .done()
