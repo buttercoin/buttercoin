@@ -4,11 +4,12 @@ expect = chai.expect
 assert = chai.assert
 
 Buttercoin = require('../lib/buttercoin')
-describe 'Front', ->
-  it 'can initialize optionless', (finish) ->
-    butter = new Buttercoin()
-    butter.front.start {}, finish
 
+describe 'FrontEngine', ->
   it 'can initialize with options', (finish) ->
+    server_options =
+      port: 3000
+      host: "0.0.0.0"
+      apiEndpoint: "ws://localhost:3001"
     butter = new Buttercoin()
-    butter.front.start {port: 3000, host: "0.0.0.0", apiEndpoint: "ws://localhost:3001"}, finish
+    butter.front.start server_options, finish
