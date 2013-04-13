@@ -17,6 +17,7 @@
     "wsany": "*",
     "stump": "*",
     "enkihelpers": "*",
+    "enkicolor": "*",
     "q": "*",
     "q-io": "*",
     "eemitterport": "*",

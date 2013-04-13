@@ -1,3 +1,5 @@
+logger = require './logger'
+
 module.exports = class Front
   constructor: () ->
 
@@ -41,6 +43,9 @@ module.exports = class Front
       # Create public facing websocket server
       #
       wss = new WebSocket.Server {server: server}
+
+      logger.info "Buttercoin front-end server started on http://" + server.address().address + ":" + server.address().port
+
       wss.on 'connection', (ws) ->
 
         cookieParser ws.upgradeReq, null, (err) ->
@@ -64,7 +69,7 @@ module.exports = class Front
           ws.send 'hello ' + sid + '\ni am front-end ' + process.pid
 
           ws.on 'message', (message) ->
-            console.log('front: ' + process.pid +  ' received message from ' + sid + ': %s', message);
+            logger.info('front ' + process.pid +  ' received message from ' + sid + ': ' + message);
 
             #
             # Remark: this is where conditional logic can be placed to authorize the message before it is
@@ -82,27 +87,28 @@ module.exports = class Front
             if valid
               wsClient.send JSON.stringify(message)
             else
-              console.log 'front: invalid message - not relaying to api server'
+              logger.warn 'invalid message - not relaying to api server'
               ws.send message
 
       #
       # Establish outgoing connection to VLAN websocket API server
       #
-      console.log 'front: attempting to log in to ' + options.apiEndpoint
+      logger.warn 'front attempting to log in to ' + options.apiEndpoint
+
       wsClient = new WebSocket(options.apiEndpoint)
 
       wsClient.on 'error', (err) ->
-        console.log 'error: unable to connect to api server ' + options.apiEndpoint
-        console.log 'warn: throwing connection error!'
+        logger.error 'unable to connect to api server ' + options.apiEndpoint
+        logger.warn 'throwing connection error!'
         throw err;
 
       wsClient.on 'open', () ->
 
-        console.log 'front: connected to ' + options.apiEndpoint
+        logger.info 'front connected to ' + options.apiEndpoint
 
         wsClient.send 'i am front-end ' + process.pid
 
         wsClient.on 'message', (message) ->
-          console.log('front: ' + process.pid +  ' received message: %s', message);
+          logger.info('front ' + process.pid +  ' received message: ' + message);
 
           callback null, server

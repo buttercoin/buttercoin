@@ -5,5 +5,5 @@
 
 Buttercoin = require('../lib/buttercoin')
 butter = new Buttercoin();
+
 butter.api.start {port: 3001, host: "0.0.0.0"}, (err, server) =>
-  console.log "api: Buttercoin websocket server started on ws://" + server.options.host + ":" + server.options.port

@@ -1,3 +1,4 @@
+logger = require './logger'
 
 module.exports = class API
   constructor: (@engine) ->
@@ -6,7 +7,6 @@ module.exports = class API
     message = ['ADD_DEPOSIT', args ]
 
     @engine.receive_message(message)
-
 
   start: ( options, callback ) ->
 
@@ -23,12 +23,13 @@ module.exports = class API
     WebSocketServer = require('ws').Server
     wss = new WebSocketServer({port: options.port, host: options.host});
 
+    logger.info "Buttercoin api server started on ws://" + wss.options.host + ":" + wss.options.port
     wss.on 'connection', (ws) ->
 
-      console.log 'api: incoming wss connection from', ws.upgradeReq.headers.host
+      logger.info 'api server receiving incoming wss connection from', ws.upgradeReq.headers.host
 
       ws.on 'message', (message) ->
-        console.log 'api: server ' + process.pid + ' received message: %s', message
+        logger.info 'api server ' + process.pid + ' received message: ' + message
 
       ws.send 'i am api server ' + process.pid
 
