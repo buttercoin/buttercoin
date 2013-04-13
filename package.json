@@ -20,7 +20,9 @@
     "eemitterport": "*",
     "bigdecimal": "*",
     "deque": "*",
-    "jspack": "*"
+    "jspack": "*",
+    "express": "3.1.2",
+    "connect": "2.7.5"
   },
   "devDependencies": {
     "chai": "*",

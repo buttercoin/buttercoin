@@ -3,4 +3,6 @@
 # Buttercoin front binary script
 # This binary will start a single instance of a Buttercoin front-facing http webserver
 
-console.log "server started!"
+Buttercoin = require('../lib/buttercoin')
+butter = new Buttercoin();
+butter.front.start (err, server) =>
