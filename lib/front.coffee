@@ -1,7 +1,19 @@
 module.exports = class Front
   constructor: () ->
 
-  start: ( callback ) ->
+  start: ( options, callback ) ->
+
+    # Basic currying for api.start method
+    if typeof options is 'function'
+      callback = options
+      options = {}
+
+    options = options || {}
+
+    # Default api.start options
+    options.port = options.port || 3000
+    options.host = options.host || "0.0.0.0"
+    options.apiEndpoint = options.apiEndpoint || "ws://localhost:3001"
 
     express = require('express')
     connect = require('connect')
@@ -23,9 +35,7 @@ module.exports = class Front
     app.use(express.session({ store: store, secret: secret, key: 'sid' }))
     cookieParser = express.cookieParser(secret)
 
-    # Remark: express listen function doesn't continue with err and server,
-    # so we assign it to a value new value server instead
-    server = app.listen 3000, () ->
+    server = app.listen options.port, options.host, () ->
 
       #
       # Create public facing websocket server
@@ -78,7 +88,7 @@ module.exports = class Front
       #
       # Establish outgoing connection to VLAN websocket API server
       #
-      endpoint = "ws://localhost:3001";
+      endpoint = options.apiEndpoint;
       wsClient = new WebSocket(endpoint)
 
       wsClient.on 'open', () ->
