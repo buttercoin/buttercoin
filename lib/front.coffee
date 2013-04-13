@@ -106,3 +106,10 @@ module.exports = class Front
           console.log('front: ' + process.pid +  ' received message: %s', message);
 
           callback null, server
+
+    ###
+    # Simple method for announcing front-end
+    # @return {[type]} [description]
+    ###
+    server.announce = ()->
+      console.log "front: Buttercoin front-end server started on http://" + server.address().address + ":" + server.address().port
