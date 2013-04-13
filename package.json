@@ -8,7 +8,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git://github.com/enki/buttercoin.git"
+    "url": "git://github.com/buttercoin/buttercoin.git"
   },
   "dependencies": {
     "isnode": "*",
