@@ -1,0 +1,6 @@
+#!/usr/bin/env coffee
+
+# Buttercoin API binary script
+# This binary will start a single instance of a Buttercoin websocket API server
+
+console.log "server started!"

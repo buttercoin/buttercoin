@@ -1,0 +1,6 @@
+#!/usr/bin/env coffee
+
+# Buttercoin engine binary script
+# This binary will start a single instance of a Buttercoin trading engine
+
+console.log "server started!"
