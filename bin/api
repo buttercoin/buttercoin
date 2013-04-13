@@ -1,0 +1,9 @@
+#!/usr/bin/env coffee
+
+# Buttercoin API binary script
+# This binary will start a single instance of a Buttercoin websocket API server
+
+Buttercoin = require('../lib/buttercoin')
+butter = new Buttercoin();
+butter.api.start (err, server) =>
+  console.log "Buttercoin websocket api server started on ws://" + server.options.host + ":" + server.options.port

@@ -4,11 +4,11 @@
   "description": "Open Source Bitcoin Exchange",
   "main": "./lib/",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "sh test.sh"
   },
   "repository": {
     "type": "git",
-    "url": "git://github.com/enki/buttercoin.git"
+    "url": "git://github.com/buttercoin/buttercoin.git"
   },
   "dependencies": {
     "isnode": "*",
@@ -21,11 +21,14 @@
     "eemitterport": "*",
     "bigdecimal": "*",
     "deque": "*",
-    "jspack": "*"
+    "jspack": "*",
+    "express": "3.1.2",
+    "connect": "2.7.5"
   },
   "devDependencies": {
     "chai": "*",
-    "mocha": "*"
+    "mocha": "*",
+    "coffee-script": "*"
   },
   "keywords": [
     "bitcoin",
