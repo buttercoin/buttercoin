@@ -8,10 +8,20 @@ module.exports = class API
     @engine.receive_message(message)
 
 
-  start: ( callback ) ->
+  start: ( options, callback ) ->
 
+    # Basic currying for api.start method
+    if typeof options is 'function'
+      callback = options
+      options = {}
+
+    options = options || {}
+
+    # Default api.start options
+    options.port = options.port || 3001
+    options.host = options.host || "0.0.0.0"
     WebSocketServer = require('ws').Server
-    wss = new WebSocketServer({port: 3001});
+    wss = new WebSocketServer({port: options.port, host: options.host});
 
     wss.on 'connection', (ws) ->
 
