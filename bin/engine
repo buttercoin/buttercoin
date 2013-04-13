@@ -3,4 +3,4 @@
 # Buttercoin engine binary script
 # This binary will start a single instance of a Buttercoin trading engine
 
-console.log "server started!"
+console.log "Buttercoin trading engine started!"
