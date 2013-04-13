@@ -18,7 +18,7 @@ module.exports = class API
       console.log 'api: incoming wss connection from', ws.upgradeReq.headers.host
 
       ws.on 'message', (message) ->
-        console.log('api: server ' + process.pid + ' received message: %s', message);
+        console.log 'api: server ' + process.pid + ' received message: %s', message
 
       ws.send 'i am api server ' + process.pid
 
