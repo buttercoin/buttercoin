@@ -23,9 +23,9 @@ module.exports = class TransactionLog
 
   initialize_log: =>
     console.log 'INITIALIZING LOG'
-    QFS.open(@filename, {flags: "w"}).then (writestream) =>
-      @writestream = writestream
-      return null
+    Q.nfcall(fs.open, @filename, "w").then (writefd) =>
+      console.log 'GOT FD', writefd
+      @writefd = writefd
 
   replay_log: =>
     # XXX: This code is basically guaranteed to have chunking problems right now.
@@ -39,6 +39,11 @@ module.exports = class TransactionLog
 
     Q.fcall =>
       parts = []
+      @readstream.on 'end', =>
+        console.log 'done reading'
+        @readstream.close()
+        deferred.resolve()
+
       @readstream.on 'readable', =>
         data = @readstream.read()
         console.log 'READ', data, data.isEncoding
@@ -81,4 +86,10 @@ module.exports = class TransactionLog
 
     buf = Buffer.concat [ Buffer(part), Buffer(message) ]
 
-    @writestream.write(buf)
+    writeq = Q.nfcall(fs.write, @writefd, buf, 0, buf.length, null)
+    console.log 'DONE WRITING', writeq, buf
+    return writeq
+
+  flush: =>
+    Q.nfcall(fs.fsync, @writefd).then =>
+      console.log 'FLUSHED'

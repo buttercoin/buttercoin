@@ -43,4 +43,5 @@ module.exports = class DataStore
 
     currency.increase_balance( args.amount )
 
-    console.log currency.get_balance()
+    if args.callback
+      args.callback( currency.get_balance() )

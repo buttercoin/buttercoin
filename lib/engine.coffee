@@ -21,13 +21,18 @@ module.exports = class Engine
   receive_message: (message) =>
     # journal + replicate
 
-    @transaction_log.record( JSON.stringify(message) )
+    console.log 'RECEIVED MESSAGE'
 
-    # deserialize (skipping this for now)
-
-    # execute business logic
-
-    @replay_message(message)
+    @transaction_log.record( JSON.stringify(message) ).then =>
+      # deserialize (skipping this for now)
+      # execute business logic
+      @replay_message(message)
 
   replay_message: (message) =>
-    console.log 'RECEIVED MESSAGE', message
+    console.log 'REPLAY MESSAGE', message
+
+    if message[0] == 'ADD_DEPOSIT'
+      @datastore.add_deposit(message[1])
+
+  flush: =>
+    @transaction_log.flush()

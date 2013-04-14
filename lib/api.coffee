@@ -1,12 +1,17 @@
 logger = require './logger'
+Q = require("q")
 
 module.exports = class API
   constructor: (@engine) ->
 
   add_deposit: ( args ) ->
+    deferred = Q.defer()
+    args.callback = deferred.resolve
+
     message = ['ADD_DEPOSIT', args ]
 
     @engine.receive_message(message)
+    return deferred.promise
 
   start: ( options, callback ) ->
 
