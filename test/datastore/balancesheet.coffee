@@ -22,12 +22,12 @@ describe 'BalanceSheet', ->
     harry_account = balancesheet.get_account('Harry')
     harry_account.should.be.an.instanceOf(Account)
 
-    # currencies should be different instances
+    # accounts should be different instances
     harry_account.should.not.equal(tom_account)
     harry_account.should.not.equal(dick_account)
     tom_account.should.not.equal(dick_account)
 
-    # get the currencies again and should get the same instances
+    # get the accounts again and should get the same instances
     another_tom_account = balancesheet.get_account('Tom')
     another_tom_account.should.equal(tom_account)
     another_dick_account = balancesheet.get_account('Dick')

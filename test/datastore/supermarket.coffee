@@ -22,12 +22,12 @@ describe 'SuperMarket', ->
     usdeur_market = supermarket.get_market('USDEUR')
     usdeur_market.should.be.an.instanceOf(Market)
 
-    # currencies should be different instances
+    # markets should be different instances
     usdeur_market.should.not.equal(btceur_market)
     usdeur_market.should.not.equal(btcusd_market)
     btceur_market.should.not.equal(btcusd_market)
 
-    # get the currencies again and should get the same instances
+    # get the markets again and should get the same instances
     another_btceur_market = supermarket.get_market('BTCEUR')
     another_btceur_market.should.equal(btceur_market)
     another_btcusd_market = supermarket.get_market('BTCUSD')
