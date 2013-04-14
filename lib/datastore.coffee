@@ -11,7 +11,7 @@ class Currency
 
 class Account
   constructor: ->
-    @currencies = {}
+    @currencies = Object.create null
 
   get_currency: (name) =>
     currency = @currencies[name]
@@ -21,7 +21,7 @@ class Account
 
 class BalanceSheet
   constructor: ->
-    @accounts = {}
+    @accounts = Object.create null
 
   get_account: (name) =>
     account = @accounts[name]

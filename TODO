@@ -1,3 +1,7 @@
 
 
 switch to bigdecimal
+
+flush transaction log on regular basis?
+
+add check that node version is 0.10+
