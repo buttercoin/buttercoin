@@ -11,3 +11,7 @@ describe 'Front', ->
 
   it 'should initialize', ->
     @front.start
+
+  it 'should start a WSS', ->
+    @front.start
+    # test for WSS existence
