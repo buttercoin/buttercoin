@@ -1,3 +1,4 @@
+SkipList = require("../experimental/skiplist").SkipList
 
 class Currency
   constructor: ->
@@ -29,14 +30,25 @@ class BalanceSheet
       @accounts[name] = account = new Account()
     return account
 
-class OrderBook
+class Market
   constructor: ->
-    
+    @buy_book = new SkipList()
+    @sell_book = new SkipList()
+
+class SuperMarket
+  constructor: ->
+    @markets = Object.create null
+
+  get_market: (name) =>
+    market = @markets[name]
+    if not (market instanceof Market)
+      @market[name] = market = new Market()
+    return market
 
 module.exports = class DataStore
   constructor: ->
     @balance_sheet = new BalanceSheet()
-    @order_book = new OrderBook()
+    @supermarket = new SuperMarket()
 
   add_deposit: (args) =>
     account = @balance_sheet.get_account( args.account )
@@ -46,4 +58,12 @@ module.exports = class DataStore
 
     if args.callback
       args.callback( currency.get_balance() )
+
+
+  add_order: (args) =>
+    account = @balance_sheet.get_account( args.account )
+    market = @supermarket.get_market( args.name )
+
+    if args.callback
+      args.callback( market )
 
