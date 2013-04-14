@@ -15,3 +15,7 @@ describe 'Front', ->
   it 'should start a WSS', ->
     @front.start
     # test for WSS existence
+
+  it 'should connect to the API', ->
+    @front.start
+    # test connection to API
