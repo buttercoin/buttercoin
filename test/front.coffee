@@ -6,7 +6,8 @@ assert = chai.assert
 Front = require('../lib/front')
 
 describe 'Front', ->
+  beforeEach ->
+    @front = new Front
 
   it 'should initialize', ->
-    front = new Front()
-    front.start
+    @front.start
