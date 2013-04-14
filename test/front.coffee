@@ -19,12 +19,12 @@ describe 'Front', ->
     stub.on 'connection', (ws) ->
       console.log 'input was' + ws
     stub.on 'message', (message) ->
-      message.should == 'foo'
+      console.log message
 
     @front.start {port: 3020, host: "0.0.0.0", apiEndpoint: "ws://localhost:3021"}
     client = new WebSocket("ws://localhost:3020")
     client.on 'connection', () ->
-      client.send 'foo'
+      client.send 'my message is foo'
 
 
   it 'should connect to the API', ->
