@@ -21,19 +21,6 @@
         <link rel="stylesheet" href="/css/main.css">
 
         <script src="/js/vendor/modernizr-2.6.2-respond-1.1.0.min.js"></script>
-        <script>
-          var host = window.document.location.host.replace(/:.*/, '');
-          var ws = new WebSocket('ws://' + host + ':3000');
-          ws.onmessage = function (event) {
-            document.forms[0].response.value = event.data;
-            //alert(event.data);
-          };
-          function sendMessage (data) {
-            ws.send(data);
-            document.forms[0].response.value = "";
-            document.forms[0].message.value = "";
-          }
-        </script>
     </head>
     <body>
 
@@ -96,6 +83,25 @@
         <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
         <script>window.jQuery || document.write('<script src="js/vendor/jquery-1.9.1.min.js"><\/script>')</script>
         <script src="/js/vendor/bootstrap.min.js"></script>
+        <script src="/js/vendor/sockjs-0.3.min.js"></script>
         <script src="/js/main.js"></script>
+
+        <script>
+          // Prevent ESC key from aborting connection in Firefox
+          // See: https://bugzilla.mozilla.org/show_bug.cgi?id=614304
+          window.addEventListener('keydown', function(e) {
+            if (e.which == 27) e.preventDefault();
+          });
+
+          var sock = new SockJS('/sock');
+          sock.onmessage = function (event) {
+            document.forms[0].response.value = event.data;
+          };
+          function sendMessage (data) {
+            sock.send(data);
+            document.forms[0].response.value = "";
+            document.forms[0].message.value = "";
+          }
+        </script>
     </body>
 </html>
