@@ -13,6 +13,7 @@ describe 'TradeEngine', ->
 
     butter.engine.start().then =>
       butter.api.add_deposit {'account': 'Peter', 'currency': 'USD', 'amount': 200.0, 'callback': finish}
-    .then =>
-      finish()
+      butter.api.add_deposit {'account': 'Fred', 'currency': 'EUR', 'amount': 150.0, 'callback': finish}
+    # .then =>
+      # finish()
     .done()

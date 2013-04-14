@@ -1,13 +1,14 @@
 Q = require('q')
-FS = require("q-io/fs")
+QFS = require("q-io/fs")
+fs = require("fs")
 jspack = require('jspack').jspack
 
 module.exports = class TransactionLog
-  constructor: (engine) ->
+  constructor: (@engine) ->
     @filename = 'transaction.log'
 
   start: =>
-    return FS.exists(@filename).then (retval) =>
+    return QFS.exists(@filename).then (retval) =>
       if retval
         console.log 'LOG EXISTS'
         Q.fcall =>
@@ -22,16 +23,46 @@ module.exports = class TransactionLog
 
   initialize_log: =>
     console.log 'INITIALIZING LOG'
-    FS.open(@filename, {flags: "w"}).then (writestream) =>
+    QFS.open(@filename, {flags: "w"}).then (writestream) =>
       @writestream = writestream
       return null
 
   replay_log: =>
-    FS.open(@filename, {flags: "r"}).then (readstream) =>
-      @readstream = readstream
-      @readstream.forEach (chunk) =>
-        # XXX: buffered read and replay
-        console.log 'READ CHUNK', chunk
+    @readstream = fs.createReadStream(@filename, {flags: "r"})
+
+    console.log 'GOT READSTREAM'
+
+    deferred = Q.defer()
+
+    Q.fcall =>
+      parts = []
+      @readstream.on 'readable', =>
+        data = @readstream.read()
+        console.log 'READ', data, data.isEncoding
+        lenprefix = jspack.Unpack('I', (c.charCodeAt(0) for c in data.slice(0,4).toString('binary').split('')), 0 )[0]
+
+        console.log 'lenprefix', lenprefix
+
+        chunk = data.slice(4, 4 + lenprefix)
+
+        if data.length > 4 + lenprefix
+          rest = data.slice(4 + lenprefix)
+        else
+          rest = ''
+
+        console.log 'LENS', data.length, chunk.length, rest.length
+        console.log 'CHUNK', chunk.toString()
+        message = JSON.parse(chunk.toString())
+        console.log 'message', message
+
+        console.log 'rest', rest
+
+        @readstream.unshift(rest)
+    .fail =>
+      console.log 'ERROR'
+    .done()
+
+    return deferred.promise
 
   record: (message) =>
     console.log 'RECORDING', message
