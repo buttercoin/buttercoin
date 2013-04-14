@@ -16,15 +16,18 @@ describe 'Front', ->
 
   it 'should start a WSS', ->
     stub = new WebSocketServer({port: 3021, host: "0.0.0.0"});
-    stub.on 'connection', (ws) ->
-      console.log 'input was' + ws
+    stub.on 'connection', () ->
+      console.log 'Stub got a connection'
     stub.on 'message', (message) ->
-      console.log message
+      console.log "Stub got message:" + message
+      stub.send 'Hello'
 
     @front.start {port: 3020, host: "0.0.0.0", apiEndpoint: "ws://localhost:3021"}
     client = new WebSocket("ws://localhost:3020")
     client.on 'connection', () ->
-      client.send 'my message is foo'
+      client.send '{"itsjson":"morejson"}'
+    client.on 'message', (message) ->
+      console.log "Client of front-end got message:" + message
 
 
   it 'should connect to the API', ->
