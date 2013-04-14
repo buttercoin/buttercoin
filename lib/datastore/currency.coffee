@@ -1,10 +1,12 @@
+BigDecimal = require('bigdecimal').BigDecimal
+
 module.exports = class Currency
   constructor: ->
-    @balance = 0
+    @balance = new BigDecimal('0')
 
   get_balance: =>
     return @balance
 
   increase_balance: (amount) =>
-    @balance += amount
+    @balance = @balance.add(amount)
 
