@@ -17,6 +17,9 @@ describe 'Api', ->
 
     client = new WebSocket("ws://localhost:3001")
     client.on 'connection', () ->
-        # Doesn't send anything useful yet
+      client.send '{"itsjson":"morejson"}'
+
+      client.on 'message', () ->
+        console.log 'Client received message:' + message
 
 
