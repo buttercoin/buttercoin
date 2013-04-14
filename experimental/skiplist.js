@@ -1,5 +1,6 @@
 // Enki: Taken from https://github.com/reddragon/skiplist-js
-// License unspecified. Author emailed. We might have to implement our own skiplist if license is unsuitable.
+// License unspecified. Author emailed. We might have to implement our own
+// skiplist if license is unsuitable.
 
 util = require('util');
 
@@ -24,7 +25,7 @@ function SkipList(coinflipper) {
     // accessibel through the ls and rs attributes of the SkipList
     this.ls = new SkipListNode(null);
     this.rs = new SkipListNode(null);
- 
+
     // Setting up their pointers
     this.ls.r = this.rs;
     this.rs.l = this.ls;
@@ -34,7 +35,7 @@ function SkipList(coinflipper) {
 
     // Is this the right sentinel (i.e, the right-most element)?
     this.rs.rm = true;
-    
+
     // The top-most left-sentinel is also the 'root' of the SkipList
     // Setting the top-left pointer of the root
     this.root = this.ls;
@@ -62,15 +63,15 @@ SkipList.prototype =  {
         this.rs.u = new_rs;
         new_ls.r = new_rs;
         new_rs.l = new_ls;
-        
+
         // Update the sentinels
         this.ls = new_ls;
         this.rs = new_rs;
-        
+
         // Set the new root
         this.root = this.ls;
     },
-    
+
     _demote_sentinels: function () {
         // This function is called when there are no elements
         // left at a level, so we delete that level.
@@ -79,7 +80,7 @@ SkipList.prototype =  {
         if (this.ls.r !== this.rs || this.ls.d === null) {
             throw new Error('Sentinels can\'t be demoted any further');
         }
-        
+
         // Get the new sentinels
         var new_ls = this.ls.d;
         var new_rs = this.rs.d;
@@ -87,11 +88,11 @@ SkipList.prototype =  {
         // Resetting the up pointers
         new_ls.u = null;
         new_rs.u = null;
-        
+
         // Update the sentinels
         this.ls = new_ls;
         this.rs = new_rs;
-        
+
         // Set the new root
         this.root = this.ls;
     },
@@ -99,13 +100,13 @@ SkipList.prototype =  {
     insert_before: function (before, value) {
         // Are we messing with the left sentinel?
         if (before.lm) {
-            throw new Error('Cannot insert before the left sentinel.'); 
+            throw new Error('Cannot insert before the left sentinel.');
         }
 
         // Get the neighbors
         var l = before.l;
         var r = before;
-        
+
         // Create a new node
         var new_node = new SkipListNode(value);
         var n = new_node;
@@ -116,10 +117,10 @@ SkipList.prototype =  {
         n.l = l;
         n.r = r;
         var old_node = n;
-        
+
         while (this.coinflipper()) {
             // console.log('Heads');
-            
+
             // Move left till you have an up pointer
             while (l.u === null && !l.lm) {
                 l = l.l;
@@ -132,30 +133,30 @@ SkipList.prototype =  {
 
             // Now actually move up
             l = l.u;
-            
+
             // Move right till you have an up pointer
             while (r.u === null) {
                 r = r.r;
             }
             // Now actually move up
             r = r.u;
-            
+
             n = new SkipListNode(value);
-            
+
             // Setting up pointers with the neighbors
             l.r = n;
             r.l = n;
             n.l = l;
             n.r = r;
-            
-	        // Chaining up with the old node
+
+            // Chaining up with the old node
             old_node.u = n;
             n.d = old_node;
-	        
+
             // For chaining up with the node at the next level
             old_node = n;
         }
-        
+
         return new_node;
     },
 
@@ -164,7 +165,7 @@ SkipList.prototype =  {
         if (n.lm === true || n.rm === true) {
             throw new Error('Cannot delete sentinels');
         }
-        
+
         // Only nodes at the ground level can be deleted (for sanity sake)
         if (n.d !== null) {
             throw new Error('Can only delete nodes at the ground level.');
@@ -190,12 +191,12 @@ SkipList.prototype =  {
             // console.log('_demote_sentinels() called');
             this._demote_sentinels();
         }
-        
+
         // If we have an empty list
         if (this.ls.r === this.rs) {
             return null;
         }
-        
+
         var n = this.root;
         var prev_test_node = n;
         while (1) {
@@ -205,7 +206,7 @@ SkipList.prototype =  {
             // If we haven't defined the less_than function for the test_node, we can't move ahead.
             if (!test_node.v.leq)
                 return null;
-            
+
             //if (test_node.v.value_str)
             //    console.log(util.format('Test Node: %s, value: %d, leq: %d', test_node.v.value_str(), t.value, test_node.v.leq(t)));
 
@@ -233,17 +234,14 @@ SkipList.prototype =  {
                     // value of the last node, then we return the last element
                     return prev_test_node;
                 }
-                else { 
+                else {
                     n = n.d;
                 }
             }
 
         }
-    },
-
-    
+    }
 };
 
 exports.SkipListNode = SkipListNode;
 exports.SkipList = SkipList;
-

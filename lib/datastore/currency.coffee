@@ -7,4 +7,3 @@ module.exports = class Currency
 
   increase_balance: (amount) =>
     @balance += amount
-
