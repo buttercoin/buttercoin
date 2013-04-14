@@ -24,7 +24,7 @@ Test and Run
 
 #### To test:
 
-    bash test.sh
+    ./test.sh
 
 If all goes well, it will end with a status report:
 
@@ -32,7 +32,7 @@ If all goes well, it will end with a status report:
 
 #### To run:
 
-    bash start.sh
+    ./start.sh
 
 If all goes well, you will see the address for the main user interface:
 
