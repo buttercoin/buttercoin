@@ -47,3 +47,5 @@ Discussion
 * [/r/buttercoin](http://www.reddit.com/r/buttercoin)
 * [#buttercoin](irc://irc.freenode.org/buttercoin)
 * [#buttercoin-dev](irc://irc.freenode.org/buttercoin-dev)
+
+[![Build Status](https://travis-ci.org/buttercoin/buttercoin.png)](https://travis-ci.org/buttercoin/buttercoin)
