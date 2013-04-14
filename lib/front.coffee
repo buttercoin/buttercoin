@@ -17,8 +17,10 @@ module.exports = class Front
     options.host = options.host || "0.0.0.0"
     options.apiEndpoint = options.apiEndpoint || "ws://localhost:3001"
 
-    express = require('express')
     connect = require('connect')
+    express = require('express')
+    http = require('http')
+    sockjs = require('sockjs')
     WebSocket = require('ws')
     MemoryStore = express.session.MemoryStore
 
@@ -27,6 +29,7 @@ module.exports = class Front
 
     # Create a new express app
     app = express()
+    server = http.createServer(app)
 
     # Expose the "/public" folder to the web using the static middleware provided with connect
     # see: https://github.com/senchalabs/connect/blob/master/lib/middleware/static.js
@@ -37,58 +40,49 @@ module.exports = class Front
     app.use(express.session({ store: store, secret: secret, key: 'sid' }))
     cookieParser = express.cookieParser(secret)
 
-    server = app.listen options.port, options.host, () ->
+    # Create browser-facing sockjs server
+    socketServer = sockjs.createServer
+      sockjs_url: "/js/vendor/sockjs-0.3.min.js"
+    socketServer.installHandlers(server, {prefix: '/sock'})
 
-      #
-      # Create public facing websocket server
-      #
-      wss = new WebSocket.Server {server: server}
+    server.listen options.port, options.host, ->
+      logger.info "Buttercoin front-end server started on http://" +
+        options.host + ":" + options.port
 
-      logger.info "Buttercoin front-end server started on http://" + server.address().address + ":" + server.address().port
+    socketServer.on 'connection', (connection) ->
+      # TODO: authentication.
+      # if we want the socket to work cross-domain, the client will need to
+      # send a token/hmac/cookie as the first message over the connection.
+      # Otherwise, we can probably rely on cookies.
+      sid = null
 
-      wss.on 'connection', (ws) ->
+      # TODO: retrieve session store based on sid
+      # store.get sid, (err, res) ->
+      #  console.log err, res
 
-        cookieParser ws.upgradeReq, null, (err) ->
+      connection.write 'hello ' + sid + '\ni am front-end ' + process.pid
 
-          if err
-            throw err
+      connection.on 'data', (message) ->
+        logger.info('front ' + process.pid + ' received message from ' + sid + ': ' + message);
 
-          #
-          # TODO: use ws.upgradeReq.signedCookies instead of ws.upgradeReq.cookies
-          #
+        #
+        # Remark: this is where conditional logic can be placed to authorize the message before it is
+        # passed along to an API server
+        valid = false
 
-          # Get the session id from cookie
-          sid = ws.upgradeReq.cookies['connect.sid']
+        # Check if incoming message is actually valid JSON
+        try
+          message = JSON.parse message
+          valid = true
+        catch err
+          valid = false
+          message = err.message
 
-          #
-          # TODO: retrieve session store based on sid from websocket
-          #
-          # store.get sid, (err, res) ->
-          #  console.log err, res
-
-          ws.send 'hello ' + sid + '\ni am front-end ' + process.pid
-
-          ws.on 'message', (message) ->
-            logger.info('front ' + process.pid +  ' received message from ' + sid + ': ' + message);
-
-            #
-            # Remark: this is where conditional logic can be placed to authorize the message before it is
-            # passed along to an API server
-            valid = false
-
-            # Check if incoming message is actually valid JSON
-            try
-              message = JSON.parse message
-              valid = true
-            catch err
-              valid = false
-              message = err.message
-
-            if valid
-              wsClient.send JSON.stringify(message)
-            else
-              logger.warn 'invalid message - not relaying to api server'
-              ws.send message
+        if valid
+          wsClient.send JSON.stringify(message)
+        else
+          logger.warn 'invalid message - not relaying to api server'
+          connection.write message
 
       #
       # Establish outgoing connection to VLAN websocket API server
