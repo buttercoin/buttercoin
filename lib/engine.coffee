@@ -1,7 +1,7 @@
 
 Dequeue = require('deque').Dequeue
 
-DataStore = require('./datastore')
+DataStore = require('./datastore/datastore')
 
 TransactionLog = require('./transactionlog')
 
