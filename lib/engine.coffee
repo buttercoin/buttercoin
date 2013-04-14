@@ -7,6 +7,8 @@ TransactionLog = require('./transactionlog')
 
 Q = require('q')
 
+operations = require("./operations")
+
 module.exports = class Engine
   constructor: ->
     @transaction_log = new TransactionLog(@)
@@ -31,8 +33,10 @@ module.exports = class Engine
   replay_message: (message) =>
     console.log 'REPLAY MESSAGE', message
 
-    if message[0] == 'ADD_DEPOSIT'
+    if message[0] == operations.ADD_DEPOSIT
       @datastore.add_deposit(message[1])
+    else
+      throw Error("Unknown Operation Type")
 
   flush: =>
     @transaction_log.flush()

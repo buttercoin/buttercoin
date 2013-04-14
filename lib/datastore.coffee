@@ -31,6 +31,7 @@ class BalanceSheet
 
 class OrderBook
   constructor: ->
+    
 
 module.exports = class DataStore
   constructor: ->
@@ -45,3 +46,4 @@ module.exports = class DataStore
 
     if args.callback
       args.callback( currency.get_balance() )
+
