@@ -47,5 +47,7 @@ Discussion
 * [/r/buttercoin](http://www.reddit.com/r/buttercoin)
 * [#buttercoin](irc://irc.freenode.org/buttercoin)
 * [#buttercoin-dev](irc://irc.freenode.org/buttercoin-dev)
+* [Hackpad](https://buttercoin.hackpad.com/)
+* [Trello](https://trello.com/board/buttercoin/516af0ca86d48fe14f0022ab)
 
 [![Build Status](https://travis-ci.org/buttercoin/buttercoin.png)](https://travis-ci.org/buttercoin/buttercoin)
