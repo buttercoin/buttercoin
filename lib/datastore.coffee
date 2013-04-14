@@ -15,7 +15,7 @@ class Account
 
   get_currency: (name) =>
     currency = @currencies[name]
-    if not currency
+    if not (currency instanceof Currency)
       @currencies[name] = currency = new Currency()
     return currency
 
@@ -25,7 +25,7 @@ class BalanceSheet
 
   get_account: (name) =>
     account = @accounts[name]
-    if not account
+    if not (account instanceof Account)
       @accounts[name] = account = new Account()
     return account
 
