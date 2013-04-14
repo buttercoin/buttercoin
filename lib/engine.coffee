@@ -9,7 +9,7 @@ Q = require('q')
 
 module.exports = class Engine
   constructor: ->
-    @transaction_log = new TransactionLog()
+    @transaction_log = new TransactionLog(@)
     @datastore = new DataStore()
 
   start: =>
@@ -26,3 +26,8 @@ module.exports = class Engine
     # deserialize (skipping this for now)
 
     # execute business logic
+
+    @replay_message(message)
+
+  replay_message: (message) =>
+    console.log 'RECEIVED MESSAGE', message

@@ -28,6 +28,9 @@ module.exports = class TransactionLog
       return null
 
   replay_log: =>
+    # XXX: This code is basically guaranteed to have chunking problems right now.
+    # Fix and then test rigorously!!!
+
     @readstream = fs.createReadStream(@filename, {flags: "r"})
 
     console.log 'GOT READSTREAM'
@@ -52,12 +55,18 @@ module.exports = class TransactionLog
 
         console.log 'LENS', data.length, chunk.length, rest.length
         console.log 'CHUNK', chunk.toString()
-        message = JSON.parse(chunk.toString())
-        console.log 'message', message
 
         console.log 'rest', rest
 
-        @readstream.unshift(rest)
+
+        if chunk.length == lenprefix
+          message = JSON.parse(chunk.toString())
+          console.log 'message', message
+          @engine.replay_message(message)
+          @readstream.unshift(rest)
+        else
+          @readstream.unshift(data)
+
     .fail =>
       console.log 'ERROR'
     .done()
