@@ -4,7 +4,7 @@
   "description": "Open Source Bitcoin Exchange",
   "main": "./lib/",
   "scripts": {
-    "start": "sh start.sh",
+    "start": "bin/dev-standalone",
     "test": "sh test.sh"
   },
   "repository": {
