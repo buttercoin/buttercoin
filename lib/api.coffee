@@ -3,8 +3,29 @@ Q = require("q")
 
 operations = require("./operations")
 
+
 module.exports = class API
   constructor: (@engine) ->
+
+    # stores incoming front-end sockets
+    @frontEndSockets = {}
+
+    # front-end server socket id
+    @fid = 0
+
+  send_message: ( message ) ->
+
+    #
+    # TODO: Send an API request to the trading engine
+    #
+    # logger.info 'sending message to trading engine', message
+
+    # Sends message to engine with a continuation
+    # @engine.recieve_message message ->
+    #  this.frontEndSockets[message.front.fid].send(JSON.stringify(message))
+
+    # Echo back websocket message ( for now )
+    this.frontEndSockets[message.front.fid].send(JSON.stringify(message))
 
   add_deposit: ( args ) ->
     deferred = Q.defer()
@@ -16,6 +37,8 @@ module.exports = class API
     return deferred.promise
 
   start: ( options, callback ) ->
+
+    api = this
 
     # Basic currying for api.start method
     if typeof options is 'function'
@@ -31,16 +54,31 @@ module.exports = class API
     wss = new WebSocketServer({port: options.port, host: options.host});
 
     logger.info "Buttercoin api server started on ws://" + wss.options.host + ":" + wss.options.port
-    wss.on 'connection', (ws) ->
+    wss.on 'connection', (socket) ->
 
-      logger.info 'api server receiving incoming wss connection from', ws.upgradeReq.headers.host
+      socket.fid = api.fid
+      api.frontEndSockets[api.fid] = socket
+      api.fid++
 
-      ws.on 'message', (message) ->
+      logger.info 'api server receiving incoming wss connection from', socket.upgradeReq.headers.host
+
+      socket.on 'message', (message) ->
         logger.info 'api server ' + process.pid + ' received message: ' + message
 
-        # Echo back websocket message ( for now )
-        ws.send(message)
+#        console.log socket
+        try
+          message = JSON.parse message
+        catch err
+          message = {}
 
-      ws.send 'i am api server ' + process.pid
+        # Create a JSON representation of the originating message
+        message.front = {
+          host: socket.upgradeReq.headers.host,
+          fid: socket.fid
+        }
+
+        api.send_message(message)
+
+      socket.send 'i am api server ' + process.pid
 
     callback null, wss
