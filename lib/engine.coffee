@@ -41,13 +41,13 @@ module.exports = class Engine
     wss.on 'connection', (socket) ->
 
       engine.socket = socket
-      logger.info 'engine server receiving incoming ws connection from', socket.upgradeReq.headers.host
+      logger.warn 'engine server receiving incoming ws'
 
       socket.on 'error', (err) ->
         throw err
 
       socket.on 'message', (message) ->
-        logger.info 'engine server ' + process.pid + ' received message: ' + message
+        logger.data 'engine server ' + process.pid + ' received message: ' + message
 
         try
           message = JSON.parse message

@@ -72,15 +72,16 @@ module.exports = class API
 
       socket.fid = api.fid
       api.frontEndSockets[api.fid] = socket
-      api.fid++
 
-      logger.info 'api server receiving incoming wss connection from', socket.upgradeReq.headers.host
+      logger.warn 'api server receiving incoming wss connection'
+
+      api.fid++
 
       socket.on 'error', (err) ->
         throw err
 
       socket.on 'message', (message) ->
-        logger.info 'api server ' + process.pid + ' received message from front: ' + message
+        logger.data 'api server ' + process.pid + ' received message from front: ' + message
 
         valid = false
         try
@@ -106,7 +107,7 @@ module.exports = class API
     #
     # Establish outgoing connection to VLAN websocket engine server
     #
-    logger.warn 'api attempting to log in to engine ' + options.engineEndpoint
+    logger.info 'api attempting to log in to engine ' + options.engineEndpoint
 
     api.engineClient = new WebSocketClient(options.engineEndpoint)
 
@@ -122,7 +123,7 @@ module.exports = class API
 
       api.engineClient.on 'message', (message) ->
 
-        logger.info('api ' + process.pid +  ' received message from engine: ' + message);
+        logger.data('api ' + process.pid +  ' received message from engine: ' + message);
 
         valid = false
         try

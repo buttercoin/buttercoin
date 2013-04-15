@@ -65,7 +65,7 @@ module.exports = class Front
           throw err
 
         socket.on 'message', (message) ->
-          logger.info('front ' + process.pid +  ' received message from ' + socket.id + ': ' + message);
+          logger.data('front ' + process.pid +  ' received message from ' + socket.id + ': ' + message);
 
           #
           # Remark: this is where conditional logic can be placed to authorize the message before it is
@@ -92,7 +92,7 @@ module.exports = class Front
       #
       # Establish outgoing connection to VLAN websocket API server
       #
-      logger.warn 'front attempting to log in to ' + options.apiEndpoint
+      logger.info 'front attempting to log in to ' + options.apiEndpoint
 
       wsClient = new WebSocket(options.apiEndpoint)
 
@@ -110,7 +110,7 @@ module.exports = class Front
 
         wsClient.on 'message', (message) ->
 
-          logger.info('front ' + process.pid +  ' received message: ' + message);
+          logger.data('front ' + process.pid +  ' received message: ' + message);
 
           valid = false
           try
