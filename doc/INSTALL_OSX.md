@@ -9,7 +9,7 @@ Download the Universal installer for Mac OS X:
 
 http://nodejs.org/download/
 
-_Note: buttercoin requires node >= 10.4_
+_Note: buttercoin requires node version 0.8 or newer_
 
 Run the installer and install node.
 
