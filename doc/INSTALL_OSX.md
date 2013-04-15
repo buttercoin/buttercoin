@@ -16,7 +16,7 @@ Run the installer and install node.
 
 ### Install node using Homebrew (not recommended, but sometimes works)
 
-__-Note: Read about Homebrew: http://mxcl.github.io/homebrew -__
+_Note: Read about Homebrew: http://mxcl.github.io/homebrew -_
 
 #### Install Homebrew
 
