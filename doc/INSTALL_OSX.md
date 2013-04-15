@@ -2,13 +2,26 @@ Installing on Mac OSX
 =====================
 
 
-Using Homebrew
---------------
+Installing node.js and npm
+---
 
-The easiest way to install and run on Mac OSX is using Homebrew (http://mxcl.github.io/homebrew/)
+### From Sources (recommended approach)
 
-Install Homebrew
-----------------
+
+
+Get node source code (tar.gz archive, bottom of the list):
+http://nodejs.org/download/
+
+Download the Universal installer for Mac OS X
+Note: buttercoin requires node >= 10.4
+
+Run the installer and install node.
+
+### Using Homebrew (not recommended, but sometimes works)
+
+Homebrew (http://mxcl.github.io/homebrew/)
+
+#### Install Homebrew
 
 To install homebrew, if you have not already, try this command:
 
@@ -18,13 +31,18 @@ then, check that it is working and update it:
 
     brew update
 
-Install git, the node.js runtime and node package manager
------------
+#### Install the node.js runtime and node packaged modules
 
-    brew install git node npm
+    brew install node npm
+
+
+#### Installing git
+
+    brew install git
 
 Cloning the buttercoin repository to a local copy
 -------------------------------------------------
+Note: If you do not have git installed, use the process above with homebrew, skipping the node.js/npm part. 
 
     git clone https://github.com/buttercoin/buttercoin
 
