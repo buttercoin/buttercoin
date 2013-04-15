@@ -57,7 +57,7 @@ module.exports = class Engine
         engine.receive_message(message)
 
     return Q.fcall =>
-      return @transaction_log.start()
+      return @transaction_log.start().then => callback(null, wss)
 
   receive_message: (message) =>
     # journal + replicate

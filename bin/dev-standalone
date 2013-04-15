@@ -6,6 +6,6 @@
 Buttercoin = require('../lib/buttercoin')
 butter = new Buttercoin();
 
-butter.engine.start().then ->
-  butter.api.start ->
-    butter.front.start ->
+butter.engine.start () ->
+  butter.api.start () ->
+    butter.front.start () ->

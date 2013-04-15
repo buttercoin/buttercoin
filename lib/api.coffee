@@ -139,4 +139,4 @@ module.exports = class API
           # Send the message
           # engineIOServer.clients[message.sid].send(JSON.stringify(message, true))
 
-      callback null, wss
+      return callback null, wss
