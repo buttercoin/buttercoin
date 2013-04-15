@@ -15,7 +15,8 @@ Installing the remaining dependencies
 -------------------------------------
 
     cd buttercoin
-    npm install 
+    npm install
+    sudo npm install -g coffee-script
 
 The `npm install` command will use the package.json file in buttercoin to find all node dependencies
 
