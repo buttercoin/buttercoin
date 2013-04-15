@@ -28,12 +28,7 @@
               port = 3000,
               message;
 
-          message = {
-            "op": "MY_OPERATION",
-            "data" : {
-              "key": "pair"
-            }
-          };
+          message = ["ADD_DEPOSIT", {"key": "pair"}]
 
           var socket = new eio.Socket('ws://' + host + '/' + port);
           socket.on('open', function () {
