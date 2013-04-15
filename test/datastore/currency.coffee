@@ -1,8 +1,3 @@
-chai = require 'chai'  
-chai.should()
-expect = chai.expect
-assert = chai.assert
-
 Currency = require('../../lib/datastore/currency')
 BigDecimal = require('bigdecimal').BigDecimal
 

@@ -1,8 +1,3 @@
-chai = require 'chai'  
-chai.should()
-expect = chai.expect
-assert = chai.assert
-
 Market = require('../../lib/datastore/market')
 SkipList = require("../../experimental/skiplist").SkipList
 

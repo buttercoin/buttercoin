@@ -8,5 +8,4 @@ module.exports = class Currency
     return @balance
 
   increase_balance: (amount) =>
-    @balance = @balance.add(amount)
-
+  	@balance = @balance.add(amount)

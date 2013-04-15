@@ -21,15 +21,25 @@
         <link rel="stylesheet" href="/css/main.css">
 
         <script src="/js/vendor/modernizr-2.6.2-respond-1.1.0.min.js"></script>
+        <script src="/js/engine.io.js"></script>
+
         <script>
-          var host = window.document.location.host.replace(/:.*/, '');
-          var ws = new WebSocket('ws://' + host + ':3000');
-          ws.onmessage = function (event) {
-            document.forms[0].response.value = event.data;
-            //alert(event.data);
-          };
+          var host = window.document.location.host.replace(/:.*/, ''),
+              port = 3000,
+              message;
+
+          message = ["ADD_DEPOSIT", {"key": "pair"}]
+
+          var socket = new eio.Socket('ws://' + host + '/' + port);
+          socket.on('open', function () {
+            document.forms[0].message.value = JSON.stringify(message, true, 2);
+            socket.on('message', function (data) {
+              document.forms[0].response.value = data;
+            });
+            socket.on('close', function () { });
+          });
           function sendMessage (data) {
-            ws.send(data);
+            socket.send(data);
             document.forms[0].response.value = "";
             document.forms[0].message.value = "";
           }
@@ -77,11 +87,12 @@
                     </tr>
                     <tr valign="top">
                       <td class="span6">
-                        <textarea name="message" style="width:100%" rows="20"></textarea><br/>
+                        <textarea name="message" style="width:100%" rows="10"></textarea>
+                        <br/>
                         <button class="btn" onclick="sendMessage(document.forms[0].message.value);">Send test message</button>
                       </td>
                       <td class="span6">
-                        <textarea name="response" style="width:100%" cols="80" rows="20"></textarea><br/>
+                        <textarea name="response" style="width:100%" cols="80" rows="10"></textarea><br/>
                       </td>
                     </tr>
                   </table>

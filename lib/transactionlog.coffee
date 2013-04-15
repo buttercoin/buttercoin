@@ -41,7 +41,8 @@ module.exports = class TransactionLog
       parts = []
       @readstream.on 'end', =>
         console.log 'done reading'
-        @readstream.close()
+        # Had to comment out this line since it was causing errors
+        # @readstream.close()
         deferred.resolve()
 
       @readstream.on 'readable', =>

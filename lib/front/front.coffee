@@ -1,9 +1,14 @@
-logger = require './logger'
+logger = require '../logger'
+
 
 module.exports = class Front
   constructor: () ->
 
+    @auth = require('./auth')
+
   start: ( options, callback ) ->
+
+    front = this
 
     # Basic currying for front.start method
     if typeof options is 'function'
@@ -15,11 +20,12 @@ module.exports = class Front
     # Default front.start options
     options.port = options.port || 3000
     options.host = options.host || "0.0.0.0"
-    options.apiEndpoint = options.apiEndpoint || "ws://localhost:3001"
+    options.apiEndpoint = options.apiEndpoint || "ws://0.0.0.0:3001"
 
     express = require('express')
     connect = require('connect')
     WebSocket = require('ws')
+    engineio = require('engine.io')
     MemoryStore = express.session.MemoryStore
 
     # Create a new memory store for account sessions
@@ -34,61 +40,54 @@ module.exports = class Front
 
     # Use the express session middleware to store account sessions
     secret = 'MUST-CHANGE-THIS-FOR-PRODUCTION'
-    app.use(express.session({ store: store, secret: secret, key: 'sid' }))
     cookieParser = express.cookieParser(secret)
+
+    app.use(cookieParser);
+    app.use(express.session({ store: store, secret: secret, key: 'sid' }))
 
     server = app.listen options.port, options.host, () ->
 
       #
       # Create public facing websocket server
       #
-      wss = new WebSocket.Server {server: server}
+      engineIOServer = engineio.attach(server)
 
       logger.info "Buttercoin front-end server started on http://" + server.address().address + ":" + server.address().port
 
-      wss.on 'connection', (ws) ->
+      engineIOServer.on 'error', (err) ->
+        throw err
 
-        cookieParser ws.upgradeReq, null, (err) ->
+      engineIOServer.on 'connection', (socket) ->
 
-          if err
-            throw err
+        socket.send 'hello ' + socket.id + '\ni am front-end ' + process.pid
+
+        socket.on 'error', (err) ->
+          throw err
+
+        socket.on 'message', (message) ->
+          logger.info('front ' + process.pid +  ' received message from ' + socket.id + ': ' + message);
 
           #
-          # TODO: use ws.upgradeReq.signedCookies instead of ws.upgradeReq.cookies
-          #
+          # Remark: this is where conditional logic can be placed to authorize the message before it is
+          # passed along to an API server
 
-          # Get the session id from cookie
-          sid = ws.upgradeReq.cookies['connect.sid']
+          valid = false
 
-          #
-          # TODO: retrieve session store based on sid from websocket
-          #
-          # store.get sid, (err, res) ->
-          #  console.log err, res
-
-          ws.send 'hello ' + sid + '\ni am front-end ' + process.pid
-
-          ws.on 'message', (message) ->
-            logger.info('front ' + process.pid +  ' received message from ' + sid + ': ' + message);
-
-            #
-            # Remark: this is where conditional logic can be placed to authorize the message before it is
-            # passed along to an API server
+          # Check if incoming message is actually valid JSON
+          try
+            message = JSON.parse message
+            valid = true
+          catch err
             valid = false
+            message = err.message
 
-            # Check if incoming message is actually valid JSON
-            try
-              message = JSON.parse message
-              valid = true
-            catch err
-              valid = false
-              message = err.message
-
-            if valid
+          if valid
+            front.auth {'account': 'marak', 'password': 'foo'}, (err, result) ->
+              message[1].sid = socket.id
               wsClient.send JSON.stringify(message)
-            else
-              logger.warn 'invalid message - not relaying to api server'
-              ws.send message
+          else
+            logger.warn 'invalid message - not relaying to api server'
+            socket.send message
 
       #
       # Establish outgoing connection to VLAN websocket API server
@@ -99,6 +98,7 @@ module.exports = class Front
 
       wsClient.on 'error', (err) ->
         logger.error 'unable to connect to api server ' + options.apiEndpoint
+        logger.help 'did you try starting the api server?'
         logger.warn 'throwing connection error!'
         throw err;
 
@@ -109,6 +109,20 @@ module.exports = class Front
         wsClient.send 'i am front-end ' + process.pid
 
         wsClient.on 'message', (message) ->
+
           logger.info('front ' + process.pid +  ' received message: ' + message);
+
+          valid = false
+          try
+            message = JSON.parse message
+            valid = true
+          catch err
+            valid = false
+
+          if valid
+            # If there is a valid socket.id in the current list of server sockets
+            if (typeof message[1].sid is 'string' and typeof engineIOServer.clients[message[1].sid] is 'object')
+              # Send the message
+              engineIOServer.clients[message[1].sid].send(JSON.stringify(message, true))
 
           callback null, server

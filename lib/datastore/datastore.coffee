@@ -33,4 +33,3 @@ module.exports = class DataStore
 
     if args.callback
       args.callback( market )
-

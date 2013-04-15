@@ -15,7 +15,8 @@ Installing the remaining dependencies
 -------------------------------------
 
     cd buttercoin
-    npm install 
+    npm install
+    sudo npm install -g coffee-script
 
 The `npm install` command will use the package.json file in buttercoin to find all node dependencies
 
@@ -24,15 +25,15 @@ Test and Run
 
 #### To test:
 
-    ./test.sh
+    npm test
 
 If all goes well, it will end with a status report:
 
 >  1 test complete (36 ms)
 
-#### To run:
+#### To start:
 
-    ./start.sh
+    npm start
 
 If all goes well, you will see the address for the main user interface:
 
