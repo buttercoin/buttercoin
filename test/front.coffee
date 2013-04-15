@@ -14,7 +14,7 @@ describe 'Front', ->
   it 'should start, connect to api, and provide a WS server', ->
     api = new Api
     engine = new Engine
-    engine.start {port: 3033, host: "0.0.0.0" }, () =>
-      api.start {port: 3032, host: "0.0.0.0", engineEndpoint: 'ws://0.0.0.0:3033' }, () =>
-        front.start {port: 3034, host: "0.0.0.0", apiEndpoint: 'ws://0.0.0.0:3022' }, () =>
+    engine.start {port: 3043, host: "0.0.0.0" }, () =>
+      api.start {port: 3042, host: "0.0.0.0", engineEndpoint: 'ws://0.0.0.0:3043' }, () =>
+        front.start {port: 3044, host: "0.0.0.0", apiEndpoint: 'ws://0.0.0.0:3042' }, () =>
           done
