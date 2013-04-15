@@ -72,7 +72,6 @@ module.exports = class API
       socket.on 'message', (message) ->
         logger.info 'api server ' + process.pid + ' received message: ' + message
 
-#        console.log socket
         try
           message = JSON.parse message
         catch err
