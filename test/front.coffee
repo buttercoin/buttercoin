@@ -3,7 +3,7 @@ chai.should()
 expect = chai.expect
 assert = chai.assert
 
-Front = require('../lib/front')
+Front = require('../lib/front/front')
 WebSocket = require('ws')
 WebSocketServer = require('ws').Server
 
