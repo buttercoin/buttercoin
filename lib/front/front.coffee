@@ -20,7 +20,7 @@ module.exports = class Front
     # Default front.start options
     options.port = options.port || 3000
     options.host = options.host || "0.0.0.0"
-    options.apiEndpoint = options.apiEndpoint || "ws://localhost:3001"
+    options.apiEndpoint = options.apiEndpoint || "ws://0.0.0.0:3001"
 
     express = require('express')
     connect = require('connect')
@@ -70,6 +70,7 @@ module.exports = class Front
           #
           # Remark: this is where conditional logic can be placed to authorize the message before it is
           # passed along to an API server
+
           valid = false
 
           # Check if incoming message is actually valid JSON
@@ -81,8 +82,9 @@ module.exports = class Front
             message = err.message
 
           if valid
-            message.sid = socket.id
-            wsClient.send JSON.stringify(message)
+            front.auth {'account': 'marak', 'password': 'foo'}, (err, result) ->
+              message[1].sid = socket.id
+              wsClient.send JSON.stringify(message)
           else
             logger.warn 'invalid message - not relaying to api server'
             socket.send message
@@ -107,7 +109,7 @@ module.exports = class Front
         wsClient.send 'i am front-end ' + process.pid
 
         wsClient.on 'message', (message) ->
-          
+
           logger.info('front ' + process.pid +  ' received message: ' + message);
 
           valid = false
@@ -118,10 +120,9 @@ module.exports = class Front
             valid = false
 
           if valid
-            front.auth {'account': 'marak', 'password': 'foo'}, (err, result) ->
-              # If there is a valid socket.id in the current list of server sockets
-              if (typeof message.sid is 'string' and typeof engineIOServer.clients[message.sid] is 'object')
-                # Send the message
-                engineIOServer.clients[message.sid].send(JSON.stringify(message, true))
+            # If there is a valid socket.id in the current list of server sockets
+            if (typeof message[1].sid is 'string' and typeof engineIOServer.clients[message[1].sid] is 'object')
+              # Send the message
+              engineIOServer.clients[message[1].sid].send(JSON.stringify(message, true))
 
           callback null, server
