@@ -27,13 +27,16 @@ levels = {
 levels_enabled = {}
 
 module.exports.set_levels = (log_env) ->
-  enable_all_levels = (x) -> Object.keys(levels).forEach (level) -> levels_enabled[level] = x
+  set_all_levels = (value) ->
+    Object.keys(levels).forEach (level) ->
+      levels_enabled[level] = value
+
   if log_env is 'development'
-    enable_all_levels true
+    set_all_levels true
   else if log_env is 'test'
-    enable_all_levels false
-  else if log_enf is 'production'
-    levels_enabled = 
+    set_all_levels false
+  else if log_env is 'production'
+    levels_enabled =
       info: false
       data: false
       warn: true
