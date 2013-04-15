@@ -4,7 +4,7 @@ fs = require("fs")
 jspack = require('jspack').jspack
 
 module.exports = class TransactionLog
-  constructor: (@engine, @filename = 'transaction.log') ->
+  constructor: (@filename = 'transaction.log') ->
 
   start: =>
     return QFS.exists(@filename).then (retval) =>
@@ -67,20 +67,21 @@ module.exports = class TransactionLog
 
 
         if chunk.length == lenprefix
-          message = JSON.parse(chunk.toString())
-          console.log 'message', message
 
-          if @engine
-            @engine.replay_message(message)
-          else
-            console.log 'Engine null.  Did you call the correct constructor?'
+          # Commenting out for now since it is not processing the log
+          # files correctly at the moment.  Will fix in subsequent commit
+          #message = JSON.parse(chunk.toString())
+          #console.log 'message', message
 
-          @readstream.unshift(rest)
+          #deferred.notify(message)
+
+         @readstream.unshift(rest)
         else
           @readstream.unshift(data)
 
-    .fail =>
-      console.log 'ERROR'
+    .fail (err) =>
+      console.log 'Error reading transaction log: ', err
+      deferred.reject(err)
     .done()
 
     return deferred.promise

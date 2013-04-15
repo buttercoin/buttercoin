@@ -1,9 +1,16 @@
 Api = require('../lib/api')
 Engine = require('../lib/engine')
+TestHelper = require('./test_helper')
 
 WebSocket = require('ws')
 
 describe 'Api', ->
+  beforeEach  =>
+    TestHelper.clean_state_sync
+
+  afterEach =>
+    TestHelper.clean_state_sync
+
   it 'should initialize', ->
     api = new Api
     api.start

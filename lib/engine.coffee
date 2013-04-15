@@ -2,18 +2,12 @@ logger = require('./logger')
 
 Dequeue = require('deque').Dequeue
 
-DataStore = require('./datastore/datastore')
-
-TransactionLog = require('./transactionlog')
-
 Q = require('q')
-
-operations = require("./operations")
+MessageHandler = require('./messagehandler')
 
 module.exports = class Engine
   constructor: ->
-    @transaction_log = new TransactionLog(@)
-    @datastore = new DataStore()
+    @handler = new MessageHandler
     @socket = null
 
   start: ( options, callback ) ->
@@ -56,24 +50,15 @@ module.exports = class Engine
 
         engine.receive_message(message)
 
-    return Q.fcall =>
-      return @transaction_log.start().then => callback(null, wss)
+    return @handler.start().then =>
+      callback(null, wss)
 
   receive_message: (message) =>
-    # journal + replicate
-
     console.log 'RECEIVED MESSAGE'
-
-    @transaction_log.record( JSON.stringify(message) ).then =>
-      # deserialize (skipping this for now)
-      # execute business logic
-      @replay_message(message)
-
-  replay_message: (message) =>
-    console.log 'REPLAY MESSAGE'
-
     engine = this
 
+    # TODO: better error handling and reporting; propagate correct information
+    # on the success or failure of processing the request
     message[1].callback = () ->
       # if there is a socket connected to the trade engine
       if engine.socket
@@ -82,10 +67,4 @@ module.exports = class Engine
         # send the message back out through that socket
         engine.socket.send(JSON.stringify(message))
 
-    if message[0] == operations.ADD_DEPOSIT
-      @datastore.add_deposit(message[1])
-    else
-      throw new Error("Unknown Operation Type")
-
-  flush: =>
-    @transaction_log.flush()
+    @handler.process_message(message)
