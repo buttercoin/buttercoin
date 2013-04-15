@@ -138,6 +138,4 @@ module.exports = class API
           # Send the message
           # engineIOServer.clients[message.sid].send(JSON.stringify(message, true))
 
-      return Q.fcall =>
-        return wss;
-
+      callback null, wss
