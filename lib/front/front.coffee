@@ -1,9 +1,14 @@
-logger = require './logger'
+logger = require '../logger'
+
 
 module.exports = class Front
   constructor: () ->
 
+    @auth = require('./auth')
+
   start: ( options, callback ) ->
+
+    front = this
 
     # Basic currying for front.start method
     if typeof options is 'function'
@@ -102,13 +107,21 @@ module.exports = class Front
         wsClient.send 'i am front-end ' + process.pid
 
         wsClient.on 'message', (message) ->
+          
           logger.info('front ' + process.pid +  ' received message: ' + message);
+
+          valid = false
           try
             message = JSON.parse message
+            valid = true
           catch err
-            message = {}
+            valid = false
 
-          if (typeof message.sid is 'string' and typeof engineIOServer.clients[message.sid] is 'object')
-            engineIOServer.clients[message.sid].send(JSON.stringify(message, true))
+          if valid
+            front.auth {'account': 'marak', 'password': 'foo'}, (err, result) ->
+              # If there is a valid socket.id in the current list of server sockets
+              if (typeof message.sid is 'string' and typeof engineIOServer.clients[message.sid] is 'object')
+                # Send the message
+                engineIOServer.clients[message.sid].send(JSON.stringify(message, true))
 
           callback null, server

@@ -2,7 +2,7 @@ API = require('./api')
 
 Engine = require('./engine')
 
-Front = require('./front')
+Front = require('./front/front')
 
 module.exports = class Buttercoin
   constructor: ->
