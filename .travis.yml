@@ -4,6 +4,7 @@ before_install:
   - npm install mocha
   - npm install chai
 node_js:
+  - "0.10.4"
   - "0.10.3"
   - "0.10"
   - "0.8"
