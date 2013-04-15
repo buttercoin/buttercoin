@@ -19,6 +19,17 @@ describe 'TransactionLog', ->
       finish()
     .done()
 
+  it 'should initialize if the log file already exists', (finish) ->
+    trans_log = new TLog null, kTestFilename
+    trans_log.start().then =>
+      assert trans_log.filename is kTestFilename
+      trans_log.shutdown()
+      trans_log.start().then =>
+        assert trans_log.filename is kTestFilename
+        trans_log.shutdown()
+        finish()
+    .done()
+
   it 'should record a message correctly', (finish) ->
     # Make sure the state is clean
     if fs.existsSync kTestFilename
