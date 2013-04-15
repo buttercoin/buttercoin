@@ -1,2 +1,5 @@
 module.exports = (account, callback) ->
-  callback null, true
+  if(account.id is "Marak" and account.password is "foo")
+    callback null, true
+  else
+    callback null, false
