@@ -23,7 +23,28 @@ levels = {
   help: 'cyan'
 }
 
+# TODO - consider using something like https://github.com/quirkey/node-logger
+levels_enabled = {}
+enable_all_levels = (x) -> Object.keys(levels).forEach (level) -> levels_enabled[level] = x
+
+module.exports.set_levels = (log_env) ->
+  if log_env is 'development'
+    enable_all_levels true
+  else if log_env is 'test'
+    enable_all_levels false
+  else if log_enf is 'production'
+    levels_enabled = 
+      info: false
+      data: false
+      warn: true
+      error: true
+      exec: false
+      help: false
+
 Object.keys(levels).forEach (level) ->
   module.exports[level] = () ->
-    args = [].slice.call(arguments);
-    console.log.apply this, [colors[levels[level]](level + ':')].concat(args)
+    if levels_enabled[level]
+      args = [].slice.call(arguments)
+      console.log.apply this, [colors[levels[level]](level + ':')].concat(args)
+ 
+  enable_all_levels(true)
