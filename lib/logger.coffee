@@ -27,4 +27,3 @@ Object.keys(levels).forEach (level) ->
   module.exports[level] = () ->
     args = [].slice.call(arguments);
     console.log.apply this, [colors[levels[level]](level + ':')].concat(args)
-

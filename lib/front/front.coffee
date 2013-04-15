@@ -125,3 +125,4 @@ module.exports = class Front
                 engineIOServer.clients[message.sid].send(JSON.stringify(message, true))
 
           callback null, server
+
