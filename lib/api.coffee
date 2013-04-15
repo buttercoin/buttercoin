@@ -111,8 +111,8 @@ module.exports = class API
     api.engineClient = new WebSocketClient(options.engineEndpoint)
 
     api.engineClient.on 'error', (err) ->
-      logger.error 'unable to connect to api server ' + options.engineEndpoint
-      logger.help 'did you try starting the api server?'
+      logger.error 'unable to connect to engine server ' + options.engineEndpoint
+      logger.help 'did you try starting the engine server?'
       logger.warn 'throwing connection error!'
       throw err;
 
