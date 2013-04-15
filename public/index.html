@@ -25,9 +25,19 @@
 
         <script>
           var host = window.document.location.host.replace(/:.*/, ''),
-              port = 3000;
+              port = 3000,
+              message;
+
+          message = {
+            "op": "MY_OPERATION",
+            "data" : {
+              "key": "pair"
+            }
+          };
+
           var socket = new eio.Socket('ws://' + host + '/' + port);
           socket.on('open', function () {
+            document.forms[0].message.value = JSON.stringify(message, true, 2);
             socket.on('message', function (data) {
               document.forms[0].response.value = data;
             });
@@ -82,11 +92,12 @@
                     </tr>
                     <tr valign="top">
                       <td class="span6">
-                        <textarea name="message" style="width:100%" rows="20"></textarea><br/>
+                        <textarea name="message" style="width:100%" rows="10"></textarea>
+                        <br/>
                         <button class="btn" onclick="sendMessage(document.forms[0].message.value);">Send test message</button>
                       </td>
                       <td class="span6">
-                        <textarea name="response" style="width:100%" cols="80" rows="20"></textarea><br/>
+                        <textarea name="response" style="width:100%" cols="80" rows="10"></textarea><br/>
                       </td>
                     </tr>
                   </table>
