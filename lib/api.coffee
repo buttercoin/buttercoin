@@ -32,16 +32,16 @@ module.exports = class API
     # Echo back websocket message ( for now )
     # this.frontEndSockets[message.front.fid].send(JSON.stringify(message))
 
-  add_deposit: ( args ) ->
+  # add_deposit: ( args ) ->
 
-    api = this
-    deferred = Q.defer()
-    args.callback = deferred.resolve
+  #   api = this
+  #   deferred = Q.defer()
+  #   args.callback = deferred.resolve
 
-    message = [operations.ADD_DEPOSIT, args ]
+  #   message = [operations.ADD_DEPOSIT, args ]
 
-    api.send_message(message)
-    return deferred.promise
+  #   api.send_message(message)
+  #   return deferred.promise
 
   start: ( options, callback ) ->
 
