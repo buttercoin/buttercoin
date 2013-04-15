@@ -3,4 +3,7 @@
 # Buttercoin engine binary script
 # This binary will start a single instance of a Buttercoin trading engine
 
-console.log "engine: Buttercoin trading engine started"
+Buttercoin = require('../lib/buttercoin')
+butter = new Buttercoin();
+
+butter.engine.start {port: 3003, host: "0.0.0.0"}, (err, server) =>
