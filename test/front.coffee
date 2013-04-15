@@ -2,6 +2,7 @@ Front = require('../lib/front/front')
 WebSocket = require('ws')
 WebSocketServer = require('ws').Server
 
+logger.set_levels 'development'
 describe 'Front', ->
   beforeEach ->
     @front = new Front
@@ -18,12 +19,11 @@ describe 'Front', ->
       stub.send 'Hello'
 
     @front.start {port: 3020, host: "0.0.0.0", apiEndpoint: "ws://localhost:3021"}
-    client = new WebSocket("ws://localhost:3020")
+    client = new WebSocket("ws://localhost:3021")
     client.on 'connection', () ->
       client.send '{"itsjson":"morejson"}'
     client.on 'message', (message) ->
       logger.info "Client of front-end got message:" + message
-
 
   it 'should connect to the API', ->
     @front.start
