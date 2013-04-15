@@ -5,11 +5,11 @@ Installing on Mac OSX
 Installing node.js and npm
 ---
 
-Download the Universal installer for Mac OS X:
+Download the Universal installer for Mac OS X, for the latest version of node:
+_Note: node >= 0.10.4_
 
 http://nodejs.org/download/
 
-_Note: buttercoin requires node version 0.8 or newer_
 
 Run the installer and install node.
 
