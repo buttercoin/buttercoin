@@ -1,8 +1,3 @@
-chai = require 'chai'  
-chai.should()
-expect = chai.expect
-assert = chai.assert
-
 SuperMarket = require('../../lib/datastore/supermarket')
 Market = require('../../lib/datastore/market')
 

@@ -1,8 +1,3 @@
-chai = require 'chai'
-chai.should()
-expect = chai.expect
-assert = chai.assert
-
 Api = require('../lib/api')
 WebSocket = require('ws')
 

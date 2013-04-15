@@ -2,7 +2,8 @@
 # 
 # Some parts drawn from https://github.com/twilson63/cakefile-template/blob/master/Cakefile
 
-{spawn, exec} = require "child_process"
+{spawn, exec} = require('child_process')
+path = require('path')
 
 try
   which = require('which').sync
@@ -23,15 +24,15 @@ task "test", "run tests", -> mocha()
 # **then** spawn cmd with options
 # **and** pipe to process stdout and stderr respectively
 # **and** on child process exit emit callback if set and status is 0
-launch = (cmd, options=[], callback) ->
+launch = (cmd, args=[], options={}, callback) ->
   cmd = which(cmd) if which
-  app = spawn cmd, options
+  app = spawn cmd, args, options
   app.stdout.pipe(process.stdout)
   app.stderr.pipe(process.stderr)
   app.on 'exit', (status) -> callback?() if status is 0
 
 mocha = ->
-  options = [
+  args = [
     "--compilers", "coffee:coffee-script"
     "--require", "coffee-script"
     "--require", "test/test_helper.coffee"
@@ -40,4 +41,6 @@ mocha = ->
     "--recursive"
   ]
 
-  launch './node_modules/.bin/mocha', options, -> console.log "done"
+  process.env.NODE_ENV='test'
+  launch './node_modules/.bin/mocha', args, process.env, -> console.log "done"
+  
