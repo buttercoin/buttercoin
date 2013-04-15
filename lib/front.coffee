@@ -70,6 +70,7 @@ module.exports = class Front
             message = err.message
 
           if valid
+            message.sid = socket.id
             wsClient.send JSON.stringify(message)
           else
             logger.warn 'invalid message - not relaying to api server'
@@ -96,5 +97,12 @@ module.exports = class Front
 
         wsClient.on 'message', (message) ->
           logger.info('front ' + process.pid +  ' received message: ' + message);
+          try
+            message = JSON.parse message
+          catch err
+            message = {}
+
+          if (typeof message.sid is 'string' and typeof engineIOServer.clients[message.sid] is 'object')
+            engineIOServer.clients[message.sid].send(JSON.stringify(message, true))
 
           callback null, server
