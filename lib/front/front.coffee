@@ -59,7 +59,7 @@ module.exports = class Front
 
       engineIOServer.on 'connection', (socket) ->
 
-        socket.send 'hello ' + socket.id + '\ni am front-end ' + process.pid
+        # socket.send 'hello ' + socket.id + '\ni am front-end ' + process.pid
 
         socket.on 'error', (err) ->
           throw err
@@ -118,7 +118,7 @@ module.exports = class Front
 
         logger.info 'front connected to ' + options.apiEndpoint
 
-        wsClient.send 'i am front-end ' + process.pid
+        # wsClient.send 'i am front-end ' + process.pid
 
         wsClient.on 'message', (message) ->
 
