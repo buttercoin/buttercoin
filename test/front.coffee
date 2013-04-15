@@ -29,7 +29,3 @@ describe 'Front', ->
     client.on 'message', (message) ->
       console.log "Client of front-end got message:" + message
 
-
-  it 'should connect to the API', ->
-    @front.start
-    # test connection to API
