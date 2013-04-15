@@ -54,6 +54,10 @@ module.exports = class API
     wss = new WebSocketServer({port: options.port, host: options.host});
 
     logger.info "Buttercoin api server started on ws://" + wss.options.host + ":" + wss.options.port
+
+    wss.on 'error', (err) ->
+      throw err
+
     wss.on 'connection', (socket) ->
 
       socket.fid = api.fid
@@ -61,6 +65,9 @@ module.exports = class API
       api.fid++
 
       logger.info 'api server receiving incoming wss connection from', socket.upgradeReq.headers.host
+
+      socket.on 'error', (err) ->
+        throw err
 
       socket.on 'message', (message) ->
         logger.info 'api server ' + process.pid + ' received message: ' + message

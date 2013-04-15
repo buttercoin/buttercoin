@@ -49,9 +49,15 @@ module.exports = class Front
 
       logger.info "Buttercoin front-end server started on http://" + server.address().address + ":" + server.address().port
 
+      engineIOServer.on 'error', (err) ->
+        throw err
+
       engineIOServer.on 'connection', (socket) ->
 
         socket.send 'hello ' + socket.id + '\ni am front-end ' + process.pid
+
+        socket.on 'error', (err) ->
+          throw err
 
         socket.on 'message', (message) ->
           logger.info('front ' + process.pid +  ' received message from ' + socket.id + ': ' + message);
