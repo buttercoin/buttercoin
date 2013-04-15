@@ -2,7 +2,6 @@ Front = require('../lib/front/front')
 WebSocket = require('ws')
 WebSocketServer = require('ws').Server
 
-logger.set_levels 'development'
 describe 'Front', ->
   beforeEach ->
     @front = new Front
