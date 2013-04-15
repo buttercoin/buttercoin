@@ -3,6 +3,8 @@
 # Buttercoin front binary script
 # This binary will start a single instance of a Buttercoin front-facing http webserver
 
+require('../lib/logger').set_levels('development')
+
 Buttercoin = require('../lib/buttercoin')
 butter = new Buttercoin();
 butter.front.start {port: 3000, host: "0.0.0.0", apiEndpoint: "ws://localhost:3001"}, (err, server) =>
