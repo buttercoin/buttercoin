@@ -1,5 +1,3 @@
-
-
 module.exports = {
   ADD_DEPOSIT:'ADD_DEPOSIT'
   ADD_WITHDRAWAL: 'ADD_WITHDRAWAL'

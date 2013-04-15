@@ -104,7 +104,7 @@ module.exports = class API
       socket.send 'i am api server ' + process.pid
 
     #
-    # Establish outgoing connection to VLAN websocket API server
+    # Establish outgoing connection to VLAN websocket engine server
     #
     logger.warn 'api attempting to log in to engine ' + options.engineEndpoint
 
