@@ -5,9 +5,11 @@ Installing on Mac OSX
 Installing node.js and npm
 ---
 
-Download the Universal installer for Mac OS X
+Download the Universal installer for Mac OS X:
+
 http://nodejs.org/download/
-Note: buttercoin requires node >= 10.4
+
+_Note: buttercoin requires node >= 10.4_
 
 Run the installer and install node.
 
@@ -15,6 +17,7 @@ Install git
 ---
 
 Download the installer (DMG) and run it to install git:
+
 http://git-scm.com/download/mac
 
 Cloning the buttercoin repository to a local copy
@@ -28,7 +31,7 @@ Installing the remaining dependencies
     cd buttercoin
     npm install 
 
-The `npm install` command will use the package.json file in buttercoin to find all node dependencies
+_Note: The `npm install` command will use the package.json file in buttercoin to find all node dependencies_
 
 Test and Run
 ------------
@@ -51,4 +54,4 @@ If all goes well, you will see the address for the main user interface:
 
 Point your browser at the URL reported and you will see the front-end
 
-Smooth as butter. 
+Smooth as butter
