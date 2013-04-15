@@ -3,4 +3,7 @@
 # Buttercoin engine binary script
 # This binary will start a single instance of a Buttercoin trading engine
 
-console.log "engine: Buttercoin trading engine started"
+logger = require('../lib/logger')
+logger.set_levels('development')
+
+logger.data "engine: Buttercoin trading engine started"
