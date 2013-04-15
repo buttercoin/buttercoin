@@ -26,6 +26,7 @@
     "jspack": "*",
     "express": "3.1.2",
     "connect": "2.7.5",
+    "engine.io-client": "0.5.0",
     "engine.io": "0.5.0"
   },
   "devDependencies": {
