@@ -31,13 +31,13 @@ module.exports = class TransactionLog
     # XXX: This code is basically guaranteed to have chunking problems right now.
     # Fix and then test rigorously!!!
 
-    @readstream = fs.createReadStream(@filename, {flags: "r"})
-
-    console.log 'GOT READSTREAM'
-
     deferred = Q.defer()
 
     Q.fcall =>
+      @readstream = fs.createReadStream(@filename, {flags: "r"})
+
+      console.log 'GOT READSTREAM'
+
       parts = []
       @readstream.on 'end', =>
         console.log 'done reading'
