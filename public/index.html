@@ -21,15 +21,20 @@
         <link rel="stylesheet" href="/css/main.css">
 
         <script src="/js/vendor/modernizr-2.6.2-respond-1.1.0.min.js"></script>
+        <script src="/js/engine.io.js"></script>
+
         <script>
-          var host = window.document.location.host.replace(/:.*/, '');
-          var ws = new WebSocket('ws://' + host + ':3000');
-          ws.onmessage = function (event) {
-            document.forms[0].response.value = event.data;
-            //alert(event.data);
-          };
+          var host = window.document.location.host.replace(/:.*/, ''),
+              port = 3000;
+          var socket = new eio.Socket('ws://' + host + '/' + port);
+          socket.on('open', function () {
+            socket.on('message', function (data) {
+              document.forms[0].response.value = data;
+            });
+            socket.on('close', function () { });
+          });
           function sendMessage (data) {
-            ws.send(data);
+            socket.send(data);
             document.forms[0].response.value = "";
             document.forms[0].message.value = "";
           }

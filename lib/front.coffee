@@ -20,6 +20,7 @@ module.exports = class Front
     express = require('express')
     connect = require('connect')
     WebSocket = require('ws')
+    engineio = require('engine.io')
     MemoryStore = express.session.MemoryStore
 
     # Create a new memory store for account sessions
@@ -34,61 +35,45 @@ module.exports = class Front
 
     # Use the express session middleware to store account sessions
     secret = 'MUST-CHANGE-THIS-FOR-PRODUCTION'
-    app.use(express.session({ store: store, secret: secret, key: 'sid' }))
     cookieParser = express.cookieParser(secret)
+
+    app.use(cookieParser);
+    app.use(express.session({ store: store, secret: secret, key: 'sid' }))
 
     server = app.listen options.port, options.host, () ->
 
       #
       # Create public facing websocket server
       #
-      wss = new WebSocket.Server {server: server}
+      engineIOServer = engineio.attach(server)
 
       logger.info "Buttercoin front-end server started on http://" + server.address().address + ":" + server.address().port
 
-      wss.on 'connection', (ws) ->
+      engineIOServer.on 'connection', (socket) ->
 
-        cookieParser ws.upgradeReq, null, (err) ->
+        socket.send 'hello ' + socket.id + '\ni am front-end ' + process.pid
 
-          if err
-            throw err
-
-          #
-          # TODO: use ws.upgradeReq.signedCookies instead of ws.upgradeReq.cookies
-          #
-
-          # Get the session id from cookie
-          sid = ws.upgradeReq.cookies['connect.sid']
+        socket.on 'message', (message) ->
+          logger.info('front ' + process.pid +  ' received message from ' + socket.id + ': ' + message);
 
           #
-          # TODO: retrieve session store based on sid from websocket
-          #
-          # store.get sid, (err, res) ->
-          #  console.log err, res
+          # Remark: this is where conditional logic can be placed to authorize the message before it is
+          # passed along to an API server
+          valid = false
 
-          ws.send 'hello ' + sid + '\ni am front-end ' + process.pid
-
-          ws.on 'message', (message) ->
-            logger.info('front ' + process.pid +  ' received message from ' + sid + ': ' + message);
-
-            #
-            # Remark: this is where conditional logic can be placed to authorize the message before it is
-            # passed along to an API server
+          # Check if incoming message is actually valid JSON
+          try
+            message = JSON.parse message
+            valid = true
+          catch err
             valid = false
+            message = err.message
 
-            # Check if incoming message is actually valid JSON
-            try
-              message = JSON.parse message
-              valid = true
-            catch err
-              valid = false
-              message = err.message
-
-            if valid
-              wsClient.send JSON.stringify(message)
-            else
-              logger.warn 'invalid message - not relaying to api server'
-              ws.send message
+          if valid
+            wsClient.send JSON.stringify(message)
+          else
+            logger.warn 'invalid message - not relaying to api server'
+            socket.send message
 
       #
       # Establish outgoing connection to VLAN websocket API server
@@ -99,6 +84,7 @@ module.exports = class Front
 
       wsClient.on 'error', (err) ->
         logger.error 'unable to connect to api server ' + options.apiEndpoint
+        logger.help 'did you try starting the api server?'
         logger.warn 'throwing connection error!'
         throw err;
 
