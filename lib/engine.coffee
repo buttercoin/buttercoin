@@ -77,6 +77,7 @@ module.exports = class Engine
     message[1].callback = () ->
       # if there is a socket connected to the trade engine
       if engine.socket
+        message[1].booked = true
         message[1].etime = new Date().getTime() # <- stub execution time estimate ( inaccurate )
         # send the message back out through that socket
         engine.socket.send(JSON.stringify(message))
