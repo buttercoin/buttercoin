@@ -6,6 +6,7 @@ Installing node.js and npm
 ---
 
 Download the Universal installer for Mac OS X, for the latest version of node:
+
 _Note: node >= 0.10.4_
 
 http://nodejs.org/download/
