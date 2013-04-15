@@ -4,8 +4,7 @@ fs = require("fs")
 jspack = require('jspack').jspack
 
 module.exports = class TransactionLog
-  constructor: (@engine) ->
-    @filename = 'transaction.log'
+  constructor: (@engine, @filename = 'transaction.log') ->
 
   start: =>
     return QFS.exists(@filename).then (retval) =>
@@ -23,8 +22,10 @@ module.exports = class TransactionLog
 
   initialize_log: =>
     console.log 'INITIALIZING LOG'
-    Q.nfcall(fs.open, @filename, "w").then (writefd) =>
+    Q.nfcall(fs.open, @filename, "a").then (writefd, err) =>
       console.log 'GOT FD', writefd
+      if (err)
+        console.log 'File open error: ', err
       @writefd = writefd
 
   replay_log: =>
@@ -68,7 +69,12 @@ module.exports = class TransactionLog
         if chunk.length == lenprefix
           message = JSON.parse(chunk.toString())
           console.log 'message', message
-          @engine.replay_message(message)
+
+          if @engine
+            @engine.replay_message(message)
+          else
+            console.log 'Engine null.  Did you call the correct constructor?'
+
           @readstream.unshift(rest)
         else
           @readstream.unshift(data)
@@ -80,6 +86,11 @@ module.exports = class TransactionLog
     return deferred.promise
 
   record: (message) =>
+    if not @writefd
+      console.log 'ERROR: transaction log not initialized.  Did not record
+                   message ', message
+      return
+
     console.log 'RECORDING', message
     l = message.length
 
@@ -94,3 +105,7 @@ module.exports = class TransactionLog
   flush: =>
     Q.nfcall(fs.fsync, @writefd).then =>
       console.log 'FLUSHED'
+
+  shutdown: =>
+    fs.closeSync(@writefd)
+    @writefd = null
