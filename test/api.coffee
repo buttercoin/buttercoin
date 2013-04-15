@@ -1,8 +1,3 @@
-chai = require 'chai'
-chai.should()
-expect = chai.expect
-assert = chai.assert
-
 Api = require('../lib/api')
 WebSocket = require('ws')
 
@@ -14,13 +9,13 @@ describe 'Api', ->
   it 'should start and provide a WS server', ->
     api = new Api
     api.start {port: 3022, host: "0.0.0.0"}, () =>
-      console.log 'called api callback'
+      logger.info 'called api callback'
 
     client = new WebSocket("ws://localhost:3022")
     client.on 'connection', () ->
       client.send '{"itsjson":"morejson"}'
 
       client.on 'message', () ->
-        console.log 'Client received message:' + message
+        logger.info 'Client received message:' + message
 
 
