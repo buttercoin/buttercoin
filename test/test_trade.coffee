@@ -11,11 +11,11 @@ describe 'TradeEngine', ->
     butter.engine.start().then =>
       butter.api.add_deposit( {'account': 'Peter', 'currency': 'USD', 'amount': 200.0} )
       .then (result) =>
-        console.log 'ADDED DEPOSIT. NEW BALANCE', result
+        logger.info 'ADDED DEPOSIT. NEW BALANCE', result
         butter.api.add_deposit( {'account': 'Peter', 'currency': 'USD', 'amount': 200.0} )
       .then (result) =>
-        console.log 'ADDED DEPOSIT. NEW BALANCE', result
-        console.log 'WAITING FOR FLUSH'
+        logger.info 'ADDED DEPOSIT. NEW BALANCE', result
+        logger.info 'WAITING FOR FLUSH'
         butter.engine.flush().then =>
           finish()
     .done()
