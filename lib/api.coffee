@@ -38,6 +38,9 @@ module.exports = class API
       ws.on 'message', (message) ->
         logger.info 'api server ' + process.pid + ' received message: ' + message
 
+        # Echo back websocket message ( for now )
+        ws.send(message)
+
       ws.send 'i am api server ' + process.pid
 
     callback null, wss
