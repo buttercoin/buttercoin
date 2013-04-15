@@ -82,9 +82,21 @@ module.exports = class Front
             message = err.message
 
           if valid
-            front.auth {'account': 'marak', 'password': 'foo'}, (err, result) ->
-              message[1].sid = socket.id
-              wsClient.send JSON.stringify(message)
+            account = message[1].account
+            password = message[1].password
+            if (typeof account is 'string' && typeof password is 'string')
+              # only forward requests to the api servers that pass auth
+              front.auth {'id': account, 'password': password}, (err, success) ->
+                if success
+                  message[1].sid = socket.id
+                  # remove password from message
+                  delete message[1].password
+                  wsClient.send JSON.stringify(message)
+                else
+                  logger.warn 'failed login form x.x.x.x'
+                  socket.send 'invalid account / password combination'
+            else
+              socket.send 'account and password fields are required'
           else
             logger.warn 'invalid message - not relaying to api server'
             socket.send message
