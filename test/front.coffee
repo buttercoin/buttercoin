@@ -12,7 +12,7 @@ describe 'Front', ->
     it 'can initialize', ->
       butter = new Buttercoin
 
-    it 'should start, connect to api, and provide a WS server', (done) ->
+    xit 'should start, connect to api, and provide a WS server', (done) ->
       butter = new Buttercoin
       butter.api.start {port: 3043, host: "0.0.0.0" }, (err, server) =>
         butter.api_client.start {port: 3042, host: "0.0.0.0", engineEndpoint: 'ws://0.0.0.0:3043' }, (err, server) =>

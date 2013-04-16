@@ -15,7 +15,7 @@ describe 'ApiClient', ->
     api_client = new ApiClient
     api_client.start
 
-  it 'should start, connect to engine, and provide a WS server', (done) ->
+  xit 'should start, connect to engine, and provide a WS server', (done) ->
     api_client = new ApiClient
     engine = new Api
     engine.start {port: 3033, host: "0.0.0.0" }, () =>

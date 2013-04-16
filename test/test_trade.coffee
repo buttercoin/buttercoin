@@ -27,11 +27,12 @@ describe 'TradeEngine', ->
                                       new Journal(),
                                       replicationStub)
     pce.start().then ->
-      pce.forward_message
+      pce.forward_message({
         kind: operations.ADD_DEPOSIT
         operatation:
           account: 'Peter'
           password: 'foo'
           currency: 'USD'
           amount: 200.0
+      })
       done()
