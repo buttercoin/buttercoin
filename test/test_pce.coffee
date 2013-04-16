@@ -25,7 +25,7 @@ describe 'ProcessingChainEntrance', ->
     @pce.start()
     done()
 
-  it 'should log, replicate, and package a messge upon receiving it', (done) ->
+  it 'should log, replicate, and execute a messge upon receiving it', (done) ->
     deferred = Q.defer()
     deferred.resolve(undefined)
 
@@ -33,6 +33,25 @@ describe 'ProcessingChainEntrance', ->
     messageJson = JSON.stringify(operation)
     @journal.expects('record').once().withArgs(messageJson).returns(deferred.promise)
     @replication.expects('send').once().withArgs(messageJson).returns(deferred.promise)
-    @engine.expects('execute_operation').once().withArgs(operation)
+    @engine.expects('execute_operation').once().withArgs(operation).returns("success")
 
-    @pce.forward_operation(operation).then(-> done()).done()
+    onComplete = (result) ->
+      result.should.equal "success"
+      done()
+
+    @pce.forward_operation(operation).then(onComplete).done()
+
+  it 'should report an error when the exectution fails', (done) ->
+    deferred = Q.defer()
+    deferred.resolve(undefined)
+
+    @journal.expects('record').once().returns(deferred.promise)
+    @replication.expects('send').once().returns(deferred.promise)
+    @engine.expects('execute_operation').once().throws("failure")
+
+    onError = (error) ->
+      error.name.should.equal "failure"
+      done()
+
+    @pce.forward_operation(null).fail(onError).done()
+
