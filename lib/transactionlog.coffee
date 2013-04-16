@@ -10,6 +10,7 @@ jspack = require('jspack').jspack
 module.exports = class TransactionLog
   constructor: ->
     @filename = 'transaction.log'
+    @writefd = null
 
   start: (execute_transaction) =>
     return QFS.exists(@filename).then (retval) =>
@@ -18,16 +19,18 @@ module.exports = class TransactionLog
         Q.fcall =>
           @replay_log().then =>
             # This is dangerous
-            @initialize_log()
+            @initialize_log("a")
       else
         console.log 'LOG DOES NOT EXIST'
         Q.fcall =>
           @initialize_log().then =>
             return null
 
-  initialize_log: =>
+  initialize_log: (flags) =>
+    if not flags
+      flags = "w"
     console.log 'INITIALIZING LOG'
-    Q.nfcall(fs.open, @filename, "w").then (writefd) =>
+    Q.nfcall(fs.open, @filename, flags).then (writefd) =>
       console.log 'GOT FD', writefd
       @writefd = writefd
 
@@ -84,6 +87,10 @@ module.exports = class TransactionLog
 
   record: (message) =>
     console.log 'RECORDING', message
+    if @writefd == null
+      console.log 'NO WRITEFD AVAILABLE'
+      return Q.when(null)
+
     l = message.length
 
     part = jspack.Pack('I', [l])
