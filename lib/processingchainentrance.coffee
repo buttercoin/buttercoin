@@ -4,7 +4,6 @@ Operations = require './operations'
 
 module.exports = class ProcessingChainEntrance
   constructor: (@engine, @tlog, @replication) ->
-    # @replication = new ReplicationThing
 
   start: =>
     Q.all [
@@ -14,17 +13,14 @@ module.exports = class ProcessingChainEntrance
     ]
 
   forward_message: (message) =>
-    Q.all( [
-      @tlog.record(message)
-      # replicate
+    Q.all([
+      @tlog.record(JSON.stringify(message))
       @replication.send(message)
-    ])
-    .then =>
-      # all complete -> put on queue
-      @engine.push({
-        message: message
-        uid: undefined
-        success: undefined
-        error: undefined
-      })
+    ]).then =>
+        @engine.execute_operation({
+          message: message
+          uid: undefined
+          success: undefined
+          error: undefined
+        })
 

@@ -21,7 +21,6 @@ describe 'ProcessingChainEntrance', ->
 
     done()
 
-
   it 'should log, replicate, and package a messge upon receiving it', (done) ->
     message = {}
     @tlog.expects('record').once().withArgs(message).returns(then: ->)

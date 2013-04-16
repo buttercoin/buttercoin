@@ -17,3 +17,4 @@ module.exports = class TestHelpers
 
     if fs.existsSync 'test.log'
       fs.unlinkSync 'test.log'
+
