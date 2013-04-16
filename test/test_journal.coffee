@@ -37,13 +37,13 @@ describe 'Journal', ->
     journal.start((op) =>
       console.log 'EXECUTE OP', op
     ).then =>
-      logger.info('STARTED 1')
+      # logger.info('STARTED 1')
       assert journal.filename is kTestFilename
       journal.shutdown().then =>
         journal.start((op) =>
           console.log 'EXECUTE OP', op
         ).then =>
-          logger.info('STARTED 2')
+          # logger.info('STARTED 2')
           assert journal.filename is kTestFilename
           journal.shutdown().then =>
             finish()
