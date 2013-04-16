@@ -7,7 +7,6 @@ operations = require('../lib/operations')
 ProcessingChainEntrance = require('../lib/processingchainentrance')
 TradeEngine = require('../lib/trade_engine')
 TransactionLog = require('../lib/transactionlog')
-TestHelper = require('./test_helper')
 
 describe 'TradeEngine', ->
   beforeEach =>
@@ -28,8 +27,11 @@ describe 'TradeEngine', ->
                                       new TransactionLog(),
                                       replicationStub)
     pce.start().then ->
-      console.log "STARTED!!!"
-      pce.forward_message({operation: "TEST"})
+      pce.forward_message
+        kind: operations.ADD_DEPOSIT
+        operatation:
+          account: 'Peter'
+          password: 'foo'
+          currency: 'USD'
+          amount: 200.0
       done()
-    #butter.api.receive_message( [operations.ADD_DEPOSIT, {'account': 'Peter', 'password': 'foo', 'currency': 'USD', 'amount': 200.0}] )
-    #  finish()

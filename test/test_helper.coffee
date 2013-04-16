@@ -8,7 +8,7 @@ global.logger = require('../lib/logger')
 
 fs = require('fs')
 
-module.exports = class TestHelpers
+global.TestHelper = class TestHelper
   constructor: ->
 
   @clean_state_sync: ->
