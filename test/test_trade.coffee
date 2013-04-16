@@ -28,7 +28,7 @@ describe 'TradeEngine', ->
                                       replicationStub)
     pce.start().then ->
       logger.info('Started PCE')
-      pce.forward_message({
+      pce.forward_operation({
         kind: operations.ADD_DEPOSIT
         operatation:
           account: 'Peter'
