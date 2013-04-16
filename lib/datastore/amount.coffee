@@ -37,4 +37,3 @@ module.exports = class Amount
 
   toString: =>
     return @value.toString()
-
