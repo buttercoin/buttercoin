@@ -33,10 +33,7 @@ describe 'TradeEngine', ->
       logger.info('Started PCE')
       pce.forward_operation
         kind: operations.ADD_DEPOSIT
-        operatation:
-          account: 'Peter'
-          password: 'foo'
-          currency: 'USD'
-          amount: 200.0
+        currency: 'USD'
+        amount: 200.0
       finish()
     .done()

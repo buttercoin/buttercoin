@@ -33,6 +33,6 @@ describe 'ProcessingChainEntrance', ->
     messageJson = JSON.stringify(operation)
     @journal.expects('record').once().withArgs(messageJson).returns(deferred.promise)
     @replication.expects('send').once().withArgs(messageJson).returns(deferred.promise)
-    @engine.expects('execute_operation').once().withArgs( operation )
+    @engine.expects('execute_operation').once().withArgs(operation)
 
     @pce.forward_operation(operation).then(-> done()).done()

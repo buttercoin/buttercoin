@@ -61,7 +61,6 @@ module.exports = class Journal
     console.log 'REGISTERING HANDLERS'
     @readstream.on 'end', =>
       console.log 'done reading'
-      @readstream.close()
 
     @readstream.on 'error', (error) =>
       logger.error('Error on readstream', error)

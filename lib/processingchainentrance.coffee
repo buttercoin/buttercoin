@@ -8,7 +8,7 @@ module.exports = class ProcessingChainEntrance
   constructor: (@engine, @journal, @replication) ->
 
   start: =>
-    logger.info("Starting PCE")
+    #logger.info("Starting PCE")
     Q.all [
       @journal.start(@forward_operation).then =>
         console.log 'INITIALIZED/REPLAYED LOG'
@@ -20,7 +20,7 @@ module.exports = class ProcessingChainEntrance
       @journal.record(message)
       @replication.send(message)]
 
-    q.then(@package_operation)
+    q.then(=> @package_operation(operation))
      .then(@on_operation_succeded)
      #.fail(@on_operation_failed)
      #.done()
@@ -28,10 +28,7 @@ module.exports = class ProcessingChainEntrance
   package_operation: (operation) =>
     deferred = Q.defer()
     try
-      deferred.resolve(
-        @engine.execute_operation
-          message: operation
-          uid: undefined)
+      deferred.resolve @engine.execute_operation(operation)
     catch err
       deferred.reject(err)
 
@@ -39,7 +36,7 @@ module.exports = class ProcessingChainEntrance
 
 
   on_operation_succeded: (update_set) =>
-    console.log "success:", update_set
+    #console.log "success:", update_set
 
   on_operation_failed: (error) =>
     console.log "failure:", error
