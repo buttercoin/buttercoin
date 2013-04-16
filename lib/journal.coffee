@@ -86,8 +86,8 @@ module.exports = class Journal
 
     return deferred.promise
 
-  record: (operation) =>
-    console.log 'RECORDING', operation
+  record: (message) =>
+    console.log 'RECORDING', message
     if @writefd == null
       console.log 'NO WRITEFD AVAILABLE'
       return Q.when(null)
@@ -98,7 +98,7 @@ module.exports = class Journal
 
     part = jspack.Pack('I', [l])
 
-    buf = Buffer.concat [ Buffer(part), Buffer(operation) ]
+    buf = Buffer.concat [ Buffer(part), Buffer(message) ]
 
     writeq = Q.nfcall(fs.write, @writefd, buf, 0, buf.length, null)
     console.log 'DONE WRITING', writeq, buf

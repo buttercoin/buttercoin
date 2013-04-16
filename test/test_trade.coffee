@@ -8,6 +8,9 @@ ProcessingChainEntrance = require('../lib/processingchainentrance')
 TradeEngine = require('../lib/trade_engine')
 Journal = require('../lib/journal')
 
+kTestFilename = 'test.log'
+
+
 describe 'TradeEngine', ->
   beforeEach =>
     TestHelper.clean_state_sync
@@ -24,7 +27,7 @@ describe 'TradeEngine', ->
       send: sinon.stub().returns(deferred.promise)
 
     pce = new ProcessingChainEntrance(new TradeEngine(),
-                                      new Journal(),
+                                      new Journal(kTestFilename),
                                       replicationStub)
     pce.start().then ->
       logger.info('Started PCE')

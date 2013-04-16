@@ -2,9 +2,11 @@ ProcessingChainEntrance = require('../lib/processingchainentrance')
 TradeEngine = require('../lib/trade_engine')
 Journal = require('../lib/journal')
 
+kTestFilename = 'test.log'
+
 describe 'ProcessingChainEntrance', ->
   beforeEach (done) ->
-    @journal = sinon.mock(new Journal())
+    @journal = sinon.mock(new Journal(kTestFilename))
     @replication = sinon.mock({start: (->), send: (->)})
     @engine = sinon.mock(new TradeEngine())
     @pce = new ProcessingChainEntrance(@engine.object, @journal.object, @replication.object)

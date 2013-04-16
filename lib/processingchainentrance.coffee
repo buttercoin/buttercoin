@@ -2,10 +2,13 @@ Q = require 'q'
 DataStore = require './datastore/datastore'
 Operations = require './operations'
 
+logger = require('../lib/logger')
+
 module.exports = class ProcessingChainEntrance
   constructor: (@engine, @journal, @replication) ->
 
   start: =>
+    logger.info("Starting PCE")
     Q.all [
       @journal.start(@forward_operation).then =>
         console.log 'INITIALIZED/REPLAYED LOG'
