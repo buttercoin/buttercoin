@@ -21,7 +21,7 @@ module.exports = class ProcessingChainEntrance
         @engine.execute_operation({
           message: message
           uid: undefined
-          success: undefined
-          error: undefined
+          #success: undefined
+          #error: undefined
         })
 

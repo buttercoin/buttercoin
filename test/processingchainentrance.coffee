@@ -28,8 +28,9 @@ describe 'ProcessingChainEntrance', ->
     deferred.resolve(undefined)
 
     message = {kind: "TEST"}
-    @journal.expects('record').once().withArgs(message).returns(deferred.promise)
-    #@replication.expects('send').once().withArgs(message).returns(deferred.promise)
-    @engine.expects('execute_operation').once() #.withArgs({message: message, uid: undefined})
+    messageJson = JSON.stringify(message)
+    @journal.expects('record').once().withArgs(messageJson).returns(deferred.promise)
+    @replication.expects('send').once().withArgs(messageJson).returns(deferred.promise)
+    @engine.expects('execute_operation').once().withArgs({message: messageJson, uid: undefined})
 
-    @pce.forward_message(message).then(-> done()).done()
+    @pce.forward_operation(message).then(-> done()).done()

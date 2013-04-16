@@ -1,8 +1,8 @@
 Q = require('q')
 
-operations = require('operations')
+operations = require('./operations')
 
-DataStore = require('datastore')
+DataStore = require('./datastore/datastore')
 
 module.exports = class TradeEngine
   constructor: ->
