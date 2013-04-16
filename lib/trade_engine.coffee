@@ -12,9 +12,9 @@ module.exports = class TradeEngine
     # Makes calls into datastore and then handles callbacks for operation.
 
     if op.kind == operations.ADD_DEPOSIT
-      retval = datastore.add_deposit( op )
+      retval = @datastore.add_deposit( op )
     else
-      throw Error("Unknown Operation")
+      throw Error("Unknown Operation" + JSON.stringify(op))
 
     # call callback with retval
 

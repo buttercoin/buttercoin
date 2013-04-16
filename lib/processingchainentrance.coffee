@@ -21,10 +21,5 @@ module.exports = class ProcessingChainEntrance
       @journal.record(message)
       @replication.send(message)
     ]).then =>
-        @engine.execute_operation({
-          message: message
-          uid: undefined
-          #success: undefined
-          #error: undefined
-        })
+        @engine.execute_operation( operation )
 

@@ -29,10 +29,10 @@ describe 'ProcessingChainEntrance', ->
     deferred = Q.defer()
     deferred.resolve(undefined)
 
-    message = {kind: "TEST"}
-    messageJson = JSON.stringify(message)
+    operation = {kind: "TEST"}
+    messageJson = JSON.stringify(operation)
     @journal.expects('record').once().withArgs(messageJson).returns(deferred.promise)
     @replication.expects('send').once().withArgs(messageJson).returns(deferred.promise)
-    @engine.expects('execute_operation').once().withArgs({message: messageJson, uid: undefined})
+    @engine.expects('execute_operation').once().withArgs( operation )
 
-    @pce.forward_operation(message).then(-> done()).done()
+    @pce.forward_operation(operation).then(-> done()).done()
