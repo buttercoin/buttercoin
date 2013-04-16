@@ -12,10 +12,12 @@ catch err
     console.log 'WARNING: the which module is required for windows\ntry: npm install which'
   which = null
 
-REPORTER = "spec"
-
+option '-R', '--reporter [REPORTER_NAME]', 'the mocha reporter to use'
 option '-t', '--test [TEST_NAME]', 'set the test to run'
-task "test", "run tests", (options) -> mocha(options.test)
+
+DEFAULT_REPORTER = "spec"
+
+task "test", "run tests", (options) -> mocha(options)
 #
 # ## *launch*
 #
@@ -32,17 +34,17 @@ launch = (cmd, args=[], options={}, callback) ->
   app.stderr.pipe(process.stderr)
   app.on 'exit', (status) -> callback?() if status is 0
 
-mocha = (file) ->
+mocha = (options) ->
   args = [
     "--compilers", "coffee:coffee-script"
     "--require", "coffee-script"
     "--require", "test/test_helper.coffee"
     "--colors"
-    "--reporter", REPORTER
+    "--reporter", options.reporter || DEFAULT_REPORTER
     "--recursive"
   ]
 
-  args.push "test/#{file}.coffee" if file
+  args.push "test/#{options.test}.coffee" if options.test
 
   process.env.NODE_ENV='test'
   launch './node_modules/.bin/mocha', args, process.env, -> console.log "done"
