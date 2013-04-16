@@ -1,10 +1,10 @@
-ApiClient = require('../lib/api_client')
 Api = require('../lib/api')
+Engine = require('../lib/engine')
 TestHelper = require('./test_helper')
 
 WebSocket = require('ws')
 
-describe 'ApiClient', ->
+describe 'Api', ->
   beforeEach  =>
     TestHelper.clean_state_sync
 
@@ -12,12 +12,12 @@ describe 'ApiClient', ->
     TestHelper.clean_state_sync
 
   it 'should initialize', ->
-    api_client = new ApiClient
-    api_client.start
+    api = new Api
+    api.start
 
   it 'should start, connect to engine, and provide a WS server', (done) ->
-    api_client = new ApiClient
-    engine = new Api
+    api = new Api
+    engine = new Engine
     engine.start {port: 3033, host: "0.0.0.0" }, () =>
-      api_client.start {port: 3022, host: "0.0.0.0", engineEndpoint: 'ws://0.0.0.0:3033' }, () =>
+      api.start {port: 3022, host: "0.0.0.0", engineEndpoint: 'ws://0.0.0.0:3033' }, () =>
         done()
