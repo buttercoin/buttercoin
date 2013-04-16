@@ -3,11 +3,15 @@ QFS = require("q-io/fs")
 fs = require("fs")
 jspack = require('jspack').jspack
 
+# Transaction Log: You start it, it either read transaction log, or creates new one.
+# You pass it a function execute_transaction, which receives replayed transactions.
+# It returns a promise that's ready when transaction log has replayed everything and can .record()
+
 module.exports = class TransactionLog
   constructor: ->
     @filename = 'transaction.log'
 
-  start: =>
+  start: (execute_transaction) =>
     return QFS.exists(@filename).then (retval) =>
       if retval
         console.log 'LOG EXISTS'
