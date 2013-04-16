@@ -4,7 +4,8 @@ fs = require("fs")
 jspack = require('jspack').jspack
 
 module.exports = class TransactionLog
-  constructor: (@filename = 'transaction.log') ->
+  constructor: (@engine) ->
+    @filename = 'transaction.log'
 
   start: =>
     return QFS.exists(@filename).then (retval) =>
@@ -22,28 +23,25 @@ module.exports = class TransactionLog
 
   initialize_log: =>
     console.log 'INITIALIZING LOG'
-    Q.nfcall(fs.open, @filename, "a").then (writefd, err) =>
+    Q.nfcall(fs.open, @filename, "w").then (writefd) =>
       console.log 'GOT FD', writefd
-      if (err)
-        console.log 'File open error: ', err
       @writefd = writefd
 
   replay_log: =>
     # XXX: This code is basically guaranteed to have chunking problems right now.
     # Fix and then test rigorously!!!
 
+    @readstream = fs.createReadStream(@filename, {flags: "r"})
+
+    console.log 'GOT READSTREAM'
+
     deferred = Q.defer()
 
     Q.fcall =>
-      @readstream = fs.createReadStream(@filename, {flags: "r"})
-
-      console.log 'GOT READSTREAM'
-
       parts = []
       @readstream.on 'end', =>
         console.log 'done reading'
-        # Had to comment out this line since it was causing errors
-        # @readstream.close()
+        @readstream.close()
         deferred.resolve()
 
       @readstream.on 'readable', =>
@@ -67,31 +65,20 @@ module.exports = class TransactionLog
 
 
         if chunk.length == lenprefix
-
-          # Commenting out for now since it is not processing the log
-          # files correctly at the moment.  Will fix in subsequent commit
-          #message = JSON.parse(chunk.toString())
-          #console.log 'message', message
-
-          #deferred.notify(message)
-
-         @readstream.unshift(rest)
+          message = JSON.parse(chunk.toString())
+          console.log 'message', message
+          @engine.replay_message(message)
+          @readstream.unshift(rest)
         else
           @readstream.unshift(data)
 
-    .fail (err) =>
-      console.log 'Error reading transaction log: ', err
-      deferred.reject(err)
+    .fail =>
+      console.log 'ERROR'
     .done()
 
     return deferred.promise
 
   record: (message) =>
-    if not @writefd
-      console.log 'ERROR: transaction log not initialized.  Did not record
-                   message ', message
-      return
-
     console.log 'RECORDING', message
     l = message.length
 
@@ -106,7 +93,3 @@ module.exports = class TransactionLog
   flush: =>
     Q.nfcall(fs.fsync, @writefd).then =>
       console.log 'FLUSHED'
-
-  shutdown: =>
-    fs.closeSync(@writefd)
-    @writefd = null
