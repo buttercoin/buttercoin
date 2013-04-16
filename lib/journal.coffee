@@ -86,13 +86,13 @@ module.exports = class Journal
 
     return deferred.promise
 
-  record: (operation) =>
+  record: (message) =>
     console.log 'RECORDING', operation
     if @writefd == null
       console.log 'NO WRITEFD AVAILABLE'
       return Q.when(null)
 
-    message = JSON.stringify(operation)
+    # message = JSON.stringify(operation)
 
     l = message.length
 
