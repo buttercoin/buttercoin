@@ -21,7 +21,7 @@ module.exports = class ProcessingChainEntrance
     ])
     .then =>
       # all complete -> put on queue
-      @businessQueue.push({
+      @engine.push({
         message: message
         uid: undefined
         success: undefined
