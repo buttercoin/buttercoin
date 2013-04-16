@@ -1,6 +1,6 @@
 {
   "name": "buttercoin",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "description": "Open Source Bitcoin Exchange",
   "main": "./lib/",
   "scripts": {
