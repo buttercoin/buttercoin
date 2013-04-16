@@ -16,14 +16,10 @@ module.exports = class ProcessingChainEntrance
 
   forward_operation: (operation) =>
     message = JSON.stringify(operation)
-    q = Q.all [
+    Q.all([
       @journal.record(message)
-      @replication.send(message)]
-
-    q.then(=> @package_operation(operation))
-     .then(@on_operation_succeded)
-     #.fail(@on_operation_failed)
-     #.done()
+      @replication.send(message)
+    ]).then(=> @package_operation(operation))
 
   package_operation: (operation) =>
     deferred = Q.defer()
@@ -33,10 +29,3 @@ module.exports = class ProcessingChainEntrance
       deferred.reject(err)
 
     return deferred.promise
-
-
-  on_operation_succeded: (update_set) =>
-    #console.log "success:", update_set
-
-  on_operation_failed: (error) =>
-    console.log "failure:", error
