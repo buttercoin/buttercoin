@@ -1,12 +1,15 @@
 BD = require('bigdecimal')
-
 Q = require("q")
 
-operations = require('../lib/operations')
+logger = require('../lib/logger')
 
+operations = require('../lib/operations')
 ProcessingChainEntrance = require('../lib/processingchainentrance')
 TradeEngine = require('../lib/trade_engine')
 Journal = require('../lib/journal')
+
+kTestFilename = 'test.log'
+
 
 describe 'TradeEngine', ->
   beforeEach =>
@@ -15,7 +18,7 @@ describe 'TradeEngine', ->
   afterEach =>
     TestHelper.clean_state_sync()
 
-  it 'can perform deposit', (done) ->
+  it 'can perform deposit', (finish) ->
     deferred = Q.defer()
     deferred.resolve(undefined)
 
@@ -24,16 +27,16 @@ describe 'TradeEngine', ->
       send: sinon.stub().returns(deferred.promise)
 
     pce = new ProcessingChainEntrance(new TradeEngine(),
-                                      new Journal(),
+                                      new Journal(kTestFilename),
                                       replicationStub)
     pce.start().then ->
-      console.log "PCE started"
-      pce.forward_message({
+      logger.info('Started PCE')
+      pce.forward_operation
         kind: operations.ADD_DEPOSIT
         operatation:
           account: 'Peter'
           password: 'foo'
           currency: 'USD'
           amount: 200.0
-      })
-      done()
+      finish()
+    .done()

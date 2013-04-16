@@ -15,7 +15,7 @@ class TestHelper
 
   @clean_state_sync: ->
     if fs.existsSync 'journal.log'
-        fs.unlinkSync 'journal.log'
+      fs.unlinkSync 'journal.log'
 
     if fs.existsSync 'test.log'
       fs.unlinkSync 'test.log'
