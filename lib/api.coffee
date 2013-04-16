@@ -1,53 +1,20 @@
-logger = require './logger'
-Q = require("q")
+logger = require('./logger')
 
-operations = require("./operations")
+Dequeue = require('deque').Dequeue
 
+Q = require('q')
+MessageHandler = require('./messagehandler')
 
-module.exports = class API
-  constructor: (@engine) ->
-
-    # websocket client to the trading engine
-    @engineClient = null
-
-    # stores incoming front-end sockets
-    @frontEndSockets = {}
-
-    # front-end server socket id
-    @fid = 0
-
-  send_message: ( message ) ->
-
-    #
-    # TODO: Send an API request to the trading engine
-    #
-    # logger.info 'sending message to trading engine', message
-
-    # Sends message to engine with a continuation
-    # @engine.recieve_message message ->
-    #  this.frontEndSockets[message.front.fid].send(JSON.stringify(message))
-    if this.engineClient
-      this.engineClient.send(JSON.stringify(message))
-
-    # Echo back websocket message ( for now )
-    # this.frontEndSockets[message.front.fid].send(JSON.stringify(message))
-
-  # add_deposit: ( args ) ->
-
-  #   api = this
-  #   deferred = Q.defer()
-  #   args.callback = deferred.resolve
-
-  #   message = [operations.ADD_DEPOSIT, args ]
-
-  #   api.send_message(message)
-  #   return deferred.promise
+module.exports = class Engine
+  constructor: ->
+    @handler = new MessageHandler
+    @socket = null
 
   start: ( options, callback ) ->
 
-    api = this
+    engine = this
 
-    # Basic currying for api.start method
+    # Basic currying for engine.start method
     if typeof options is 'function'
       callback = options
       options = {}
@@ -55,88 +22,49 @@ module.exports = class API
     options = options || {}
 
     # Default api.start options
-    options.port = options.port || 3001
+    options.port = options.port || 3003
     options.host = options.host || "0.0.0.0"
-    options.engineEndpoint = options.engineEndpoint || "ws://0.0.0.0:3003/"
     WebSocketServer = require('ws').Server
-    WebSocketClient = require('ws')
-
     wss = new WebSocketServer({port: options.port, host: options.host});
 
-    logger.info "Buttercoin api server started on ws://" + wss.options.host + ":" + wss.options.port
+    logger.info "Buttercoin engine server started on ws://" + wss.options.host + ":" + wss.options.port
 
     wss.on 'error', (err) ->
       throw err
 
     wss.on 'connection', (socket) ->
 
-      socket.fid = api.fid
-      api.frontEndSockets[api.fid] = socket
-
-      logger.warn 'api server receiving incoming wss connection'
-
-      api.fid++
+      engine.socket = socket
+      logger.warn 'engine server receiving incoming ws'
 
       socket.on 'error', (err) ->
         throw err
 
       socket.on 'message', (message) ->
-        logger.data 'api server ' + process.pid + ' received message from front: ' + message
+        logger.data 'engine server ' + process.pid + ' received message: ' + message
 
-        valid = false
         try
           message = JSON.parse message
-          valid = true
         catch err
-          valid = false
+          message = {}
 
-        # TODO: Additional validation before submitting message to trading engine
+        engine.receive_message(message)
 
-        if valid
+    return @handler.start().then =>
+      callback(null, wss)
 
-          # Create a JSON representation of the originating message
-          message[1].front = {
-            host: socket.upgradeReq.headers.host,
-            fid: socket.fid
-          }
+  receive_message: (message) =>
+    console.log 'RECEIVED MESSAGE'
+    engine = this
 
-          api.send_message(message)
+    # TODO: better error handling and reporting; propagate correct information
+    # on the success or failure of processing the request
+    message[1].callback = () ->
+      # if there is a socket connected to the trade engine
+      if engine.socket
+        message[1].booked = true
+        message[1].etime = new Date().getTime() # <- stub execution time estimate ( inaccurate )
+        # send the message back out through that socket
+        engine.socket.send(JSON.stringify(message))
 
-      socket.send 'i am api server ' + process.pid
-
-    #
-    # Establish outgoing connection to VLAN websocket engine server
-    #
-    logger.info 'api attempting to log in to engine ' + options.engineEndpoint
-
-    api.engineClient = new WebSocketClient(options.engineEndpoint)
-
-    api.engineClient.on 'error', (err) ->
-      logger.error 'unable to connect to engine server ' + options.engineEndpoint
-      logger.help 'did you try starting the engine server?'
-      logger.warn 'throwing connection error!'
-      throw err;
-
-    api.engineClient.on 'open', () ->
-
-      logger.info 'api connected to ' + options.engineEndpoint
-
-      api.engineClient.on 'message', (message) ->
-
-        logger.data('api ' + process.pid +  ' received message from engine: ' + message);
-
-        valid = false
-        try
-          message = JSON.parse message
-          valid = true
-        catch err
-          valid = false
-
-        api.frontEndSockets[message[1].front.fid].send(JSON.stringify(message))
-
-        # If there is a valid socket.id in the current list of server sockets
-        # if (typeof message.sid is 'string' and typeof engineIOServer.clients[message.sid] is 'object')
-          # Send the message
-          # engineIOServer.clients[message.sid].send(JSON.stringify(message, true))
-
-      return callback null, wss
+    @handler.process_message(message)
