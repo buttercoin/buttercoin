@@ -3,31 +3,38 @@ QFS = require("q-io/fs")
 fs = require("fs")
 jspack = require('jspack').jspack
 
-module.exports = class TransactionLog
-  constructor: (@engine) ->
-    @filename = 'transaction.log'
+# Transaction Log: You start it, it either read transaction log, or creates new one.
+# You pass it a function execute_transaction, which receives replayed transactions.
+# It returns a promise that's ready when transaction log has replayed everything and can .record()
 
-  start: =>
+module.exports = class TransactionLog
+  constructor: ->
+    @filename = 'transaction.log'
+    @writefd = null
+
+  start: (execute_transaction) =>
     return QFS.exists(@filename).then (retval) =>
       if retval
         console.log 'LOG EXISTS'
         Q.fcall =>
           @replay_log().then =>
             # This is dangerous
-            @initialize_log()
+            @initialize_log("a")
       else
         console.log 'LOG DOES NOT EXIST'
         Q.fcall =>
           @initialize_log().then =>
             return null
 
-  initialize_log: =>
+  initialize_log: (flags) =>
+    if not flags
+      flags = "w"
     console.log 'INITIALIZING LOG'
-    Q.nfcall(fs.open, @filename, "w").then (writefd) =>
+    Q.nfcall(fs.open, @filename, flags).then (writefd) =>
       console.log 'GOT FD', writefd
       @writefd = writefd
 
-  replay_log: =>
+  replay_log: (execute_transaction) =>
     # XXX: This code is basically guaranteed to have chunking problems right now.
     # Fix and then test rigorously!!!
 
@@ -67,7 +74,7 @@ module.exports = class TransactionLog
         if chunk.length == lenprefix
           message = JSON.parse(chunk.toString())
           console.log 'message', message
-          @engine.replay_message(message)
+          execute_transaction(message)
           @readstream.unshift(rest)
         else
           @readstream.unshift(data)
@@ -80,6 +87,10 @@ module.exports = class TransactionLog
 
   record: (message) =>
     console.log 'RECORDING', message
+    if @writefd == null
+      console.log 'NO WRITEFD AVAILABLE'
+      return Q.when(null)
+
     l = message.length
 
     part = jspack.Pack('I', [l])
