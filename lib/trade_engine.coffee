@@ -1,6 +1,6 @@
 Q = require('q')
 
-module.exports = class BusinessQueue
+module.exports = class TradeEngine
   constructor: ->
 
 
