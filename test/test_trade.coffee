@@ -1,9 +1,9 @@
 BD = require('bigdecimal')
-
 Q = require("q")
 
-operations = require('../lib/operations')
+logger = require('../lib/logger')
 
+operations = require('../lib/operations')
 ProcessingChainEntrance = require('../lib/processingchainentrance')
 TradeEngine = require('../lib/trade_engine')
 Journal = require('../lib/journal')
@@ -27,6 +27,7 @@ describe 'TradeEngine', ->
                                       new Journal(),
                                       replicationStub)
     pce.start().then ->
+      logger.info('Started PCE')
       pce.forward_message({
         kind: operations.ADD_DEPOSIT
         operatation:
@@ -36,3 +37,4 @@ describe 'TradeEngine', ->
           amount: 200.0
       })
       finish()
+    .done()
