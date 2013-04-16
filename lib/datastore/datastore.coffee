@@ -1,6 +1,11 @@
 BalanceSheet = require('./balancesheet')
 SuperMarket = require('./supermarket')
 
+# Datastore exposes actual memory modifying Operations
+# SYNCHRONOUS: returns when it returns!
+
+# NON REENTRANT
+
 module.exports = class DataStore
   constructor: ->
     @balancesheet = new BalanceSheet()
