@@ -19,8 +19,8 @@ module.exports = class Front
 
     # Default front.start options
     options.port = options.port || 3000
-    options.host = options.host || "0.0.0.0"
-    options.apiEndpoint = options.apiEndpoint || "ws://0.0.0.0:3001"
+    options.host = options.host || "localhost"
+    options.apiEndpoint = options.apiEndpoint || "ws://localhost:3001"
 
     express = require('express')
     connect = require('connect')

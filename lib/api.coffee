@@ -56,8 +56,8 @@ module.exports = class API
 
     # Default api.start options
     options.port = options.port || 3001
-    options.host = options.host || "0.0.0.0"
-    options.engineEndpoint = options.engineEndpoint || "ws://0.0.0.0:3003/"
+    options.host = options.host || "localhost"
+    options.engineEndpoint = options.engineEndpoint || "ws://localhost:3003/"
     WebSocketServer = require('ws').Server
     WebSocketClient = require('ws')
 

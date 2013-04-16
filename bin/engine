@@ -6,4 +6,4 @@
 Buttercoin = require('../lib/buttercoin')
 butter = new Buttercoin();
 
-butter.engine.start {port: 3002, host: "0.0.0.0"}, (err, server) =>
+butter.engine.start {port: 3002, host: "localhost"}, (err, server) =>

@@ -5,4 +5,4 @@
 
 Buttercoin = require('../lib/buttercoin')
 butter = new Buttercoin();
-butter.front.start {port: 3000, host: "0.0.0.0", apiEndpoint: "ws://0.0.0.0:3001"}, (err, server) =>
+butter.front.start {port: 3000, host: "localhost", apiEndpoint: "ws://localhost:3001"}, (err, server) =>

@@ -23,7 +23,7 @@ module.exports = class Engine
 
     # Default api.start options
     options.port = options.port || 3003
-    options.host = options.host || "0.0.0.0"
+    options.host = options.host || "localhost"
     WebSocketServer = require('ws').Server
     wss = new WebSocketServer({port: options.port, host: options.host});
 

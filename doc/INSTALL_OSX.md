@@ -54,7 +54,7 @@ If all goes well, it will end with a status report:
 
 If all goes well, you will see the address for the main user interface:
 
->info: Buttercoin front-end server started on http://0.0.0.0:3000
+>info: Buttercoin front-end server started on http://localhost:3000
 
 Point your browser at the URL reported and you will see the front-end
 
