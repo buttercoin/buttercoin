@@ -5,6 +5,7 @@ global.assert = chai.assert
 global.sinon = require('sinon')
 
 global.logger = require('../lib/logger')
+global.Q = require('Q')
 
 fs = require('fs')
 
