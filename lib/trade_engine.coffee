@@ -10,11 +10,10 @@ module.exports = class TradeEngine
 
   execute_operation: (op) ->
     # Makes calls into datastore and then handles callbacks for operation.
-
+    ###
     if op.kind == operations.ADD_DEPOSIT
-      retval = datastore.add_deposit( op )
+      datastore.add_deposit( op )
     else
-      throw Error("Unknown Operation")
-
-    # call callback with retval
+    ###
+    throw Error("Unknown Operation")
 

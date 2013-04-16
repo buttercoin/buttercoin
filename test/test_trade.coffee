@@ -10,10 +10,10 @@ Journal = require('../lib/journal')
 
 describe 'TradeEngine', ->
   beforeEach =>
-    TestHelper.clean_state_sync
+    TestHelper.clean_state_sync()
 
   afterEach =>
-    TestHelper.clean_state_sync
+    TestHelper.clean_state_sync()
 
   it 'can perform deposit', (done) ->
     deferred = Q.defer()
@@ -27,6 +27,7 @@ describe 'TradeEngine', ->
                                       new Journal(),
                                       replicationStub)
     pce.start().then ->
+      console.log "PCE started"
       pce.forward_message({
         kind: operations.ADD_DEPOSIT
         operatation:

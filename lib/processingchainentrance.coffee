@@ -14,14 +14,30 @@ module.exports = class ProcessingChainEntrance
 
   forward_operation: (operation) =>
     message = JSON.stringify(operation)
-    Q.all([
+    q = Q.all [
       @journal.record(message)
-      @replication.send(message)
-    ]).then =>
-        @engine.execute_operation({
-          message: message
-          uid: undefined
-          #success: undefined
-          #error: undefined
-        })
+      @replication.send(message)]
 
+    q.then(@package_operation)
+     .then(@on_operation_succeded)
+     #.fail(@on_operation_failed)
+     #.done()
+
+  package_operation: (operation) =>
+    deferred = Q.defer()
+    try
+      deferred.resolve(
+        @engine.execute_operation
+          message: operation
+          uid: undefined)
+    catch err
+      deferred.reject(err)
+
+    return deferred.promise
+
+
+  on_operation_succeded: (update_set) =>
+    console.log "success:", update_set
+
+  on_operation_failed: (error) =>
+    console.log "failure:", error

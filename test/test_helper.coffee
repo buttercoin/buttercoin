@@ -10,7 +10,7 @@ global.Q = require('Q')
 
 fs = require('fs')
 
-global.TestHelper = class TestHelper
+class TestHelper
   constructor: ->
 
   @clean_state_sync: ->
@@ -20,3 +20,4 @@ global.TestHelper = class TestHelper
     if fs.existsSync 'test.log'
       fs.unlinkSync 'test.log'
 
+global.TestHelper = TestHelper
