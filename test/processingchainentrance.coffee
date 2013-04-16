@@ -21,7 +21,6 @@ describe 'ProcessingChainEntrance', ->
 
     done()
 
-
   it 'should log, replicate, and package a messge upon receiving it', (done) ->
     message = {}
     @journal.expects('record').once().withArgs(message).returns(then: ->)

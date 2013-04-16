@@ -14,11 +14,8 @@ module.exports = class TestHelpers
 
   @clean_state_sync: ->
     if fs.existsSync 'journal.log'
-      Q.fcall =>
         fs.unlinkSync 'journal.log'
-      .end()
 
     if fs.existsSync 'test.log'
-      Q.fcall =>
-        fs.unlinkSync 'test.log'
-      .end()
+      fs.unlinkSync 'test.log'
+
