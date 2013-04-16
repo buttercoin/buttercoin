@@ -1,9 +1,11 @@
+Amount = require('./amount')
+
 module.exports = class Currency
   constructor: ->
-    @balance = 0
+    @balance = new Amount()
+
+  increase_balance: (amount) =>
+    @balance = @balance.add(amount)
 
   get_balance: =>
     return @balance
-
-  increase_balance: (amount) =>
-    @balance += amount

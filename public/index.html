@@ -28,7 +28,7 @@
               port = 3000,
               message;
 
-          message = ["ADD_DEPOSIT", {'account': 'Marak', 'password': 'foo', 'currency': 'USD', 'amount': 200.0}]
+          message = ["ADD_DEPOSIT", {'account': 'Marak', 'password': 'foo', 'currency': 'USD', 'amount': '200.0'}]
 
           var socket = new eio.Socket('ws://' + host + '/' + port);
           socket.on('open', function () {

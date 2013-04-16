@@ -18,5 +18,5 @@ describe 'TradeEngine', ->
     butter = new Buttercoin()
 
     butter.engine.start {port: 3060}, () =>
-      butter.engine.receive_message( [operations.ADD_DEPOSIT, {'account': 'Peter', 'password': 'foo', 'currency': 'USD', 'amount': 200.0}] )
+      butter.engine.receive_message( [operations.ADD_DEPOSIT, {'account': 'Peter', 'password': 'foo', 'currency': 'USD', 'amount': '200.0'}] )
       finish()

@@ -59,12 +59,21 @@ module.exports = class Engine
 
     # TODO: better error handling and reporting; propagate correct information
     # on the success or failure of processing the request
-    message[1].callback = () ->
-      # if there is a socket connected to the trade engine
-      if engine.socket
-        message[1].booked = true
-        message[1].etime = new Date().getTime() # <- stub execution time estimate ( inaccurate )
-        # send the message back out through that socket
-        engine.socket.send(JSON.stringify(message))
+    message[1].callback = (param, error) ->
+      if error
+        # if there is a socket connected to the trade engine
+        if engine.socket
+          message[1].booked = false
+          message[1].error = error.toString()
+          message[1].etime = new Date().getTime() # <- stub execution time estimate ( inaccurate )
+          # send the message back out through that socket
+          engine.socket.send(JSON.stringify(message))
+      else    
+        # if there is a socket connected to the trade engine
+        if engine.socket
+          message[1].booked = true
+          message[1].etime = new Date().getTime() # <- stub execution time estimate ( inaccurate )
+          # send the message back out through that socket
+          engine.socket.send(JSON.stringify(message))
 
     @handler.process_message(message)

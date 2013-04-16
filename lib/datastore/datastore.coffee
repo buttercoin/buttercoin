@@ -1,5 +1,6 @@
 BalanceSheet = require('./balancesheet')
 SuperMarket = require('./supermarket')
+Amount = require('./amount')
 
 module.exports = class DataStore
   constructor: ->
@@ -10,10 +11,18 @@ module.exports = class DataStore
     account = @balancesheet.get_account( args.account )
     currency = account.get_currency( args.currency )
 
-    currency.increase_balance( args.amount )
+    try
+      amount = new Amount(args.amount)
+    catch e
+      error = new Error('Only string amounts are supported in order to ensure accuracy')
 
-    if args.callback
-      args.callback( currency.get_balance() )
+    if typeof error == 'undefined'
+      currency.increase_balance(amount)
+      if args.callback
+        args.callback( currency.get_balance() )
+    else
+      if args.callback
+        args.callback(null, error)
 
 
   add_order: (args) =>
