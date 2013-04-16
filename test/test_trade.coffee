@@ -6,7 +6,12 @@ operations = require('../lib/operations')
 
 ProcessingChainEntrance = require('../lib/processingchainentrance')
 TradeEngine = require('../lib/trade_engine')
+<<<<<<< HEAD
 TransactionLog = require('../lib/transactionlog')
+=======
+Journal = require('../lib/journal')
+TestHelper = require('./test_helper')
+>>>>>>> d9a62830c27cef22e0e662a6fb9bfc6eb1595550
 
 describe 'TradeEngine', ->
   beforeEach =>
@@ -24,7 +29,7 @@ describe 'TradeEngine', ->
       send: sinon.stub().returns(deferred.promise)
 
     pce = new ProcessingChainEntrance(new TradeEngine(),
-                                      new TransactionLog(),
+                                      new Journal(),
                                       replicationStub)
     pce.start().then ->
       pce.forward_message
