@@ -4,7 +4,7 @@ fs = require("fs")
 jspack = require('jspack').jspack
 
 module.exports = class TransactionLog
-  constructor: (@engine) ->
+  constructor: ->
     @filename = 'transaction.log'
 
   start: =>
@@ -27,7 +27,7 @@ module.exports = class TransactionLog
       console.log 'GOT FD', writefd
       @writefd = writefd
 
-  replay_log: =>
+  replay_log: (execute_transaction) =>
     # XXX: This code is basically guaranteed to have chunking problems right now.
     # Fix and then test rigorously!!!
 
@@ -67,7 +67,7 @@ module.exports = class TransactionLog
         if chunk.length == lenprefix
           message = JSON.parse(chunk.toString())
           console.log 'message', message
-          @engine.replay_message(message)
+          execute_transaction(message)
           @readstream.unshift(rest)
         else
           @readstream.unshift(data)
