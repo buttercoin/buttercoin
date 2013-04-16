@@ -14,7 +14,8 @@ catch err
 
 REPORTER = "spec"
 
-task "test", "run tests", -> mocha()
+option '-t', '--test [TEST_NAME]', 'set the test to run'
+task "test", "run tests", (options) -> mocha(options.test)
 #
 # ## *launch*
 #
@@ -31,7 +32,7 @@ launch = (cmd, args=[], options={}, callback) ->
   app.stderr.pipe(process.stderr)
   app.on 'exit', (status) -> callback?() if status is 0
 
-mocha = ->
+mocha = (file) ->
   args = [
     "--compilers", "coffee:coffee-script"
     "--require", "coffee-script"
@@ -40,6 +41,8 @@ mocha = ->
     "--reporter", REPORTER
     "--recursive"
   ]
+
+  args.push "test/#{file}.coffee" if file
 
   process.env.NODE_ENV='test'
   launch './node_modules/.bin/mocha', args, process.env, -> console.log "done"

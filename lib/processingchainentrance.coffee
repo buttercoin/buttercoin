@@ -1,22 +1,30 @@
-TransactionLog = require './transactionlog'
 Q = require 'q'
 DataStore = require './datastore/datastore'
 Operations = require './operations'
 
 module.exports = class ProcessingChainEntrance
-  constructor: () ->
-    @tlog = new TransactionLog
+  constructor: (@engine, @tlog, @replication) ->
     # @replication = new ReplicationThing
 
   start: =>
-    @tlog.start(@forward_message).then =>
-      console.log 'INITIALIZED/REPLAYED LOG'
+    Q.all [
+      @tlog.start(@forward_message).then =>
+        console.log 'INITIALIZED/REPLAYED LOG'
+      @replication.start()
+    ]
 
   forward_message: (message) =>
     Q.all( [
       @tlog.record(message)
       # replicate
-      # package
+      @replication.send(message)
     ])
     .then =>
-      # all three complete -> put on queue
+      # all complete -> put on queue
+      @businessQueue.push({
+        message: message
+        uid: undefined
+        success: undefined
+        error: undefined
+      })
+

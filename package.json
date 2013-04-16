@@ -32,7 +32,8 @@
   "devDependencies": {
     "chai": "*",
     "mocha": "*",
-    "coffee-script": "*"
+    "coffee-script": "*",
+    "sinon": "*"
   },
   "keywords": [
     "bitcoin",

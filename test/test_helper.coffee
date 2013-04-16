@@ -2,6 +2,7 @@ global.chai = require 'chai'
 chai.should()
 global.expect = chai.expect
 global.assert = chai.assert
+global.sinon = require('sinon')
 
 global.logger = require('../lib/logger')
 
