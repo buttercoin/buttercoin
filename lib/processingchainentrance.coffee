@@ -3,28 +3,23 @@ DataStore = require './datastore/datastore'
 Operations = require './operations'
 
 module.exports = class ProcessingChainEntrance
-  constructor: (@engine, @tlog, @replication) ->
+  constructor: (@engine, @journal, @replication) ->
     # @replication = new ReplicationThing
 
   start: =>
     Q.all [
-      @tlog.start(@forward_message).then =>
+      @journal.start(@forward_operation).then =>
         console.log 'INITIALIZED/REPLAYED LOG'
       @replication.start()
     ]
 
-  forward_message: (message) =>
+  forward_operation: (operation) =>
     Q.all( [
-      @tlog.record(message)
+      @journal.record(operation)
       # replicate
-      @replication.send(message)
+      @replication.send(operation)
     ])
     .then =>
       # all complete -> put on queue
-      @engine.push({
-        message: message
-        uid: undefined
-        success: undefined
-        error: undefined
-      })
+      @engine.execute_operation( operation )
 

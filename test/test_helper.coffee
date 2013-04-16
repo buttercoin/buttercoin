@@ -1,3 +1,4 @@
+Q = require('q')
 global.chai = require 'chai'
 chai.should()
 global.expect = chai.expect
@@ -12,8 +13,12 @@ module.exports = class TestHelpers
   constructor: ->
 
   @clean_state_sync: ->
-    if fs.existsSync 'transaction.log'
-      fs.unlinkSync 'transaction.log'
+    if fs.existsSync 'journal.log'
+      Q.fcall =>
+        fs.unlinkSync 'journal.log'
+      .end()
 
     if fs.existsSync 'test.log'
-      fs.unlinkSync 'test.log'
+      Q.fcall =>
+        fs.unlinkSync 'test.log'
+      .end()

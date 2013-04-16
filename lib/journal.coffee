@@ -3,21 +3,22 @@ QFS = require("q-io/fs")
 fs = require("fs")
 jspack = require('jspack').jspack
 
-# Transaction Log: You start it, it either read transaction log, or creates new one.
-# You pass it a function execute_transaction, which receives replayed transactions.
-# It returns a promise that's ready when transaction log has replayed everything and can .record()
+# Journal: You start it, it either reads the journal, or creates a new one.
+# You pass it a function execute_operation, which receives replayed operations.
+# It returns a promise that's ready when the journal has replayed everything and can .record()
 
-module.exports = class TransactionLog
-  constructor: ->
-    @filename = 'transaction.log'
+module.exports = class Journal
+  constructor: (@filename) ->
+    @filename = @filename or 'journal.log'
     @writefd = null
 
-  start: (execute_transaction) =>
+  start: (execute_operation) =>
     return QFS.exists(@filename).then (retval) =>
       if retval
         console.log 'LOG EXISTS'
         Q.fcall =>
-          @replay_log().then =>
+          @replay_log(execute_operation).then =>
+            console.log 'DONE REPLAYING'
             # This is dangerous
             @initialize_log("a")
       else
@@ -34,7 +35,7 @@ module.exports = class TransactionLog
       console.log 'GOT FD', writefd
       @writefd = writefd
 
-  replay_log: (execute_transaction) =>
+  replay_log: (execute_operation) =>
     # XXX: This code is basically guaranteed to have chunking problems right now.
     # Fix and then test rigorously!!!
 
@@ -72,9 +73,9 @@ module.exports = class TransactionLog
 
 
         if chunk.length == lenprefix
-          message = JSON.parse(chunk.toString())
-          console.log 'message', message
-          execute_transaction(message)
+          operation = JSON.parse(chunk.toString())
+          console.log 'operation', operation
+          execute_operation(operation)
           @readstream.unshift(rest)
         else
           @readstream.unshift(data)
@@ -85,11 +86,13 @@ module.exports = class TransactionLog
 
     return deferred.promise
 
-  record: (message) =>
-    console.log 'RECORDING', message
+  record: (operation) =>
+    console.log 'RECORDING', operation
     if @writefd == null
       console.log 'NO WRITEFD AVAILABLE'
       return Q.when(null)
+
+    message = JSON.stringify(operation)
 
     l = message.length
 

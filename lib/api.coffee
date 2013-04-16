@@ -3,11 +3,11 @@ logger = require('./logger')
 Dequeue = require('deque').Dequeue
 
 Q = require('q')
-MessageHandler = require('./messagehandler')
+# MessageHandler = require('./messagehandler')
 
 module.exports = class Engine
   constructor: ->
-    @handler = new MessageHandler
+    # @handler = new MessageHandler
     @socket = null
 
   start: ( options, callback ) ->
