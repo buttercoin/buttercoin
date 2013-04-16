@@ -15,7 +15,7 @@ describe 'TradeEngine', ->
   afterEach =>
     TestHelper.clean_state_sync
 
-  it 'can perform deposit', (done) ->
+  it 'can perform deposit', (finish) ->
     deferred = Q.defer()
     deferred.resolve(undefined)
 
@@ -35,4 +35,4 @@ describe 'TradeEngine', ->
           currency: 'USD'
           amount: 200.0
       })
-      done()
+      finish()
