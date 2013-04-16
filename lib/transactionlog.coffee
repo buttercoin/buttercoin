@@ -68,14 +68,12 @@ module.exports = class TransactionLog
 
         if chunk.length == lenprefix
 
-          # Commenting out for now since it is not processing the log
-          # files correctly at the moment.  Will fix in subsequent commit
-          #message = JSON.parse(chunk.toString())
-          #console.log 'message', message
+          message = JSON.parse(chunk.toString())
+          console.log 'message', message
 
-          #deferred.notify(message)
+          deferred.notify(message)
 
-         @readstream.unshift(rest)
+          @readstream.unshift(rest)
         else
           @readstream.unshift(data)
 
@@ -91,13 +89,13 @@ module.exports = class TransactionLog
       console.log 'ERROR: transaction log not initialized.  Did not record
                    message ', message
       return
-
-    console.log 'RECORDING', message
-    l = message.length
+    record = JSON.stringify(message)
+    console.log 'RECORDING', record
+    l = record.length
 
     part = jspack.Pack('I', [l])
 
-    buf = Buffer.concat [ Buffer(part), Buffer(message) ]
+    buf = Buffer.concat [ Buffer(part), Buffer(record) ]
 
     writeq = Q.nfcall(fs.write, @writefd, buf, 0, buf.length, null)
     console.log 'DONE WRITING', writeq, buf
