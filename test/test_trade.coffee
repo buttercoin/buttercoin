@@ -31,13 +31,12 @@ describe 'TradeEngine', ->
                                       replicationStub)
     pce.start().then ->
       logger.info('Started PCE')
-      pce.forward_operation({
-        kind: operations.ADD_DEPOSIT
-        operatation:
-          account: 'Peter'
-          password: 'foo'
+      pce.forward_operation(
+        {
+          kind: operations.ADD_DEPOSIT
           currency: 'USD'
           amount: 200.0
-      })
+        }
+      )
       finish()
     .done()
