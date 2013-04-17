@@ -17,20 +17,20 @@ module.exports = class Journal
   start: (execute_operation) =>
     return QFS.exists(@filename).then (retval) =>
       if retval
-        console.log 'LOG EXISTS'
+        # console.log 'LOG EXISTS'
         Q.fcall =>
           @replay_log(execute_operation).then =>
-            console.log 'DONE REPLAYING'
+            # console.log 'DONE REPLAYING'
             # This is dangerous
             @initialize_log("a")
       else
-        console.log 'LOG DOES NOT EXIST'
+        # console.log 'LOG DOES NOT EXIST'
         Q.fcall =>
           @initialize_log().then =>
             return null
 
   shutdown: =>
-    logger.info 'SHUTTING DOWN JOURNAL'
+    # logger.info 'SHUTTING DOWN JOURNAL'
 
     promise = Q.when(null)
     if @writefd != null
@@ -42,9 +42,9 @@ module.exports = class Journal
   initialize_log: (flags) =>
     if not flags
       flags = "w"
-    console.log 'INITIALIZING LOG'
+    # console.log 'INITIALIZING LOG'
     Q.nfcall(fs.open, @filename, flags).then (writefd) =>
-      console.log 'GOT FD', writefd
+      # console.log 'GOT FD', writefd
       @writefd = writefd
 
   replay_log: (execute_operation) =>
@@ -53,26 +53,26 @@ module.exports = class Journal
 
     @readstream = fs.createReadStream(@filename, {flags: "r"})
 
-    console.log 'GOT READSTREAM'
+    # console.log 'GOT READSTREAM'
 
     deferred = Q.defer()
 
     parts = []
-    console.log 'REGISTERING HANDLERS'
+    # console.log 'REGISTERING HANDLERS'
     @readstream.on 'end', =>
-      console.log 'done reading'
+      # console.log 'done reading'
 
     @readstream.on 'error', (error) =>
-      logger.error('Error on readstream', error)
+      # logger.error('Error on readstream', error)
 
     @readstream.on 'close', (close) =>
-      logger.info 'closed readstream'
+      # logger.info 'closed readstream'
       deferred.resolve()
 
     @readstream.on 'readable', =>
-      console.log 'READABLE EVENT'
+      # console.log 'READABLE EVENT'
       data = @readstream.read()
-      console.log 'READ', data, data.isEncoding
+      # console.log 'READ', data, data.isEncoding
 
       lenbin = data.slice(0,4)
       if lenbin.length != 4
@@ -80,7 +80,7 @@ module.exports = class Journal
       
       lenprefix = jspack.Unpack('I', (c.charCodeAt(0) for c in lenbin.toString('binary').split('')), 0 )[0]
 
-      console.log 'lenprefix', lenprefix
+      # console.log 'lenprefix', lenprefix
 
       chunk = data.slice(4, 4 + lenprefix)
 
@@ -89,27 +89,27 @@ module.exports = class Journal
       else
         rest = ''
 
-      console.log 'LENS', data.length, chunk.length, rest.length
-      console.log 'CHUNK', chunk.toString()
+      # console.log 'LENS', data.length, chunk.length, rest.length
+      # console.log 'CHUNK', chunk.toString()
 
-      console.log 'rest', rest
+      # console.log 'rest', rest
 
 
       if chunk.length == lenprefix
         operation = JSON.parse(chunk.toString())
-        console.log 'operation', operation
+        # console.log 'operation', operation
         execute_operation(operation)
         @readstream.unshift(rest)
       else
         @readstream.unshift(data)
-    console.log 'registered handlers'
+    # console.log 'registered handlers'
 
     return deferred.promise
 
   record: (message) =>
-    console.log 'RECORDING', message
+    # console.log 'RECORDING', message
     if @writefd == null
-      console.log 'NO WRITEFD AVAILABLE'
+      # console.log 'NO WRITEFD AVAILABLE'
       return Q.when(null)
 
     # message = JSON.stringify(operation)
@@ -121,9 +121,9 @@ module.exports = class Journal
     buf = Buffer.concat [ Buffer(part), Buffer(message) ]
 
     writeq = Q.nfcall(fs.write, @writefd, buf, 0, buf.length, null)
-    console.log 'DONE WRITING', writeq, buf
+    # console.log 'DONE WRITING', writeq, buf
     return writeq
 
   flush: =>
     Q.nfcall(fs.fsync, @writefd).then =>
-      console.log 'FLUSHED'
+      # console.log 'FLUSHED'

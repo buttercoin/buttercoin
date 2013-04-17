@@ -11,7 +11,8 @@ module.exports = class ProcessingChainEntrance
     #logger.info("Starting PCE")
     Q.all [
       @journal.start(@forward_operation).then =>
-        console.log 'INITIALIZED/REPLAYED LOG'
+        # console.log 'INITIALIZED/REPLAYED LOG'
+        null
       @replication.start() ]
 
   forward_operation: (operation) =>
