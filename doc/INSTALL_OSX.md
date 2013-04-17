@@ -2,26 +2,24 @@ Installing on Mac OSX
 =====================
 
 
-Using Homebrew
---------------
+Installing node.js and npm
+---
 
-The easiest way to install and run on Mac OSX is using Homebrew (http://mxcl.github.io/homebrew/)
+Download the Universal installer for Mac OS X, for the latest version of node:
 
-Install Homebrew
-----------------
+_Note: node >= 0.10.4_
 
-To install homebrew, if you have not already, try this command:
+http://nodejs.org/download/
 
-    ruby -e "$(curl -fsSL https://raw.github.com/mxcl/homebrew/go)"
 
-then, check that it is working and update it:
+Run the installer and install node.
 
-    brew update
+Install git
+---
 
-Install git, the node.js runtime and node package manager
------------
+Download the installer (DMG) and run it to install git:
 
-    brew install git node npm
+http://git-scm.com/download/mac
 
 Cloning the buttercoin repository to a local copy
 -------------------------------------------------
@@ -35,7 +33,7 @@ Installing the remaining dependencies
     npm install
     sudo npm install -g coffee-script
 
-The `npm install` command will use the package.json file in buttercoin to find all node dependencies
+_Note: The `npm install` command will use the package.json file in buttercoin to find all node dependencies_
 
 Test and Run
 ------------
@@ -58,4 +56,4 @@ If all goes well, you will see the address for the main user interface:
 
 Point your browser at the URL reported and you will see the front-end
 
-Smooth as butter. 
+Smooth as butter
