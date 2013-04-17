@@ -22,10 +22,5 @@ module.exports = class ProcessingChainEntrance
     ]).then(=> @package_operation(operation))
 
   package_operation: (operation) =>
-    deferred = Q.defer()
-    try
-      deferred.resolve @engine.execute_operation(operation)
-    catch err
-      deferred.reject(err)
+    Q.fcall @engine.execute_operation(operation)
 
-    return deferred.promise
