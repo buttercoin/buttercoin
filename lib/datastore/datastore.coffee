@@ -17,13 +17,6 @@ module.exports = class DataStore
 
     currency.increase_balance( args.amount )
 
-    if args.callback
-      args.callback( currency.get_balance() )
-
-
   add_order: (args) =>
     account = @balancesheet.get_account( args.account )
     market = @supermarket.get_market( args.name )
-
-    if args.callback
-      args.callback( market )
