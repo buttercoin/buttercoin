@@ -33,7 +33,8 @@
     "chai": "*",
     "mocha": "*",
     "coffee-script": "*",
-    "sinon": "*"
+    "sinon": "*",
+    "temporary": "*"
   },
   "keywords": [
     "bitcoin",
