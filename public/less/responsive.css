@@ -1,5 +1,5 @@
 /*!
- * Bootstrap Responsive v2.3.0
+ * Bootstrap Responsive v2.3.1
  *
  * Copyright 2012 Twitter, Inc
  * Licensed under the Apache License v2.0
@@ -7,22 +7,18 @@
  *
  * Designed and built with all the love in the world @twitter by @mdo and @fat.
  */
-
 .clearfix {
   *zoom: 1;
 }
-
 .clearfix:before,
 .clearfix:after {
   display: table;
-  line-height: 0;
   content: "";
+  line-height: 0;
 }
-
 .clearfix:after {
   clear: both;
 }
-
 .hide-text {
   font: 0/0 a;
   color: transparent;
@@ -30,41 +26,33 @@
   background-color: transparent;
   border: 0;
 }
-
 .input-block-level {
   display: block;
   width: 100%;
   min-height: 30px;
   -webkit-box-sizing: border-box;
-     -moz-box-sizing: border-box;
-          box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
 }
-
 @-ms-viewport {
   width: device-width;
 }
-
 .hidden {
   display: none;
   visibility: hidden;
 }
-
 .visible-phone {
   display: none !important;
 }
-
 .visible-tablet {
   display: none !important;
 }
-
 .hidden-desktop {
   display: none !important;
 }
-
 .visible-desktop {
   display: inherit !important;
 }
-
 @media (min-width: 768px) and (max-width: 979px) {
   .hidden-desktop {
     display: inherit !important;
@@ -79,7 +67,6 @@
     display: none !important;
   }
 }
-
 @media (max-width: 767px) {
   .hidden-desktop {
     display: inherit !important;
@@ -94,11 +81,9 @@
     display: none !important;
   }
 }
-
 .visible-print {
   display: none !important;
 }
-
 @media print {
   .visible-print {
     display: inherit !important;
@@ -107,7 +92,6 @@
     display: none !important;
   }
 }
-
 @media (min-width: 1200px) {
   .row {
     margin-left: -30px;
@@ -116,8 +100,8 @@
   .row:before,
   .row:after {
     display: table;
-    line-height: 0;
     content: "";
+    line-height: 0;
   }
   .row:after {
     clear: both;
@@ -212,22 +196,22 @@
   .row-fluid:before,
   .row-fluid:after {
     display: table;
-    line-height: 0;
     content: "";
+    line-height: 0;
   }
   .row-fluid:after {
     clear: both;
   }
   .row-fluid [class*="span"] {
     display: block;
-    float: left;
     width: 100%;
     min-height: 30px;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+    float: left;
     margin-left: 2.564102564102564%;
     *margin-left: 2.5109110747408616%;
-    -webkit-box-sizing: border-box;
-       -moz-box-sizing: border-box;
-            box-sizing: border-box;
   }
   .row-fluid [class*="span"]:first-child {
     margin-left: 0;
@@ -457,7 +441,6 @@
     margin-left: 0;
   }
 }
-
 @media (min-width: 768px) and (max-width: 979px) {
   .row {
     margin-left: -20px;
@@ -466,8 +449,8 @@
   .row:before,
   .row:after {
     display: table;
-    line-height: 0;
     content: "";
+    line-height: 0;
   }
   .row:after {
     clear: both;
@@ -562,22 +545,22 @@
   .row-fluid:before,
   .row-fluid:after {
     display: table;
-    line-height: 0;
     content: "";
+    line-height: 0;
   }
   .row-fluid:after {
     clear: both;
   }
   .row-fluid [class*="span"] {
     display: block;
-    float: left;
     width: 100%;
     min-height: 30px;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+    float: left;
     margin-left: 2.7624309392265194%;
     *margin-left: 2.709239449864817%;
-    -webkit-box-sizing: border-box;
-       -moz-box-sizing: border-box;
-            box-sizing: border-box;
   }
   .row-fluid [class*="span"]:first-child {
     margin-left: 0;
@@ -798,25 +781,24 @@
     width: 28px;
   }
 }
-
 @media (max-width: 767px) {
   body {
-    padding-right: 20px;
     padding-left: 20px;
+    padding-right: 20px;
   }
   .navbar-fixed-top,
   .navbar-fixed-bottom,
   .navbar-static-top {
-    margin-right: -20px;
     margin-left: -20px;
+    margin-right: -20px;
   }
   .container-fluid {
     padding: 0;
   }
   .dl-horizontal dt {
     float: none;
-    width: auto;
     clear: none;
+    width: auto;
     text-align: left;
   }
   .dl-horizontal dd {
@@ -839,20 +821,20 @@
   [class*="span"],
   .uneditable-input[class*="span"],
   .row-fluid [class*="span"] {
-    display: block;
     float: none;
+    display: block;
     width: 100%;
     margin-left: 0;
     -webkit-box-sizing: border-box;
-       -moz-box-sizing: border-box;
-            box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
   }
   .span12,
   .row-fluid .span12 {
     width: 100%;
     -webkit-box-sizing: border-box;
-       -moz-box-sizing: border-box;
-            box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
   }
   .row-fluid [class*="offset"]:first-child {
     margin-left: 0;
@@ -868,8 +850,8 @@
     width: 100%;
     min-height: 30px;
     -webkit-box-sizing: border-box;
-       -moz-box-sizing: border-box;
-            box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
   }
   .input-prepend input,
   .input-append input,
@@ -884,8 +866,8 @@
   .modal {
     position: fixed;
     top: 20px;
-    right: 20px;
     left: 20px;
+    right: 20px;
     width: auto;
     margin: 0;
   }
@@ -896,7 +878,6 @@
     top: 20px;
   }
 }
-
 @media (max-width: 480px) {
   .nav-collapse {
     -webkit-transform: translate3d(0, 0, 0);
@@ -922,13 +903,13 @@
     padding-top: 0;
   }
   .form-horizontal .form-actions {
-    padding-right: 10px;
     padding-left: 10px;
+    padding-right: 10px;
   }
   .media .pull-left,
   .media .pull-right {
-    display: block;
     float: none;
+    display: block;
     margin-bottom: 10px;
   }
   .media-object {
@@ -937,8 +918,8 @@
   }
   .modal {
     top: 10px;
-    right: 10px;
     left: 10px;
+    right: 10px;
   }
   .modal-header .close {
     padding: 10px;
@@ -948,7 +929,6 @@
     position: static;
   }
 }
-
 @media (max-width: 979px) {
   body {
     padding-top: 0;
@@ -972,8 +952,8 @@
     padding: 0;
   }
   .navbar .brand {
-    padding-right: 10px;
     padding-left: 10px;
+    padding-right: 10px;
     margin: 0 0 0 -5px;
   }
   .nav-collapse {
@@ -1002,15 +982,15 @@
     font-weight: bold;
     color: #777777;
     -webkit-border-radius: 3px;
-       -moz-border-radius: 3px;
-            border-radius: 3px;
+    -moz-border-radius: 3px;
+    border-radius: 3px;
   }
   .nav-collapse .btn {
     padding: 4px 10px 4px;
     font-weight: normal;
     -webkit-border-radius: 4px;
-       -moz-border-radius: 4px;
-            border-radius: 4px;
+    -moz-border-radius: 4px;
+    border-radius: 4px;
   }
   .nav-collapse .dropdown-menu li + li a {
     margin-bottom: 2px;
@@ -1032,26 +1012,26 @@
     background-color: #111111;
   }
   .nav-collapse.in .btn-group {
-    padding: 0;
     margin-top: 5px;
+    padding: 0;
   }
   .nav-collapse .dropdown-menu {
     position: static;
     top: auto;
     left: auto;
-    display: none;
     float: none;
+    display: none;
     max-width: none;
-    padding: 0;
     margin: 0 15px;
+    padding: 0;
     background-color: transparent;
     border: none;
     -webkit-border-radius: 0;
-       -moz-border-radius: 0;
-            border-radius: 0;
+    -moz-border-radius: 0;
+    border-radius: 0;
     -webkit-box-shadow: none;
-       -moz-box-shadow: none;
-            box-shadow: none;
+    -moz-box-shadow: none;
+    box-shadow: none;
   }
   .nav-collapse .open > .dropdown-menu {
     display: block;
@@ -1074,9 +1054,9 @@
     margin: 10px 0;
     border-top: 1px solid #f2f2f2;
     border-bottom: 1px solid #f2f2f2;
-    -webkit-box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1), 0 1px 0 rgba(255, 255, 255, 0.1);
-       -moz-box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1), 0 1px 0 rgba(255, 255, 255, 0.1);
-            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1), 0 1px 0 rgba(255, 255, 255, 0.1);
+    -webkit-box-shadow: inset 0 1px 0 rgba(255,255,255,.1), 0 1px 0 rgba(255,255,255,.1);
+    -moz-box-shadow: inset 0 1px 0 rgba(255,255,255,.1), 0 1px 0 rgba(255,255,255,.1);
+    box-shadow: inset 0 1px 0 rgba(255,255,255,.1), 0 1px 0 rgba(255,255,255,.1);
   }
   .navbar-inverse .nav-collapse .navbar-form,
   .navbar-inverse .nav-collapse .navbar-search {
@@ -1089,18 +1069,17 @@
   }
   .nav-collapse,
   .nav-collapse.collapse {
-    height: 0;
     overflow: hidden;
+    height: 0;
   }
   .navbar .btn-navbar {
     display: block;
   }
   .navbar-static .navbar-inner {
-    padding-right: 10px;
     padding-left: 10px;
+    padding-right: 10px;
   }
 }
-
 @media (min-width: 980px) {
   .nav-collapse.collapse {
     height: auto !important;
