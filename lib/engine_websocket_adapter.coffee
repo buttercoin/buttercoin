@@ -8,7 +8,7 @@ module.exports = class EngineWebsocketAdapter
 
     @pce = pce
 
-  start: ( options, callback ) ->
+  start: ( options ) ->
     serverOptions = {
       host: options.host ? 'localhost',
       port: options.port ? 8080
@@ -17,7 +17,7 @@ module.exports = class EngineWebsocketAdapter
     adapter = this
 
     @wss = new WebSocketServer(serverOptions)
-    console.log 'WS Server started on ', sercerOptions.host, ' using port ', serverOptions.port
+    console.log 'WS Server started on ', serverOptions.host, ' using port ', serverOptions.port
 
     @wss.on 'error', (err) =>
       # TODO: decide what to do here
@@ -30,13 +30,13 @@ module.exports = class EngineWebsocketAdapter
         conn.close()
 
       conn.on 'message', (message) =>
-        adapter.process_message(message)
+        adapter.process_message(conn, message)
 
           
   process_message: (conn, message) ->
     # TODO: come up with better API
     try
-      operation = JSON.parse message
+      operation = JSON.parse( message )
 
       # TODO: operation validation!
 

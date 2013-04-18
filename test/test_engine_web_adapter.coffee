@@ -2,6 +2,7 @@ ProcessingChainEntrance = require('../lib/processingchainentrance')
 TradeEngine = require('../lib/trade_engine')
 Journal = require('../lib/journal')
 EngineWebAdapter = require('../lib/engine_websocket_adapter.coffee')
+EngineClient = require('../lib/engine_client')
 
 assert = chai.assert
 
@@ -33,4 +34,13 @@ describe 'EngineWebsocketAdapter', ->
     }
 
     @wsa.process_message(mockConn, '{ "kind": "ADD_DEPOSIT", "account": "acct", "currency": "USD", "amount": 123 }')
+
+  it 'should process an add_deposit request', (done) ->
+    console.log 'attempting to start wsa'
+    @wsa.start({ })
+
+    client = new EngineClient
+    client.set_account_info 'qubey'
+    client.add_deposit('USD', 100).then =>
+      done()
 
