@@ -13,14 +13,14 @@ util = require('util');
 
 // SkipListNode
 // Each node in the SkipList is a SkipListNode
-function SkipListNode(value) {
+function SkipListNode(value, payload) {
     // Setting the value and initializing the direction pointers
     this.v = value;
     this.l = null;
     this.r = null;
     this.u = null;
     this.d = null;
-    this.payload = null;
+    this.payload = payload;
 }
 
 // SkipList
@@ -105,7 +105,20 @@ SkipList.prototype =  {
         this.root = this.ls;
     },
 
-    insert_before: function (before, value) {
+    head: function () {
+	cur = this.root.r;
+	while (cur.d != null) {
+	    cur = cur.d;
+	}
+
+	return cur;
+    },
+
+    is_empty: function () {
+        return this.ls.r === this.rs
+    },
+
+    insert_before: function (before, value, payload) {
         // Are we messing with the left sentinel?
         if (before.lm) {
             throw new Error('Cannot insert before the left sentinel.');
@@ -116,7 +129,7 @@ SkipList.prototype =  {
         var r = before;
 
         // Create a new node
-        var new_node = new SkipListNode(value);
+        var new_node = new SkipListNode(value, payload);
         var n = new_node;
 
         // Set the pointers of its left and right neighbors
@@ -168,9 +181,13 @@ SkipList.prototype =  {
         return new_node;
     },
 
+    is_sentinel: function(n) {
+	return (n.lm === true) || (n.rm === true);
+    },
+
     delete_node: function(n) {
         // We love our sentinels!
-        if (n.lm === true || n.rm === true) {
+        if (this.is_sentinel(n)) {
             throw new Error('Cannot delete sentinels');
         }
 
@@ -201,7 +218,7 @@ SkipList.prototype =  {
         }
 
         // If we have an empty list
-        if (this.ls.r === this.rs) {
+        if (this.is_empty()) {
             return null;
         }
 
@@ -212,8 +229,7 @@ SkipList.prototype =  {
             var test_node = n.r;
 
             // If we haven't defined the less_than function for the test_node, we can't move ahead.
-            if (!test_node.v.leq)
-                return null;
+	    assert.ok(test_node.v.leq, "SkipList node missing .leq definition")
 
             //if (test_node.v.value_str)
             //    console.log(util.format('Test Node: %s, value: %d, leq: %d', test_node.v.value_str(), t.value, test_node.v.leq(t)));

@@ -1,12 +1,13 @@
+Order = require('./order')
 
 module.exports = class Market
   constructor: (@left_currency, @right_currency) ->
     @left_book = new Book()
     @right_book = new Book()
 
-  add_order: (account, offered_currency, offered_amount, received_amount) =>
+  add_order: (order) =>
     book = null
-    if offered_currency == @left_currency
+    if order.offered_currency == @left_currency
       book = @right_book
       other_book = @left_book
     else
@@ -15,10 +16,10 @@ module.exports = class Market
 
     # check against other book
 
-    other_book.orders_filled_by( offered )
+    result = other_book.orders_filled_by( order )
 
-    # put in book
+    unless result.kind == 'filled'
+      # put in book
+      book.add_order( result.residual_order )
 
-    @book.insert( @offered_currency )
-
-    # we check for overlap
+    return result

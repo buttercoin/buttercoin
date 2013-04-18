@@ -1,9 +1,9 @@
 Q = require('q')
 global.chai = require 'chai'
-chai.should()
 global.expect = chai.expect
 global.assert = chai.assert
 global.sinon = require('sinon')
+chai.should()
 
 global.logger = require('../lib/logger')
 global.Q = require('Q')
