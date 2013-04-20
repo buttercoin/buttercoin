@@ -23,6 +23,7 @@
     "eemitterport": "*",
     "bigdecimal": "*",
     "deque": "*",
+    "redblack": "*",
     "jspack": "*",
     "express": "3.1.2",
     "connect": "2.7.5",
@@ -35,6 +36,7 @@
     "should": "*",
     "coffee-script": "*",
     "sinon": "*",
+    "sinon-chai": "*",
     "temporary": "*"
   },
   "keywords": [

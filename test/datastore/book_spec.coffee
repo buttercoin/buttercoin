@@ -8,6 +8,7 @@ buyBTC = (acct, numBtc, numDollars) ->
 sellBTC = (acct, numBtc, numDollars) ->
   new Order(acct, 'BTC', numBtc, 'USD', numDollars)
 
+# TODO, ISSUE, HACK - don't monkey patch Number!
 Number::leq = (y) -> @ <= y
 
 describe 'Book', ->
@@ -26,6 +27,40 @@ describe 'Book', ->
     result.status.should.equal('success')
     result.kind.should.equal('order_opened')
     result.order.should.equal(order)
+
+  it 'should be able to open a higher order', ->
+    @book.add_order buyBTC(@account1, 2, 20)
+    result = @book.add_order buyBTC(@account1, 1, 11)
+    result.status.should.equal('success')
+    result.kind.should.equal('order_opened')
+
+    expectedBTC = [2, 1]
+    expectedUSD = [20, 11]
+    expectedLevels = [10, 11]
+    # TODO sizes and prices should be inverse of one another?
+    expectedSizes = [20, 11]
+    @book.store.forEach (order_level, price) ->
+      price.should.equal expectedLevels.shift()
+      order_level.size.should.equal expectedSizes.shift()
+
+      until order_level.orders.isEmpty()
+        order = order_level.orders.shift()
+        order.received_amount.should.equal expectedBTC.shift()
+        order.offered_amount.should.equal expectedUSD.shift()
+
+  it 'should be able to open a lower order', ->
+    @book.add_order buyBTC(@account1, 2, 20)
+    result = @book.add_order buyBTC(@account1, 1, 9)
+    result.status.should.equal('success')
+    result.kind.should.equal('order_opened')
+
+    expectedLevels = [9, 10]
+    expectedSizes = [9, 20]
+    @book.store.forEach (order_level, price) ->
+      price.should.equal expectedLevels.shift()
+      order_level.size.should.equal expectedSizes.shift()
+
+  xit 'should preserve the order in which orders are received'
 
   it 'should be able to match an order', ->
     @book.add_order(sellBTC(@account1, 1, 10))
@@ -54,7 +89,7 @@ describe 'Book', ->
     bought.kind.should.equal('order_partially_filled')
     bought.original_order.account.should.equal(@account1)
     bought.filled_order.account.should.equal(@account1)
-    bought.remaining_order.account.should.equal(@account1)
+    bought.residual_order.account.should.equal(@account1)
 
     sold = results.shift()
     sold.status.should.equal('success')
@@ -62,10 +97,10 @@ describe 'Book', ->
     sold.order.account.should.equal(@account2)
 
     # TODO - move sum checks to spec for Order.split
-    sum = bought.filled_order.offered_amount + bought.remaining_order.offered_amount
+    sum = bought.filled_order.offered_amount + bought.residual_order.offered_amount
     sum.should.equal(bought.original_order.offered_amount)
 
-    sum = bought.filled_order.received_amount + bought.remaining_order.received_amount
+    sum = bought.filled_order.received_amount + bought.residual_order.received_amount
     sum.should.equal(bought.original_order.received_amount)
 
     @book.fill_orders_with(buyBTC(@account2, 1, 1))
@@ -85,7 +120,7 @@ describe 'Book', ->
     partial.kind.should.equal('order_partially_filled')
     partial.original_order.account.should.equal(@account2)
     partial.filled_order.account.should.equal(@account2)
-    partial.remaining_order.account.should.equal(@account2)
+    partial.residual_order.account.should.equal(@account2)
 
   it 'should indicate that there are not matches when orders don\'t overlap', ->
     @book.add_order(buyBTC(@account1, 1, 20))
@@ -94,4 +129,4 @@ describe 'Book', ->
     result = result.shift()
     result.status.should.equal('success')
     result.kind.should.equal('not_filled')
-    result.order.account.should.equal(@account2)
+    result.residual_order.account.should.equal(@account2)

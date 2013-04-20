@@ -1,5 +1,6 @@
-SkipList = require('../../experimental/skiplist').SkipList
+#SkipList = require('../../experimental/skiplist').SkipList
 DQ = require ('deque')
+redblack = require('redblack')
 
 joinQueues = (front, back, withCb) ->
   withCb ||= (x) -> x
@@ -16,37 +17,75 @@ mkPartialOrder = (original_order, filled, remaining) -> {
   status: 'success'
   kind: 'order_partially_filled'
   filled_order: filled
-  remaining_order: remaining
+  residual_order: remaining
   original_order: original_order
 }
 
+class BookStore
+  constructor: ->
+    @tree = redblack.tree()
+    @size = 0
+
+  add_to_price_level: (price, order) =>
+    level = @tree.get(price)
+
+    unless level
+      dq = new DQ.Dequeue()
+
+      level = {
+        size: 0
+        orders: dq
+      }
+      @insert(price, level)
+
+    level.orders.push(order)
+    level.size = order.offered_amount
+
+
+  # TODO - optimize this to allow for halting
+  for_levels_above: (price, cb) =>
+    cursor = @tree.range(0, price)
+    running = true
+    cursor.forEach (order_level, cur_price) =>
+      running = cb(cur_price, order_level) if running
+
+  insert: (price, level) =>
+    @tree.insert(price, level)
+    @size += 1
+
+  delete: (price) =>
+    @tree.delete(price)
+    @size -= 1
+
+  is_empty: => @size is 0
+
+  forEach: (cb) => @tree.forEach(cb)
+
+
 module.exports = class Book
-  constructor: -> #(@inverted=false) -> #(@offered_currency, @received_currency) ->
-    # TODO - keep a typed array of price levels combined with a hash of actual orders?
-    @store = new SkipList()
+  constructor: ->
+    @store = new BookStore()
 
   fill_orders_with: (order) =>
-    # TODO - Move this check to the market?
     orig_order = order
     order = order.clone()
     order.price = 1/order.price
 
-    cur = @store.head()
-    closed = [] # TODO - snip skiplist at a certain point, requires changes in SkipList
+    #cur = @store.head()
+    closed = []
     amount_filled = 0
     amount_remaining = order.received_amount
     results = new DQ.Dequeue()
 
-    while cur?.v <= order.price and amount_remaining > 0 and not @store.is_sentinel(cur) #head.v -> price
-      order_level = cur.payload
-
-      # cloce the whole price level if we can
+    @store.for_levels_above order.price, (price, order_level) =>
+      # close the whole price level if we can
       if order_level.size <= amount_remaining
         amount_filled += order_level.size
         amount_remaining -= order_level.size
 
         # queue the entire price level to be closed
-        closed.push(cur)
+        closed.push({price: price, order_level: order_level})
+        return true # want more price levels
       else
         # consume all orders we can at this price level, starting with the oldest
         cur_order = order_level.orders.shift()
@@ -74,12 +113,11 @@ module.exports = class Book
 
           # report the partially filled order
           results.push mkPartialOrder(cur_order, filled, remaining)
-
-      cur = cur.r
+        return false # don't want more price levels
 
     closed.forEach (x) =>
-      joinQueues(results, x.payload.orders, mkCloseOrder)
-      @store.delete_node(x) unless @store.is_sentinel(x)
+      joinQueues(results, x.order_level.orders, mkCloseOrder)
+      @store.delete(x.price)
 
     if amount_remaining == 0
       results.push mkCloseOrder(orig_order)
@@ -87,7 +125,7 @@ module.exports = class Book
       results.push {
         status: 'success'
         kind:   'not_filled'
-        order: orig_order
+        residual_order: orig_order
       }
     else
       [filled, remaining] = orig_order.split(amount_filled)
@@ -96,20 +134,7 @@ module.exports = class Book
     return results
   
   add_order: (order) =>
-    # get the node at or below a price level
-    node = @store.lower_bound(order.price)
-    if node?.v == order.price
-      # append to current order level
-      node.payload.size += order.offered_amount
-      node.payload.orders.push(order)
-    else
-      # create order level
-      dq = new DQ.Dequeue()
-      dq.push(order)
-      level =
-        size: order.offered_amount
-        orders: dq
-      @store.insert_before(node || @store.rs, order.price, level)
+    @store.add_to_price_level(order.price, order)
 
     return {
       status: 'success'
