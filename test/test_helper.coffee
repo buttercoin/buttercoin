@@ -46,8 +46,7 @@ global.logResults = (results) ->
     console.log "\t#{x.account.name} listed #{x.received_amount} #{x.received_currency} for #{x.offered_amount} #{x.offered_currency}"
   while results.length > 0
     x = results.shift()
-    console.log x
-    if x.kind is 'order_opened' or x.kind is 'order_partially_filled'
+    if x.kind is 'order_opened' #or x.kind is 'order_partially_filled'
       displayOpened(x.order || x.residual_order)
     if x.kind is 'order_filled' or x.kind is 'order_partially_filled'
       displaySold(x.order || x.filled_order)

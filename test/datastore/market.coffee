@@ -50,13 +50,38 @@ describe 'Market', ->
     @market.add_order sellBTC(sue, 1, 10)
     results = @market.add_order buyBTC(bob, 2, 20)
     results.should.have.length(3)
+    
+    closed = results.shift()
+    closed.should.succeed_with('order_filled')
+    closed = results.shift()
+    closed.should.succeed_with('order_filled')
+    closed = results.shift()
+    closed.should.succeed_with('order_filled')
 
-  it 'should do the right thing', ->
+  it 'should open a partial order if demand remains after closing out other orders', ->
+    #@market.add_order sellBTC(sue, 1, 15)
+    @market.add_order sellBTC(jen, 1, 10)
+    @market.add_order sellBTC(sue, 1, 10)
+    @market.add_order sellBTC(jen, 1, 15)
+    results = @market.add_order buyBTC(bob, 3, 30)
+
+    results.should.have.length(4)
+
+    closed = results.shift()
+    closed.should.succeed_with('order_filled')
+    closed = results.shift()
+    closed.should.succeed_with('order_filled')
+    opened = results.shift()
+    opened.should.succeed_with('order_opened')
+    partial = results.shift()
+    partial.should.succeed_with('order_partially_filled')
+
+  xit 'should do the right thing', ->
     bob = {name: 'bob'}
     sue = {name: 'sue'}
     jen = {name: 'jen'}
 
-    console.log "\n*** Even matching"
+    ###console.log "\n*** Even matching"
     console.log "bob -> buy 1 BTC @ 10 USD"
     logResults @market.add_order(buyBTC(bob, 1, 10))
     console.log "sue -> buy 1 BTC @ 9 USD"
@@ -82,6 +107,7 @@ describe 'Market', ->
     logResults @market.add_order(sellBTC(bob, 1, 10))
     console.log "sue -> sell 2 BTC @ 10 USD"
     logResults @market.add_order(buyBTC(sue, 2, 20))
+    ###
 
     console.log "\n*** Overlapped Unequal Orders"
     console.log "bob -> sell 2 BTC @ 11 USD"

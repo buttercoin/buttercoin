@@ -148,7 +148,7 @@ module.exports = class Book
                         amount_filled)
       remaining = new Order(order.account,
                             order.offered_currency,
-                            orig_order.price * amount_remaining,
+                            (1/orig_order.price) * amount_remaining,
                             order.received_currency,
                             orig_order.received_amount - amount_filled)
       results.push mkPartialOrder(orig_order, filled, remaining)

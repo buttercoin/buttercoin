@@ -23,7 +23,7 @@ module.exports = class Market
     outcome = results.pop()
 
     unless outcome.kind is 'order_filled'
-      # put in book 
+      # put in book
       results.push book.add_order(outcome.residual_order)
 
     results.push outcome
