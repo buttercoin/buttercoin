@@ -14,6 +14,7 @@ catch err
 
 option '-R', '--reporter [REPORTER_NAME]', 'the mocha reporter to use'
 option '-t', '--test [TEST_NAME]', 'set the test to run'
+option '-D', '--debugger', 'use the debugger when running tests'
 
 DEFAULT_REPORTER = "spec"
 
@@ -44,6 +45,8 @@ mocha = (options) ->
     "--recursive"
   ]
 
+  if options.debugger
+    args.push "--debug-brk"
   args.push "test/#{options.test}.coffee" if options.test
 
   process.env.NODE_ENV='test'

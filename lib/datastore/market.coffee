@@ -17,7 +17,8 @@ module.exports = class Market
 
     # check against other book
     # the .clone(true) call flips the order so that prices match the other book
-    flipped_order = order.clone(true)
+    flipped_order = order.clone()
+    flipped_order.price = 1/order.price
     results = other_book.fill_orders_with(flipped_order)
     outcome = results.pop()
 

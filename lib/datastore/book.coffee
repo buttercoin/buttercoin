@@ -1,4 +1,3 @@
-#SkipList = require('../../experimental/skiplist').SkipList
 DQ = require ('deque')
 redblack = require('redblack')
 
@@ -21,6 +20,11 @@ mkPartialOrder = (original_order, filled, remaining) -> {
   original_order: original_order
 }
 
+# BookStore provides an abstract interface for managing price levels.
+# It's primary goal is to make it easier to swap store implementations when
+# testing different backend performances.
+#
+# Once a suitable backend is found, this class should be considered for removal
 class BookStore
   constructor: ->
     @tree = redblack.tree()
@@ -39,7 +43,7 @@ class BookStore
       @insert(price, level)
 
     level.orders.push(order)
-    level.size = order.offered_amount
+    level.size += order.offered_amount
 
 
   # TODO - optimize this to allow for halting
@@ -69,7 +73,7 @@ module.exports = class Book
   fill_orders_with: (order) =>
     orig_order = order
     order = order.clone()
-    order.price = 1/order.price
+    #order.price = 1/order.price
 
     #cur = @store.head()
     closed = []

@@ -25,10 +25,12 @@ logResults = (results) ->
     #displayOrder(x.
 
 describe 'Market', ->
+  bob = {name: 'bob'}
+  sue = {name: 'sue'}
+  jen = {name: 'jen'}
+
   beforeEach ->
     @market = new Market('BTC', 'USD')
-    @account1 = {name: 'acct1'}
-    @account2 = {name: 'acct2'}
 
   it 'should initialize with a buy book and a sell book', ->
     @market.left_book.should.be.an.instanceOf(Book)
@@ -38,8 +40,8 @@ describe 'Market', ->
     @market.right_book.add_order = sinon.spy()
     @market.left_book.add_order = sinon.spy()
 
-    order1 = new Order(@account1, 'BTC', 1, 'USD', 10)
-    order2 = new Order(@account2, 'USD', 1, 'BTC', 10)
+    order1 = new Order(@bob, 'BTC', 1, 'USD', 10)
+    order2 = new Order(@sue, 'USD', 1, 'BTC', 10)
 
     @market.add_order(order1)
     @market.right_book.add_order.should.have.been.calledOnce
@@ -48,9 +50,9 @@ describe 'Market', ->
     @market.add_order(order2)
     @market.left_book.add_order.should.have.been.calledOnce
 
-  it 'should close an order if there is overlap', ->
-    order1 = new Order(@account1, 'BTC', 1, 'USD', 10)
-    order2 = new Order(@account2, 'USD', 10, 'BTC', 1)
+  it 'should close an order if there is a full match', ->
+    order1 = new Order(@bob, 'BTC', 1, 'USD', 10)
+    order2 = new Order(@sue, 'USD', 10, 'BTC', 1)
     
     @market.add_order(order1)
     results = @market.add_order(order2)
@@ -61,9 +63,17 @@ describe 'Market', ->
     filled = results.shift()
     filled.kind.should.equal('order_filled')
 
+
+  it 'should close an order if there are multiple partial matches', ->
+    @market.add_order sellBTC(jen, 1, 10)
+    @market.add_order sellBTC(sue, 1, 10)
+    results = @market.add_order buyBTC(bob, 2, 20)
+    results.should.have.length(3)
+
   it 'should do the right thing', ->
     bob = {name: 'bob'}
     sue = {name: 'sue'}
+    jen = {name: 'jen'}
 
     console.log "\n*** Even matching"
     console.log "bob -> buy 1 BTC @ 10 USD"
@@ -76,11 +86,26 @@ describe 'Market', ->
     logResults @market.add_order(sellBTC(bob, 1, 9))
 
 
-    ###
+    console.log "\n*** Progressive closing"
+    console.log "bob -> sell 2 BTC @ 11 USD"
+    logResults @market.add_order(sellBTC(bob, 2, 22))
+    console.log "sue -> buy 1 BTC @ 11 USD"
+    logResults @market.add_order(buyBTC(sue, 1, 11))
+    console.log "sue -> buy 1 BTC @ 11 USD"
+    logResults @market.add_order(buyBTC(sue, 1, 11))
+
+    console.log "\n*** Multiple closing"
+    console.log "jen -> sell 1 BTC @ 10 USD"
+    logResults @market.add_order(sellBTC(jen, 1, 10))
+    console.log "bob -> sell 1 BTC @ 10 USD"
+    logResults @market.add_order(sellBTC(bob, 1, 10))
+    console.log "sue -> sell 2 BTC @ 10 USD"
+    logResults @market.add_order(buyBTC(sue, 2, 20))
+
+    console.log "\n*** Overlapped Unequal Orders"
     console.log "bob -> sell 2 BTC @ 11 USD"
     logResults @market.add_order(sellBTC(bob, 2, 22))
     console.log "sue -> buy 1 BTC @ 11 USD"
     logResults @market.add_order(buyBTC(sue, 1, 11))
     console.log "sue -> buy 1 BTC @ 12 USD"
     logResults @market.add_order(buyBTC(sue, 1, 12))
-    ###
