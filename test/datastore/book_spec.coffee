@@ -1,15 +1,10 @@
 Book = require('../../lib/datastore/book')
 Order = require('../../lib/datastore/order')
 
-
-buyBTC = (acct, numBtc, numDollars) ->
-  new Order(acct, 'USD', numDollars, 'BTC', numBtc)
-
-sellBTC = (acct, numBtc, numDollars) ->
-  new Order(acct, 'BTC', numBtc, 'USD', numDollars)
-
-# TODO, ISSUE, HACK - don't monkey patch Number!
-Number::leq = (y) -> @ <= y
+sellBTC = (args...) ->
+  order = global.sellBTC(args...)
+  order.price = 1/order.price
+  return order
 
 describe 'Book', ->
   beforeEach ->
@@ -24,15 +19,13 @@ describe 'Book', ->
     @book.store.is_empty().should.be.false
 
     expect(result).to.exist
-    result.status.should.equal('success')
-    result.kind.should.equal('order_opened')
+    result.should.succeed_with('order_opened')
     result.order.should.equal(order)
 
   it 'should be able to open a higher order', ->
     @book.add_order buyBTC(@account1, 2, 20)
     result = @book.add_order buyBTC(@account1, 1, 11)
-    result.status.should.equal('success')
-    result.kind.should.equal('order_opened')
+    result.should.succeed_with('order_opened')
 
     expectedBTC = [2, 1]
     expectedUSD = [20, 11]
@@ -51,8 +44,7 @@ describe 'Book', ->
   it 'should be able to open a lower order', ->
     @book.add_order buyBTC(@account1, 2, 20)
     result = @book.add_order buyBTC(@account1, 1, 9)
-    result.status.should.equal('success')
-    result.kind.should.equal('order_opened')
+    result.should.succeed_with('order_opened')
 
     expectedLevels = [9, 10]
     expectedSizes = [9, 20]
@@ -69,13 +61,11 @@ describe 'Book', ->
     
     results.should.have.length(2)
     sold = results.shift()
-    sold.status.should.equal('success')
-    sold.kind.should.equal('order_filled')
+    sold.should.succeed_with('order_filled')
     sold.order.account.should.equal(@account1)
 
     bought = results.shift()
-    bought.status.should.equal('success')
-    bought.kind.should.equal('order_filled')
+    bought.should.succeed_with('order_filled')
     bought.order.account.should.equal(@account2)
 
   it 'should be able to partially close an open order', ->
@@ -85,15 +75,13 @@ describe 'Book', ->
     results.should.have.length(2)
 
     bought = results.shift()
-    bought.status.should.equal('success')
-    bought.kind.should.equal('order_partially_filled')
+    bought.should.succeed_with('order_partially_filled')
     bought.original_order.account.should.equal(@account1)
     bought.filled_order.account.should.equal(@account1)
     bought.residual_order.account.should.equal(@account1)
 
     sold = results.shift()
-    sold.status.should.equal('success')
-    sold.kind.should.equal('order_filled')
+    sold.should.succeed_with('order_filled')
     sold.order.account.should.equal(@account2)
 
     # TODO - move sum checks to spec for Order.split
@@ -107,26 +95,86 @@ describe 'Book', ->
     @book.store.is_empty().should.be.true
 
   it 'should be able to partially fill a new order', ->
+    # TODO - sell must always be first!
     @book.add_order(buyBTC(@account1, 1, 1))
-    results = @book.fill_orders_with(sellBTC(@account2, 3, 3).clone(true))
+    results = @book.fill_orders_with(sellBTC(@account2, 3, 3))
     results.should.have.length(2)
     filled = results.shift()
-    filled.status.should.equal('success')
-    filled.kind.should.equal('order_filled')
+    filled.should.succeed_with('order_filled')
     filled.order.account.should.equal(@account1)
 
     partial = results.shift()
-    partial.status.should.equal('success')
-    partial.kind.should.equal('order_partially_filled')
+    partial.should.succeed_with('order_partially_filled')
     partial.original_order.account.should.equal(@account2)
     partial.filled_order.account.should.equal(@account2)
     partial.residual_order.account.should.equal(@account2)
 
   it 'should indicate that there are not matches when orders don\'t overlap', ->
-    @book.add_order(buyBTC(@account1, 1, 20))
-    result = @book.fill_orders_with(sellBTC(@account2, 1, 40).clone(true))
-    #result.should.have.length(1)
+    @book.add_order(sellBTC(@account1, 1, 40))
+    result = @book.fill_orders_with(buyBTC(@account2, 1, 20))
+    result.should.have.length(1)
     result = result.shift()
-    result.status.should.equal('success')
-    result.kind.should.equal('not_filled')
+    result.should.succeed_with('not_filled')
     result.residual_order.account.should.equal(@account2)
+
+  it 'should report the correct closing price when closing a mismatched order', ->
+    order1 = sellBTC(@account1, 1, 10)
+    @book.add_order(order1)
+    results = @book.fill_orders_with(buyBTC(@account2, 1, 11))
+    results.should.have.length(2)
+    original = results.shift()
+    original.should.succeed_with('order_filled')
+    original.order.account.should.equal(@account1)
+    original.order.price.should.equal(order1.price)
+    
+    filling = results.shift()
+    filling.should.succeed_with('order_filled')
+    filling.order.account.should.equal(@account2)
+    filling.order.price.should.equal(order1.price)
+
+
+  it 'should partially fill across price levels and provide a correct residual order', ->
+    @book.add_order(sellBTC(@account1, 1, 11))
+    @book.add_order(sellBTC(@account1, 1, 12))
+    @book.add_order(sellBTC(@account1, 1, 13))
+
+    buy_amt = 4
+    buy_price = 14
+    offered_amt = buy_price * buy_amt
+    results = @book.fill_orders_with(buyBTC(@account2, buy_amt, offered_amt))
+    results.length.should.equal(4)
+
+    closed = results.shift()
+    closed.should.succeed_with('order_filled')
+    closed.order.price.should.equal(11)
+
+    closed = results.shift()
+    closed.should.succeed_with('order_filled')
+    closed.order.price.should.equal(12)
+
+    closed = results.shift()
+    closed.should.succeed_with('order_filled')
+    closed.order.price.should.equal(13)
+
+    partial = results.shift()
+    partial.should.succeed_with('order_partially_filled')
+    partial.filled_order.price.should.equal(12)
+    partial.filled_order.received_amount.should.equal(3)
+    partial.filled_order.offered_amount.should.equal(12*3)
+
+    partial.residual_order.price.should.equal(buy_price)
+    partial.residual_order.received_amount.should.equal(1)
+    partial.residual_order.offered_amount.should.equal(buy_price)
+
+
+
+  xit 'should do the right thing', ->
+    #@book.add_order(buyBTC(@account1, 1, 10))
+    #@book.add_order(buyBTC(@account1, 1, 9))
+    #@book.add_order(buyBTC(@account1, 1, 8))
+    #logResults @book.fill_orders_with(sellBTC(@account2, 1, 7*4))
+
+    @book.add_order(sellBTC(@account1, 1, 11))
+    @book.add_order(sellBTC(@account1, 1, 12))
+    @book.add_order(sellBTC(@account1, 1, 13))
+    logResults @book.fill_orders_with(buyBTC(@account2, 4, 14*4))

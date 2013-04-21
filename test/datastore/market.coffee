@@ -2,27 +2,8 @@ Market = require('../../lib/datastore/market')
 Book = require('../../lib/datastore/book')
 Order = require('../../lib/datastore/order')
 
-buyBTC = (acct, numBtc, numDollars) ->
-  new Order(acct, 'USD', numDollars, 'BTC', numBtc)
-
-sellBTC = (acct, numBtc, numDollars) ->
-  new Order(acct, 'BTC', numBtc, 'USD', numDollars)
-
 # TODO, ISSUE, HACK - don't monkey patch Number!
 Number::leq = (y) -> @ <= y
-
-logResults = (results) ->
-  displaySold = (x) ->
-    console.log "\t#{x.account.name} sold #{x.received_amount} #{x.received_currency} for #{x.offered_amount} #{x.offered_currency}"
-  displayOpened = (x) ->
-    console.log "\t#{x.account.name} listed #{x.received_amount} #{x.received_currency} for #{x.offered_amount} #{x.offered_currency}"
-  while results.length > 0
-    x = results.shift()
-    if x.kind is 'order_opened' or x.kind is 'order_partially_filled'
-      displayOpened(x.order || x.residual_order)
-    if x.kind is 'order_filled' or x.kind is 'order_partially_filled'
-      displaySold(x.order || x.filled_order)
-    #displayOrder(x.
 
 describe 'Market', ->
   bob = {name: 'bob'}
@@ -109,3 +90,4 @@ describe 'Market', ->
     logResults @market.add_order(buyBTC(sue, 1, 11))
     console.log "sue -> buy 1 BTC @ 12 USD"
     logResults @market.add_order(buyBTC(sue, 1, 12))
+

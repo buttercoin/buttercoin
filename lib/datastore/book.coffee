@@ -1,5 +1,6 @@
 DQ = require ('deque')
 redblack = require('redblack')
+Order = require('./order')
 
 joinQueues = (front, back, withCb) ->
   withCb ||= (x) -> x
@@ -79,6 +80,7 @@ module.exports = class Book
     closed = []
     amount_filled = 0
     amount_remaining = order.received_amount
+    amount_spent = 0
     results = new DQ.Dequeue()
 
     @store.for_levels_above order.price, (price, order_level) =>
@@ -86,6 +88,7 @@ module.exports = class Book
       if order_level.size <= amount_remaining
         amount_filled += order_level.size
         amount_remaining -= order_level.size
+        amount_spent += order_level.size * price
 
         # queue the entire price level to be closed
         closed.push({price: price, order_level: order_level})
@@ -96,13 +99,15 @@ module.exports = class Book
         while cur_order?.offered_amount <= amount_remaining
           amount_filled += cur_order.amount
           amount_remaining -= cur_order.amount
+          amount_spend += cur_order.amount * price
+
           order_level.size -= cur_order.amount
           results.push mkCloseOrder(cur_order)
           
-          # there must always be another order here or else we would have consumed 
+          # there must always be another order here or else we would have consumed
           # the entire price level at once
           #
-          # if there isn't we have a major problem 
+          # if there isn't we have a major problem
           cur_order = order_level.orders.shift()
         
         # diminish next order by remaining amount
@@ -110,6 +115,7 @@ module.exports = class Book
           [filled, remaining] = cur_order.split(amount_remaining)
           order_level.size -= amount_remaining
           amount_filled += amount_remaining
+          amount_spent += amount_remaining * price
           amount_remaining = 0
 
           # push the partially filled order back to the front of the queue
@@ -123,8 +129,10 @@ module.exports = class Book
       joinQueues(results, x.order_level.orders, mkCloseOrder)
       @store.delete(x.price)
 
+    order.offered_amount = amount_spent
+    order.price = order.offered_amount / order.received_amount
     if amount_remaining == 0
-      results.push mkCloseOrder(orig_order)
+      results.push mkCloseOrder(order)
     else if amount_filled == 0
       results.push {
         status: 'success'
@@ -132,7 +140,17 @@ module.exports = class Book
         residual_order: orig_order
       }
     else
-      [filled, remaining] = orig_order.split(amount_filled)
+      # TODO - move to Order?
+      filled = new Order(order.account,
+                        order.offered_currency,
+                        amount_spent,
+                        order.received_currency,
+                        amount_filled)
+      remaining = new Order(order.account,
+                            order.offered_currency,
+                            orig_order.price * amount_remaining,
+                            order.received_currency,
+                            orig_order.received_amount - amount_filled)
       results.push mkPartialOrder(orig_order, filled, remaining)
 
     return results
