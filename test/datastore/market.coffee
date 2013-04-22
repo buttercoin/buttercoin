@@ -2,9 +2,6 @@ Market = require('../../lib/datastore/market')
 Book = require('../../lib/datastore/book')
 Order = require('../../lib/datastore/order')
 
-# TODO, ISSUE, HACK - don't monkey patch Number!
-Number::leq = (y) -> @ <= y
-
 describe 'Market', ->
   bob = {name: 'bob'}
   sue = {name: 'sue'}
@@ -21,8 +18,8 @@ describe 'Market', ->
     @market.right_book.add_order = sinon.spy()
     @market.left_book.add_order = sinon.spy()
 
-    order1 = new Order(@bob, 'BTC', 1, 'USD', 10)
-    order2 = new Order(@sue, 'USD', 1, 'BTC', 10)
+    order1 = sellBTC(@bob, 1, 10)
+    order2 = buyBTC(@sue, 1, 10)
 
     @market.add_order(order1)
     @market.right_book.add_order.should.have.been.calledOnce
@@ -32,8 +29,8 @@ describe 'Market', ->
     @market.left_book.add_order.should.have.been.calledOnce
 
   it 'should close an order if there is a full match', ->
-    order1 = new Order(@bob, 'BTC', 1, 'USD', 10)
-    order2 = new Order(@sue, 'USD', 10, 'BTC', 1)
+    order1 = sellBTC(@bob, 1, 10)
+    order2 = buyBTC(@sue, 1, 10)
     
     @market.add_order(order1)
     results = @market.add_order(order2)
@@ -59,61 +56,30 @@ describe 'Market', ->
     closed.should.succeed_with('order_filled')
 
   it 'should open a partial order if demand remains after closing out other orders', ->
-    #@market.add_order sellBTC(sue, 1, 15)
-    @market.add_order sellBTC(jen, 1, 10)
-    @market.add_order sellBTC(sue, 1, 10)
     @market.add_order sellBTC(jen, 1, 15)
+    @market.add_order sellBTC(jen, 1, 8)
+    @market.add_order sellBTC(sue, 1, 10)
     results = @market.add_order buyBTC(bob, 3, 30)
 
     results.should.have.length(4)
 
     closed = results.shift()
     closed.should.succeed_with('order_filled')
+    closed.order.price.should.equal(8)
+
     closed = results.shift()
     closed.should.succeed_with('order_filled')
+    closed.order.price.should.equal(10)
+
     opened = results.shift()
     opened.should.succeed_with('order_opened')
+    opened.order.price.should.equal(10)
+    opened.order.offered_amount.should.equal(10)
+    opened.order.received_amount.should.equal(1)
+
     partial = results.shift()
     partial.should.succeed_with('order_partially_filled')
-
-  xit 'should do the right thing', ->
-    bob = {name: 'bob'}
-    sue = {name: 'sue'}
-    jen = {name: 'jen'}
-
-    ###console.log "\n*** Even matching"
-    console.log "bob -> buy 1 BTC @ 10 USD"
-    logResults @market.add_order(buyBTC(bob, 1, 10))
-    console.log "sue -> buy 1 BTC @ 9 USD"
-    logResults @market.add_order(buyBTC(sue, 1, 9))
-    console.log "sue -> sell 1 BTC @ 10 USD"
-    logResults @market.add_order(sellBTC(sue, 1, 10))
-    console.log "bob -> sell 1 BTC @ 9 USD"
-    logResults @market.add_order(sellBTC(bob, 1, 9))
-
-
-    console.log "\n*** Progressive closing"
-    console.log "bob -> sell 2 BTC @ 11 USD"
-    logResults @market.add_order(sellBTC(bob, 2, 22))
-    console.log "sue -> buy 1 BTC @ 11 USD"
-    logResults @market.add_order(buyBTC(sue, 1, 11))
-    console.log "sue -> buy 1 BTC @ 11 USD"
-    logResults @market.add_order(buyBTC(sue, 1, 11))
-
-    console.log "\n*** Multiple closing"
-    console.log "jen -> sell 1 BTC @ 10 USD"
-    logResults @market.add_order(sellBTC(jen, 1, 10))
-    console.log "bob -> sell 1 BTC @ 10 USD"
-    logResults @market.add_order(sellBTC(bob, 1, 10))
-    console.log "sue -> sell 2 BTC @ 10 USD"
-    logResults @market.add_order(buyBTC(sue, 2, 20))
-    ###
-
-    console.log "\n*** Overlapped Unequal Orders"
-    console.log "bob -> sell 2 BTC @ 11 USD"
-    logResults @market.add_order(sellBTC(bob, 2, 22))
-    console.log "sue -> buy 1 BTC @ 11 USD"
-    logResults @market.add_order(buyBTC(sue, 1, 11))
-    console.log "sue -> buy 1 BTC @ 12 USD"
-    logResults @market.add_order(buyBTC(sue, 1, 12))
+    partial.filled_order.price.should.equal(9)
+    partial.filled_order.received_amount.should.equal(2)
+    partial.filled_order.offered_amount.should.equal(18)
 
