@@ -97,11 +97,11 @@ module.exports = class Book
         # consume all orders we can at this price level, starting with the oldest
         cur_order = order_level.orders.shift()
         while cur_order?.offered_amount <= amount_remaining
-          amount_filled += cur_order.amount
-          amount_remaining -= cur_order.amount
-          amount_spend += cur_order.amount * price
+          amount_filled += cur_order.offered_amount
+          amount_remaining -= cur_order.offered_amount
+          amount_spent += cur_order.offered_amount * price
 
-          order_level.size -= cur_order.amount
+          order_level.size -= cur_order.offered_amount
           results.push mkCloseOrder(cur_order)
           
           # there must always be another order here or else we would have consumed
@@ -110,8 +110,11 @@ module.exports = class Book
           # if there isn't we have a major problem
           cur_order = order_level.orders.shift()
         
-        # diminish next order by remaining amount
-        if cur_order?.offered_amount > 0
+        if amount_remaining == 0
+          # if we're done, put the cur_order back into the price level
+          order_level.orders.unshift(cur_order)
+        else if cur_order?.offered_amount > 0
+          # diminish next order by remaining amount
           [filled, remaining] = cur_order.split(amount_remaining)
           order_level.size -= amount_remaining
           amount_filled += amount_remaining

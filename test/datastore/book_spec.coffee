@@ -52,7 +52,15 @@ describe 'Book', ->
       price.should.equal expectedLevels.shift()
       order_level.size.should.equal expectedSizes.shift()
 
-  xit 'should preserve the order in which orders are received'
+  it 'should preserve the order in which orders are received', ->
+    @book.add_order(sellBTC(@account1, 1, 10))
+    @book.add_order(sellBTC(@account2, 1, 10))
+    results = @book.fill_orders_with(buyBTC({name: 'acct3'}, 1, 10))
+    results.should.have.length(2)
+
+    sold = results.shift()
+    sold.should.succeed_with('order_filled')
+    sold.order.account.should.equal(@account1)
 
   it 'should be able to match an order', ->
     @book.add_order(sellBTC(@account1, 1, 10))
@@ -162,19 +170,7 @@ describe 'Book', ->
     partial.filled_order.received_amount.should.equal(3)
     partial.filled_order.offered_amount.should.equal(12*3)
 
-    partial.residual_order.price.should.equal(buy_price)
+    partial.residual_order.price.should.equal(1/buy_price)
     partial.residual_order.received_amount.should.equal(1)
-    partial.residual_order.offered_amount.should.equal(buy_price)
+    partial.residual_order.offered_amount.should.equal(1/buy_price)
 
-
-
-  xit 'should do the right thing', ->
-    #@book.add_order(buyBTC(@account1, 1, 10))
-    #@book.add_order(buyBTC(@account1, 1, 9))
-    #@book.add_order(buyBTC(@account1, 1, 8))
-    #logResults @book.fill_orders_with(sellBTC(@account2, 1, 7*4))
-
-    @book.add_order(sellBTC(@account1, 1, 11))
-    @book.add_order(sellBTC(@account1, 1, 12))
-    @book.add_order(sellBTC(@account1, 1, 13))
-    logResults @book.fill_orders_with(buyBTC(@account2, 4, 14*4))
