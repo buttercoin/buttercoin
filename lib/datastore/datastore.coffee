@@ -22,6 +22,7 @@ module.exports = class DataStore
     if not isString(args.account)
       throw Error("Account must be a String")
     account = @balancesheet.get_account( args.account )
+    currency = account.get_currency( args.currency )
 
     try
       amount = new Amount(args.amount)
@@ -31,18 +32,12 @@ module.exports = class DataStore
     if typeof error == 'undefined'
       currency.increase_balance(amount)
       if args.callback
-        args.callback( currency.get_balance() )
+        return args.callback( currency.get_balance() )
     else
       if args.callback
-        args.callback(null, error)
+        return args.callback(null, error)
     if not isString(args.currency)
       throw Error("Currency must be a String")
-    currency = account.get_currency( args.currency )
-
-    if not isNumber(args.amount)
-      throw Error("Number must be a Number")
-
-    currency.increase_balance( args.amount )
 
   add_order: (args) =>
     account = @balancesheet.get_account( args.account )

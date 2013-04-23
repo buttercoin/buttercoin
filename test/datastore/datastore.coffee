@@ -25,8 +25,9 @@ describe 'DataStore', ->
         currency: 'USD'
         amount: 50
         callback: (balance, error) =>
-          expect(balance).to.not.be.ok
-          error.toString().should.equal((new Error('Only string amounts are supported in order to ensure accuracy')).toString())
+          expect(balance).to.equal null
+          error.should.not.equal null
+          error.message.should.equal 'Only string amounts are supported in order to ensure accuracy'
           done()
 
     it 'should create accounts as needed, apply deposit and return the new balance of the account', (done) ->
