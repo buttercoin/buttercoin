@@ -12,12 +12,12 @@ describe 'Front', ->
     it 'can initialize', ->
       butter = new Buttercoin
 
-    xit 'should start, connect to api, and provide a WS server', (done) ->
+    it 'should start, connect to api, and provide a WS server', (done) ->
       butter = new Buttercoin
       butter.engine.start {port: 3043, host: "localhost" }, (err, server) =>
         butter.api.start {port: 3042, host: "localhost", engineEndpoint: 'ws://localhost:3043' }, (err, server) =>
           butter.front.start {port: 3044, host: "localhost", apiEndpoint: 'ws://localhost:3042' }, (err, server) =>
-            done(null)
+            done()
 
     it 'should be able to have a generic ws client connect and send message', (done) ->
 

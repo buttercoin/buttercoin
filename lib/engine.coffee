@@ -49,8 +49,7 @@ module.exports = class Engine
 
         engine.receive_message(message)
 
-    return @handler.start().then =>
-      callback(null, wss)
+    callback(null, wss)
 
   receive_message: (message) =>
     console.log 'RECEIVED MESSAGE'
