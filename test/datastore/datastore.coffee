@@ -3,6 +3,9 @@ BalanceSheet = require('../../lib/datastore/balancesheet')
 SuperMarket = require('../../lib/datastore/supermarket')
 Amount = require('../../lib/datastore/amount')
 
+# WARNING: DataStore is inherently SYNCHRNOUS and NON-REENTRANT
+# No callbacks in here!
+
 describe 'DataStore', ->
   it 'should initialize with a balance sheet and supermarket', ->
     datastore = new DataStore()
@@ -74,4 +77,3 @@ describe 'DataStore', ->
                           paul_usd_balance.compareTo(new Amount('275')).should.equal(0)
                           balance.compareTo(paul_usd_balance).should.equal(0)
                           done()
-

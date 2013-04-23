@@ -1,6 +1,6 @@
 {
   "name": "buttercoin",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Open Source Bitcoin Exchange",
   "main": "./lib/",
   "scripts": {
@@ -23,6 +23,7 @@
     "eemitterport": "*",
     "bigdecimal": "*",
     "deque": "*",
+    "redblack": "*",
     "jspack": "*",
     "express": "3.2.0",
     "connect": "2.7.6",
@@ -32,7 +33,11 @@
   "devDependencies": {
     "chai": "*",
     "mocha": "*",
-    "coffee-script": "*"
+    "should": "*",
+    "coffee-script": "*",
+    "sinon": "*",
+    "sinon-chai": "*",
+    "temporary": "*"
   },
   "keywords": [
     "bitcoin",
