@@ -1,3 +1,4 @@
+hd = require('heapdump')
 Market = require('../lib/datastore/market')
 Order = require ('../lib/datastore/order')
 DQ = require('deque')
@@ -12,16 +13,29 @@ acctID = 1
 makeRandomOrder = ->
   currencies = ['BTC', 'USD']
   currencies = currencies.reverse() if randomBool()
-  new Order({name: "user-#{acctID++}"}, currencies[0], randomInt(1, 5), currencies[1], randomInt(1, 5))
+  new Order({name: "user-#{acctID++}"}, currencies[0], randomInt(1, 5000), currencies[1], randomInt(1, 5000))
+
+makeMatchingOrder = (n) ->
+  currencies = if (n % 5) then ['BTC', 'USD'] else ['USD', 'BTC']
+  amt = if (n % 5) then 0.25 else 1
+  new Order({name: "user-#{acctID++}"}, currencies[0], amt, currencies[1], amt)
+
+mixAndMatch = (n) ->
+  if (n % 10) >= 5
+    makeRandomOrder()
+  else
+    makeMatchingOrder(n)
 
 market = new Market('BTC', 'USD')
 
-count = 1000000
+count = 100000000000
 block_size = 10000
 iterations = Math.floor(count/block_size)
 
 console.log "Generating #{block_size} random orders..."
 orders = (makeRandomOrder() for _ in [1..block_size])
+#orders = (makeMatchingOrder(n) for n in [1..block_size])
+#orders = (mixAndMatch(n) for n in [1..block_size])
 
 rl = require('readline').createInterface(process.stdin, process.stdout)
 rl.setPrompt('', 0)
