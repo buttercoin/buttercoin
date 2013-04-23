@@ -5,7 +5,7 @@ global.sinon = require('sinon')
 chai.should()
 
 global.logger = require('../lib/logger')
-global.Q = require('Q')
+global.Q = require('q')
 Order = require('../lib/datastore/order')
 
 fs = require('fs')
@@ -50,4 +50,3 @@ global.logResults = (results) ->
       displayOpened(x.order || x.residual_order)
     if x.kind is 'order_filled' or x.kind is 'order_partially_filled'
       displaySold(x.order || x.filled_order)
-
