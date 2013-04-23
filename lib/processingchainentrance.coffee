@@ -20,8 +20,5 @@ module.exports = class ProcessingChainEntrance
     Q.all([
       @journal.record(message)
       @replication.send(message)
-    ]).then(=> @package_operation(operation))
-
-  package_operation: (operation) =>
-    Q.fcall @engine.execute_operation(operation)
+    ]).then(=> Q @engine.execute_operation(operation))
 
