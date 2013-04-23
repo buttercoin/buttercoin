@@ -174,3 +174,6 @@ describe 'Book', ->
     partial.residual_order.received_amount.should.equal(1)
     partial.residual_order.offered_amount.should.equal(1/buy_price)
 
+  xit 'should handle random orders and end up in a good state', ->
+    # TODO - write a 'canonical' simulation for the book, throw random data at both, verify
+    

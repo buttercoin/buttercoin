@@ -2,7 +2,7 @@ Tempfile = require('temporary/lib/file')
 
 PCE = require('../lib/processingchainentrance')
 Journal = require('../lib/journal')
-TradeEngine = require('../lib/journal')
+TradeEngine = require('../lib/trade_engine')
 
 #sinon = require('sinon')
 Q = require('Q')

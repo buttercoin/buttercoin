@@ -83,3 +83,5 @@ describe 'Market', ->
     partial.filled_order.received_amount.should.equal(2)
     partial.filled_order.offered_amount.should.equal(18)
 
+  xit 'should handle random orders and end up in a good state', ->
+    # TODO - write a 'canonical' simulation for the market, throw random data at both, verify
