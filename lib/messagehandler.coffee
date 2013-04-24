@@ -1,6 +1,6 @@
 TransactionLog = require './transactionlog'
 Q = require 'q'
-DataStore = require './datastore/datastore'
+CurrencyMarket = require 'currency-market'
 Operations = require './operations'
 
 # The MessageHandler class deals with the high level processing flow of each
@@ -11,7 +11,12 @@ Operations = require './operations'
 module.exports = class MessageHandler
   constructor: () ->
     @tlog = new TransactionLog
-    @datastore = new DataStore
+    @currencyMarket = new CurrencyMarket
+      currencies: [
+        'EUR'
+        'BTC'
+        'USD'
+      ]
 
   start: ->
     # TODO: (qubey) this doesn't current handle the case when we are still
@@ -29,6 +34,20 @@ module.exports = class MessageHandler
     if message[0] == Operations.ADD_DEPOSIT
       if save
         @tlog.record message
-      @datastore.add_deposit(message[1])
+      try
+        messageBody = message[1]
+        account = @currencyMarket.accounts[messageBody.account]
+        if typeof account == 'undefined'
+          @currencyMarket.register
+            id: messageBody.account
+        @currencyMarket.deposit
+          account: messageBody.account
+          currency: messageBody.currency
+          amount: messageBody.amount
+        if messageBody.callback
+          messageBody.callback null, account.balances[messageBody.currency].funds
+      catch error
+        if messageBody.callback
+          messageBody.callback error
     else
       throw new Error( "Unkown operation type: " + message )

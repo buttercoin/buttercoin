@@ -1,5 +1,3 @@
-BD = require('bigdecimal')
-
 Q = require("q")
 
 operations = require('../lib/operations')
