@@ -1,6 +1,6 @@
-ProcessingChainEntrance = require('../lib/processingchainentrance')
-TradeEngine = require('../lib/trade_engine')
-Journal = require('../lib/journal')
+ProcessingChainEntrance = BE.ProcessingChainEntrance
+TradeEngine = BE.TradeEngine
+Journal = BE.Journal
 EngineWebAdapter = require('../lib/engine_websocket_adapter.coffee')
 EngineClient = require('../lib/engine_client')
 

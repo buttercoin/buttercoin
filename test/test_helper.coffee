@@ -6,7 +6,10 @@ chai.should()
 
 global.logger = require('../lib/logger')
 global.Q = require('q')
-Order = require('../lib/datastore/order')
+
+BE = require('buttercoin-engine')
+global.BE = BE
+Order = BE.Order
 
 fs = require('fs')
 

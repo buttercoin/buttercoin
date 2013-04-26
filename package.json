@@ -1,6 +1,6 @@
 {
   "name": "buttercoin",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "Open Source Bitcoin Exchange",
   "main": "./lib/",
   "scripts": {
@@ -12,6 +12,7 @@
     "url": "git://github.com/buttercoin/buttercoin.git"
   },
   "dependencies": {
+    "buttercoin-engine": "git://github.com/buttercoin/buttercoin-engine.git",
     "isnode": "*",
     "ws": "*",
     "wsany": "*",

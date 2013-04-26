@@ -4,9 +4,9 @@ Q = require("q")
 logger = require('../lib/logger')
 
 operations = require('../lib/operations')
-ProcessingChainEntrance = require('../lib/processingchainentrance')
-TradeEngine = require('../lib/trade_engine')
-Journal = require('../lib/journal')
+ProcessingChainEntrance = BE.ProcessingChainEntrance
+TradeEngine = BE.TradeEngine
+Journal = BE.Journal
 
 kTestFilename = 'test.log'
 
