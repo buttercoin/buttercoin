@@ -57,7 +57,7 @@ module.exports = class Engine
 
     # TODO: better error handling and reporting; propagate correct information
     # on the success or failure of processing the request
-    message[1].callback = (param, error) ->
+    message[1].callback = (error, param) ->
       if error
         # if there is a socket connected to the trade engine
         if engine.socket

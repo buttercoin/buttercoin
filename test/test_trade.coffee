@@ -1,4 +1,7 @@
+<<<<<<< HEAD
 BD = require('bigdecimal')
+=======
+>>>>>>> master
 Q = require("q")
 
 logger = require('../lib/logger')

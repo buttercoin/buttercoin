@@ -22,14 +22,14 @@
     "q": "*",
     "q-io": "*",
     "eemitterport": "*",
-    "bigdecimal": "*",
     "deque": "*",
     "redblack": "*",
     "jspack": "*",
     "express": "3.2.0",
     "connect": "2.7.6",
     "engine.io-client": "0.5.0",
-    "engine.io": "0.5.0"
+    "engine.io": "0.5.0",
+    "currency-market": "0.0.1"
   },
   "devDependencies": {
     "chai": "*",
