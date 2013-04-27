@@ -12,7 +12,7 @@
     "url": "git://github.com/buttercoin/buttercoin.git"
   },
   "dependencies": {
-    "buttercoin-engine": "git://github.com/buttercoin/buttercoin-engine.git",
+    "buttercoin-engine": "git://github.com/buttercoin/buttercoin-engine.git#v0.0.3",
     "isnode": "*",
     "ws": "*",
     "wsany": "*",
