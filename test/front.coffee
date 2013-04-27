@@ -17,7 +17,7 @@ describe 'Front', ->
       butter.engine.start {port: 3043, host: "localhost" }, (err, server) =>
         butter.api.start {port: 3042, host: "localhost", engineEndpoint: 'ws://localhost:3043' }, (err, server) =>
           butter.front.start {port: 3044, host: "localhost", apiEndpoint: 'ws://localhost:3042' }, (err, server) =>
-            done(null)
+            done()
 
     it 'should be able to have a generic ws client connect and send message', (done) ->
 

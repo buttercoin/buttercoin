@@ -3,11 +3,10 @@ logger = require('./logger')
 Dequeue = require('deque').Dequeue
 
 Q = require('q')
-MessageHandler = require('./messagehandler')
 
 module.exports = class Engine
   constructor: ->
-    @handler = new MessageHandler
+    #@handler = new MessageHandler
     @socket = null
 
   start: ( options, callback ) ->
@@ -50,8 +49,7 @@ module.exports = class Engine
 
         engine.receive_message(message)
 
-    return @handler.start().then =>
-      callback(null, wss)
+    callback(null, wss)
 
   receive_message: (message) =>
     console.log 'RECEIVED MESSAGE'
