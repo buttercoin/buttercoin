@@ -3,7 +3,6 @@ Q = require("q")
 
 operations = require("./operations")
 
-
 module.exports = class API
   constructor: (@engine) ->
 
