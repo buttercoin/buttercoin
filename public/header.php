@@ -18,7 +18,7 @@
 					<span class="icon-bar"></span>
 					<span class="icon-bar"></span>
 				</a>
-				<a class="brand" href="#">Buttercoin</a>
+				<a class="brand" href="index.php">Buttercoin</a>
 				<div class="nav-collapse collapse">
 					<ul class="nav">
 						<li class="active"><a href="/">Home</a></li>
@@ -41,7 +41,7 @@
 							<span class="add-on"><i class="icon-lock"></i></span>
 							<input class="span2" type="password" placeholder="Password">
 						</div>
-						<button class="btn btn-primary">Sign In</button>
+						<a href="signin.php" class="btn btn-primary" style="margin-top:-5px;">Sign In</a>
 					</form>
 				</div><!--/.nav-collapse -->
 			</div>

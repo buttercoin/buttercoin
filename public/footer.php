@@ -1,5 +1,5 @@
 		<footer>
-			<p>© Buttercoin 2013</p>
+			<p class="text-center">© Buttercoin 2013</p>
 		</footer>
 	</div> <!-- /container -->
 	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>

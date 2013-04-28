@@ -2,8 +2,8 @@
 	<div class="container">
 		<div class="hero-unit">
         <h1>Buttercoin</h1>
-        <p class="lead">an open-source exchange…</p>
-        <p><a href="signup.php" class="btn btn-primary btn-large">Sign up »</a></p>
+        <p class="lead">an open-source bitcoin exchange…</p>
+        <p><a href="register.php" class="btn btn-primary btn-large">Register »</a></p>
         <!-- <div class="input-prepend inline-block-level">
         	<div class="">
         		<span class="add-on"><i class="icon-envelope"></i></span>
