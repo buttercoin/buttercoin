@@ -1,24 +1,16 @@
-<!DOCTYPE html>
-<head>
-	<meta charset="utf-8">
-	<title>Buttercoin</title>
-	<link href="less/bootstrap.css" rel="stylesheet">
-	<link href="less/responsive.css" rel="stylesheet">
-	<link href='http://fonts.googleapis.com/css?family=Source+Sans+Pro:200,300,400,600,700,900,200italic,300italic,400italic,600italic,700italic' rel='stylesheet' type='text/css'>
-</head>
-<body>
-<div class="container">
-	<div class="row-fluid">
-		<div class="offset4 span4">
-			<h2>Sign Up</h2>
-			<div class="well">
-				<p><button class="btn btn-primary"><i class="icon-star icon-white"></i> Sign in with Gmail</button></p>
-				<p><button class="btn btn-primary"><i class="icon-star icon-white"></i> Sign in with Gmail</button></p>
-				<p><button class="btn btn-primary"><i class="icon-star icon-white"></i> Sign in with Gmail</button></p>
-			</div>
+<?php include 'header.php'; ?>
+<div class="row-fluid">
+	<div class="offset4 span4">
+		<h2>Sign Up</h2>
+		<div class="well">
+			<p class="text-center"><button class="btn btn-primary btn-large"><i class="icon-user icon-white"></i> Authenticate in with Gmail</button></p>
+			<p class="text-center">Or</p>
+				<div class="input-prepend input-append">
+					<span class="add-on"><i class="icon-envelope"></i></span>
+					<input class="span11" id="prependedInput" type="text" placeholder="Your email address">\
+					<button class="btn" type="button">Register</button>
+				</div>
 		</div>
 	</div>
 </div>
-
-</body>
-</html>
+<?php include 'footer.php'; ?>
