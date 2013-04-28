@@ -8,7 +8,7 @@
 	<link href='http://fonts.googleapis.com/css?family=Source+Sans+Pro:200,300,400,600,700,900,200italic,300italic,400italic,600italic,700italic' rel='stylesheet' type='text/css'>
 </head>
 <body>
-<!-- This code is taken from http://twitter.github.com/bootstrap/examples/hero.html   -->
+	<!-- This code is taken from http://twitter.github.com/bootstrap/examples/hero.html   -->
 
 	<div class="navbar navbar-inverse">
 		<div class="navbar-inner">
@@ -32,11 +32,17 @@
 							</ul>
 						</li>
 					</ul>
-					<!-- <form class="navbar-form pull-right">
-						<input class="span2" type="text" placeholder="Email">
-						<input class="span2" type="password" placeholder="Password">
-						<button type="submit" class="btn">Sign in</button>
-					</form> -->
+					<form class="navbar-form pull-right">
+						<div class="input-prepend">
+							<span class="add-on"><i class="icon-envelope"></i></span>
+							<input class="span2" type="text" placeholder="Email">
+						</div>
+						<div class="input-prepend">
+							<span class="add-on"><i class="icon-lock"></i></span>
+							<input class="span2" type="password" placeholder="Password">
+						</div>
+						<button class="btn btn-primary">Sign In</button>
+					</form>
 				</div><!--/.nav-collapse -->
 			</div>
 		</div>

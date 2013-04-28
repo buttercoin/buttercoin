@@ -2414,7 +2414,7 @@ table th[class*="span"],
   width: 0;
   height: 0;
   vertical-align: top;
-  border-top: 4px solid #000000;
+  border-top: 4px solid #1b1a11;
   border-right: 4px solid transparent;
   border-left: 4px solid transparent;
   content: "";
@@ -2527,7 +2527,7 @@ table th[class*="span"],
 .dropup .caret,
 .navbar-fixed-bottom .dropdown .caret {
   border-top: 0;
-  border-bottom: 4px solid #000000;
+  border-bottom: 4px solid #1b1a11;
   content: "";
 }
 .dropup .dropdown-menu,
@@ -2653,14 +2653,14 @@ table th[class*="span"],
   font-size: 20px;
   font-weight: bold;
   line-height: 20px;
-  color: #000000;
+  color: #1b1a11;
   text-shadow: 0 1px 0 #ffffff;
   opacity: 0.2;
   filter: alpha(opacity=20);
 }
 .close:hover,
 .close:focus {
-  color: #000000;
+  color: #1b1a11;
   text-decoration: none;
   cursor: pointer;
   opacity: 0.4;
@@ -4405,7 +4405,7 @@ input[type="submit"].btn.btn-mini {
   bottom: 0;
   left: 0;
   z-index: 1040;
-  background-color: #000000;
+  background-color: #1b1a11;
 }
 .modal-backdrop.fade {
   opacity: 0;
@@ -5217,23 +5217,46 @@ a.badge:focus {
   padding: 60px;
   margin-bottom: 30px;
   font-size: 18px;
-  font-weight: 200;
+  font-weight: 500;
   line-height: 30px;
   color: inherit;
-  background-color: #eeeeee;
+  background-color: rgba(255, 253, 116, 0.68);
   -webkit-border-radius: 6px;
   -moz-border-radius: 6px;
   border-radius: 6px;
+  /* Hide shadow when text is selected */
+
 }
 .hero-unit h1 {
   margin-bottom: 0;
-  font-size: 60px;
-  line-height: 1;
-  color: inherit;
+  font-size: 4.5em;
+  line-height: 1.1;
+  color: rgba(255, 253, 116, 0);
   letter-spacing: -1px;
+  /* Shadows are visible under slightly transparent text color */
+
+  text-shadow: 0px 1px 1px rgba(255, 255, 0, 0.6), 0 0 0 #000000, 0px 2px 2px rgba(27, 26, 17, 0.5);
+}
+.hero-unit .inset-text {
+  /* Shadows are visible under slightly transparent text color */
+
+  text-shadow: 0px 1px 1px rgba(255, 255, 0, 0.6), 0 0 0 #000000, 0px 2px 2px rgba(27, 26, 17, 0.5);
+}
+.hero-unit ::-moz-selection {
+  background: #5af;
+  color: #fff;
+  text-shadow: none;
+}
+.hero-unit ::selection {
+  background: #5af;
+  color: #fff;
+  text-shadow: none;
 }
 .hero-unit li {
   line-height: 30px;
+}
+.hero-unit p.lead {
+  font-size: 2em;
 }
 .pull-right {
   float: right;
