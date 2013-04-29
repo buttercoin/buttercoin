@@ -3,11 +3,11 @@ WebSocketServer = require('ws').Server
 stump = require('stump')
 
 Connection = require('./websocket_connection')
-# Protocol = require('./protocol')
 
 module.exports = class WebsocketListener
   constructor: (@options) ->
     stump.stumpify(@, @constructor.name)
+    @options.protocol_factory = @options.protocol_factory or @make_protocol
 
   listen: =>
     @info 'LISTENING'
@@ -29,10 +29,11 @@ module.exports = class WebsocketListener
     @error('connect error', err)
 
   establish_protocol: (connection) =>
-    @info 'Making protocol'
-    connection.on('parsed_data', (data) =>
-      @info 'RECEIVED', data
-    )
+    @options.protocol_factory(connection)
+
+  make_protocol: (connection) =>
+    @error 'DO NOT KNOW HOW TO MAKE PROTOCOL'
+    connection.disconnect()
 
 if !module.parent
   listener = new WebsocketListener( { wsconfig: {port: 6150} } )

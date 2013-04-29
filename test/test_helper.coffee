@@ -4,7 +4,7 @@ global.assert = chai.assert
 global.sinon = require('sinon')
 chai.should()
 
-global.logger = require('../lib/logger')
+#global.logger = require('../lib/logger')
 global.Q = require('q')
 
 BE = require('buttercoin-engine')
