@@ -33,7 +33,7 @@ describe 'EngineWebsocketAdapter', ->
         done()
     }
 
-    @wsa.process_message(mockConn, '{ "kind": "ADD_DEPOSIT", "account": "acct", "currency": "USD", "amount": 123 }')
+    @wsa.process_message(mockConn, '{ "kind": "ADD_DEPOSIT", "account": "acct", "currency": "USD", "amount": "123" }')
 
   it 'should process an add_deposit request', (done) ->
     console.log 'attempting to start wsa'
