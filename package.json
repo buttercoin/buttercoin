@@ -16,7 +16,7 @@
     "isnode": "*",
     "ws": "*",
     "wsany": "*",
-    "stump": "*",
+    "stump": "0.0.4",
     "enkihelpers": "*",
     "enkicolor": "*",
     "q": "*",
