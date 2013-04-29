@@ -21,7 +21,7 @@ module.exports = class Initiator extends EventEmitter
     return @deferred.promise
 
   establish_protocol: (conn) =>
-      @info "OPEN"
+    conn.send_obj( {a: 6} )
 
 if !module.parent
   initiator = new Initiator( {wsconfig: 'ws://localhost:6150/'} )

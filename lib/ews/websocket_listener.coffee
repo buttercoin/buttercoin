@@ -30,6 +30,9 @@ module.exports = class WebsocketListener
 
   establish_protocol: (connection) =>
     @info 'Making protocol'
+    connection.on('parsed_data', (data) =>
+      @info 'RECEIVED', data
+    )
 
 if !module.parent
   listener = new WebsocketListener( { wsconfig: {port: 6150} } )

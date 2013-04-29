@@ -65,7 +65,7 @@ module.exports = class Connection extends EventEmitter
       throw error
 
   handle_open: =>
-    # @info 'handle_open'
+    @info 'handle_open'
     @emit('open', @)
 
   handle_close: =>
