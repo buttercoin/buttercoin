@@ -41,6 +41,6 @@ describe 'EngineWebsocketAdapter', ->
 
     client = new EngineClient
     client.set_account_info 'qubey'
-    client.add_deposit('USD', 100).then =>
+    client.add_deposit('USD', '100').then =>
       done()
 

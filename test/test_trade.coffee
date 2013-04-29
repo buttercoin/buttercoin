@@ -34,7 +34,7 @@ describe 'TradeEngine', ->
         kind: operations.ADD_DEPOSIT
         account: 'Peter'
         currency: 'USD'
-        amount: 200.0
+        amount: '200.0'
       .then =>
         finish()
     .done()
