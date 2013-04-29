@@ -24,5 +24,5 @@ module.exports = class Initiator extends EventEmitter
       @info "OPEN"
 
 if !module.parent
-  initiator = new Initiator( {wsconfig: 'ws://dev.getdeck.com:6150/'} )
+  initiator = new Initiator( {wsconfig: 'ws://localhost:6150/'} )
   initiator.connect()
