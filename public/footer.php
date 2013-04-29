@@ -1,5 +1,6 @@
 		<footer>
-			<p class="text-center">© Buttercoin 2013</p>
+			<span class="">© Buttercoin 2013</span> |
+			<a href="contact.php">Contact</a>
 		</footer>
 	</div> <!-- /container -->
 	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
