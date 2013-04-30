@@ -21,7 +21,9 @@ module.exports = class Initiator extends EventEmitter
     return @deferred.promise
 
   establish_protocol: (conn) =>
-    conn.send_obj( {a: 6} )
+    conn.on 'parsed_data', (data) =>
+      @info 'GOT', data
+    conn.send_obj( {kind: "ADD_DEPOSIT", account: "peter", amount: "5", currency: 'BTC'} )
 
 if !module.parent
   initiator = new Initiator( {wsconfig: 'ws://localhost:6150/'} )
