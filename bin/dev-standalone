@@ -3,9 +3,9 @@
 # Buttercoin front binary script
 # This binary will start a single instance of a Buttercoin front-facing http webserver
 
-Buttercoin = require('../lib/buttercoin')
-butter = new Buttercoin();
+#Buttercoin = require('../lib/buttercoin')
+#butter = new Buttercoin();
 
-butter.engine.start () ->
-  butter.api.start () ->
-    butter.front.start () ->
+#butter.engine.start () ->
+#  butter.api.start () ->
+#    butter.front.start () ->

@@ -8,12 +8,14 @@ Journal = BE.Journal
 ProcessingChainEntrance = BE.ProcessingChainEntrance
 
 class EngineServer
-  constructor: ->
+  constructor: (@journalname) ->
     stump.stumpify(@, @constructor.name)
     @connection_map = {}
 
+    @journalname = @journalname or 'testjournal'
+
     @engine = new BE.TradeEngine()
-    @journal = new BE.Journal('testjournal')
+    @journal = new BE.Journal(@journalname)
     @replication = new BE.Replication()
     @pce = new ProcessingChainEntrance( @engine, @journal, @replication )
 
