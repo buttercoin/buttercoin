@@ -9,3 +9,7 @@
 #butter.engine.start () ->
 #  butter.api.start () ->
 #    butter.front.start () ->
+
+EngineServer = require('../lib/ews/engine_server')
+engine_server = new EngineServer()
+engine_server.start()

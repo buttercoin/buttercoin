@@ -7,7 +7,7 @@ BE = require('buttercoin-engine')
 Journal = BE.Journal
 ProcessingChainEntrance = BE.ProcessingChainEntrance
 
-class EngineServer
+module.exports = class EngineServer
   constructor: (@journalname) ->
     stump.stumpify(@, @constructor.name)
     @connection_map = {}
