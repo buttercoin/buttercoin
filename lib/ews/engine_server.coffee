@@ -36,7 +36,6 @@ class EngineServer
   send_all: ( obj ) =>
     @info 'SEND ALL'
     for x,y of @connection_map
-      @info 'SPECIFIC ALL', x, y
       y.send_obj obj
 
 if !module.parent  

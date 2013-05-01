@@ -23,7 +23,7 @@ module.exports = class Protocol extends EventEmitter
   handle_parsed_data: (parsed_data) =>
     @info 'RECEIVED', parsed_data
     @pce.forward_operation( parsed_data ).then (result) =>
-      @info 'PCE COMPLETED', result.toString()
+      @info 'PCE COMPLETED', result
       
-      @engine_server.send_all( {result: result.toString()} )
+      @engine_server.send_all( result )
     .done()
