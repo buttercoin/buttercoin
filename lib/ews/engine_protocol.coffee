@@ -5,8 +5,11 @@ Q = require('q')
 EventEmitter = require('eemitterport').EventEmitter
 
 module.exports = class Protocol extends EventEmitter
-  constructor: (@connection, @pce) ->
+  constructor: (@engine_server, @connection, @pce) ->
     @connection.stumpify(@, @_get_obj_desc)
+
+  _get_obj_desc: =>
+    return 'Protocol ' + @connection.conncounter
 
   start: =>
     @info 'STARTING PROTOCOL'
@@ -16,4 +19,6 @@ module.exports = class Protocol extends EventEmitter
     @info 'RECEIVED', parsed_data
     @pce.forward_operation( parsed_data ).then (result) =>
       @info 'PCE COMPLETED', result.toString()
-      @connection.send_obj {result: result.toString()}
+      
+      @engine_server.send_all( {result: result.toString()} )
+    .done()
