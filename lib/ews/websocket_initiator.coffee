@@ -23,7 +23,7 @@ module.exports = class Initiator extends EventEmitter
 
   establish_protocol: (conn) =>
     conn.on 'parsed_data', (data) =>
-      @info 'GOT', data
+      conn.info 'GOT', data
       
     conn.send_obj( {
       kind: "ADD_DEPOSIT"

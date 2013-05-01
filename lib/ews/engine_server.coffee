@@ -10,7 +10,7 @@ ProcessingChainEntrance = BE.ProcessingChainEntrance
 class EngineServer
   constructor: ->
     stump.stumpify(@, @constructor.name)
-    @connections = {}
+    @connection_map = {}
 
     @engine = new BE.TradeEngine()
     @journal = new BE.Journal('testjournal')
@@ -26,13 +26,16 @@ class EngineServer
     listener.listen()
 
   new_connection: (connection) =>
-    @connections[ connection.conncounter ] = connection
+    @connection_map[ connection.conncounter ] = connection
     protocol = new EngineProtocol(@, connection, @pce)
     protocol.start()
 
+  connection_lost: (connection) =>
+    delete @connection_map[connection.conncounter]
+
   send_all: ( obj ) =>
     @info 'SEND ALL'
-    for x,y of @connections
+    for x,y of @connection_map
       @info 'SPECIFIC ALL', x, y
       y.send_obj obj
 
