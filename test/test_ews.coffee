@@ -21,5 +21,7 @@ describe 'EWS', ->
           }
         ).then (retval) =>
           stump.info 'GOT RETVAL', retval
-          finish()
+
+          engine_server.stop().then =>
+            finish()
       .done()

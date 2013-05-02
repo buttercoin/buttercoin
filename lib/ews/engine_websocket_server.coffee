@@ -10,11 +10,20 @@ module.exports = class EngineWebsocketServer extends EngineServer
     @connection_map = {}
 
     @pce.start().then =>
-      listener = new WebsocketListener( { 
+      @listener = new WebsocketListener( { 
           wsconfig: {port: 6150}
           protocol_factory: @new_connection
       } )
-      listener.listen()
+      @listener.listen()
+
+  stop: =>
+    @info 'SHUTTING DOWN'
+    for x,y of @connection_map
+      y.disconnect()
+
+    @connection_map = {}
+
+    return @listener.close()
 
   new_connection: (connection) =>
     @connection_map[ connection.conncounter ] = connection
