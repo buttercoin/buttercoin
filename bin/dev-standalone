@@ -10,6 +10,6 @@
 #  butter.api.start () ->
 #    butter.front.start () ->
 
-EngineServer = require('../lib/ews/engine_server')
-engine_server = new EngineServer()
-engine_server.start()
+EngineWebsocketServer = require('../lib/ews/engine_websocket_server')
+engine_websocket_server = new EngineWebsocketServer()
+engine_websocket_server.start()

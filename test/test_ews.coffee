@@ -3,10 +3,10 @@ describe 'EWS', ->
   it 'should listen and be connectable', (finish) ->
     stump.info('HAI!')
 
-    EngineServer = require('../lib/ews/engine_server')
+    EngineWebsocketServer = require('../lib/ews/engine_websocket_server')
     WebsocketInitiator = require('../lib/ews/websocket_initiator')
 
-    engine_server = new EngineServer()
+    engine_server = new EngineWebsocketServer()
     engine_server.start().then =>
       stump.info('started')
 
