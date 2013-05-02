@@ -1,5 +1,7 @@
 stump = require('stump')
 
+enkihelpers = require('enkihelpers')
+
 EventEmitter = require('eemitterport').EventEmitter
 Q = require('q')
 Connection = require('./websocket_connection')
@@ -10,28 +12,36 @@ module.exports = class Initiator extends EventEmitter
   constructor: (@options) ->
     stump.stumpify(@, @constructor.name)
 
-    @node = null
+    @operation_tracker = {}
 
   connect: () =>
-    @deferred = Q.defer()
+    @connect_deferred = Q.defer()
 
     @connection = new Connection(@)
     @connection.once 'open', @establish_protocol
     @connection.connect( @options.wsconfig )
 
-    return @deferred.promise
+    return @connect_deferred.promise
 
   establish_protocol: (conn) =>
     conn.on 'parsed_data', (data) =>
-      conn.info 'GOT', data
+      @info 'RESOLVING', data.operation.opid
+      deferred = @operation_tracker[data.operation.opid]
+      delete @operation_tracker[data.operation.opid] 
+      deferred.resolve(data)
       
-    @deferred.resolve(true)
-    # conn.send_obj( {
-    #   kind: "ADD_DEPOSIT"
-    #   account: "peter"
-    #   amount: "5"
-    #   currency: 'BTC'
-    # } )
+    @connect_deferred.resolve(true)
+
+  execute_operation: (_operation) =>
+    operation = enkihelpers.extend({}, _operation)
+
+    deferred = Q.defer()
+    opid = operation.opid = enkihelpers.generate_id(128)
+    @operation_tracker[opid] = deferred
+
+    @connect_deferred.promise.then =>
+      @connection.send_obj( operation )
+      return deferred.promise
 
 if !module.parent
   initiator = new Initiator( {wsconfig: 'ws://localhost:6150/'} )
