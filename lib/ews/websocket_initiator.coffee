@@ -25,12 +25,13 @@ module.exports = class Initiator extends EventEmitter
     conn.on 'parsed_data', (data) =>
       conn.info 'GOT', data
       
-    conn.send_obj( {
-      kind: "ADD_DEPOSIT"
-      account: "peter"
-      amount: "5"
-      currency: 'BTC'
-    } )
+    @deferred.resolve(true)
+    # conn.send_obj( {
+    #   kind: "ADD_DEPOSIT"
+    #   account: "peter"
+    #   amount: "5"
+    #   currency: 'BTC'
+    # } )
 
 if !module.parent
   initiator = new Initiator( {wsconfig: 'ws://localhost:6150/'} )
