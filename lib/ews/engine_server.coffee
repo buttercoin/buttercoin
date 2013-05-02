@@ -21,11 +21,11 @@ module.exports = class EngineServer
 
   start: =>
     @pce.start().then =>
-    listener = new WebsocketListener( { 
-        wsconfig: {port: 6150}
-        protocol_factory: @new_connection
-    } )
-    listener.listen()
+      listener = new WebsocketListener( { 
+          wsconfig: {port: 6150}
+          protocol_factory: @new_connection
+      } )
+      listener.listen()
 
   new_connection: (connection) =>
     @connection_map[ connection.conncounter ] = connection
