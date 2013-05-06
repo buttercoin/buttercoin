@@ -1,6 +1,8 @@
 stump = require('stump')
 
 WebsocketListener = require('./websocket_listener')
+WebsocketInitiator = require('./websocket_initiator')
+
 EngineProtocol = require('./engine_protocol')
 
 EngineServer = require('../engine_server')
@@ -17,6 +19,9 @@ module.exports = class EngineWebsocketSlave extends EngineServer
 
   connect_upstream: =>
     @info 'CONNECT UPSTREAM'
+    wsi = new WebsocketInitiator( @options )
+    wsi.connect().then =>
+      @info 'CONNECTED'
 
   new_connection: (connection) =>
     throw Error("Slave does not support Query Protocol yet!")

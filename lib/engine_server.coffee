@@ -5,13 +5,15 @@ Journal = BE.Journal
 ProcessingChainEntrance = BE.ProcessingChainEntrance
 
 module.exports = class EngineServer
-  constructor: (@journalname) ->
+  constructor: (@options) ->
     stump.stumpify(@, @constructor.name)
 
-    @journalname = @journalname or 'testjournal'
+    @options = @options or {}
+
+    @options.journalname = @options.journalname or 'testjournal'
 
     @engine = new BE.TradeEngine()
-    @journal = new BE.Journal(@journalname)
+    @journal = new BE.Journal(@options.journalname)
     @replication = new BE.Replication()
     @pce = new ProcessingChainEntrance( @engine, @journal, @replication )
 

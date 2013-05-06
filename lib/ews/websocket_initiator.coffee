@@ -9,8 +9,11 @@ Connection = require('./websocket_connection')
 # Protocol = require('./protocol')
 
 module.exports = class Initiator extends EventEmitter
-  constructor: (@options) ->
-    stump.stumpify(@, @constructor.name)
+  constructor: (@options, @parent) ->
+    if not @parent
+      stump.stumpify(@, @constructor.name)
+    else
+      @parent.stumpify(@, @constructor.name)
 
     @operation_tracker = {}
 
@@ -27,8 +30,9 @@ module.exports = class Initiator extends EventEmitter
     conn.on 'parsed_data', (data) =>
       @info 'RESOLVING', data.operation.opid
       deferred = @operation_tracker[data.operation.opid]
-      delete @operation_tracker[data.operation.opid] 
-      deferred.resolve(data)
+      if deferred
+        delete @operation_tracker[data.operation.opid] 
+        deferred.resolve(data)
       
     @connect_deferred.resolve(true)
 
