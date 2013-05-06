@@ -1,9 +1,9 @@
 stump = require('stump')
 
-WebsocketListener = require('./websocket_listener')
-WebsocketInitiator = require('./websocket_initiator')
+WebsocketListener = require('./ws_listener')
+WebsocketInitiator = require('./ws_initiator')
 
-EngineProtocol = require('./engine_protocol')
+EngineProtocol = require('./e_protocol')
 
 EngineServer = require('../engine_server')
 

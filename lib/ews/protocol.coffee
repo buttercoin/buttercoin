@@ -9,7 +9,7 @@ module.exports = class Protocol extends EventEmitter
     @connection.stumpify(@, @_get_obj_desc)
 
   _get_obj_desc: =>
-    return 'Protocol'
+    return @constructor.name
 
   start: =>
     @info 'STARTING PROTOCOL'
@@ -17,13 +17,7 @@ module.exports = class Protocol extends EventEmitter
     @connection.on('close', @handle_close)
 
   handle_close: =>
-    @info 'PROTOCOL CLOSED'
-    @engine_server.connection_lost(@connection)
+    throw Error("Close Not Implemented")
 
   handle_parsed_data: (parsed_data) =>
-    # @info 'RECEIVED', parsed_data
-    @pce.forward_operation( parsed_data ).then (result) =>
-      @info 'PCE COMPLETED', result
-      
-      @engine_server.send_all( result )
-    .done()
+    throw Error("Parsed_data Not Implemented")

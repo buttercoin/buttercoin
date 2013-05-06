@@ -2,7 +2,7 @@ Q = require('q')
 WebSocketServer = require('ws').Server
 stump = require('stump')
 
-Connection = require('./websocket_connection')
+Connection = require('./ws_connection')
 
 module.exports = class WebsocketListener
   constructor: (@options) ->

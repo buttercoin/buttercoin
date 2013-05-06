@@ -1,7 +1,7 @@
 describe 'EWS', ->
-  EngineWebsocketServer = require('../lib/ews/engine_websocket_server')
-  EngineWebsocketSlave = require('../lib/ews/engine_websocket_slave')
-  WebsocketInitiator = require('../lib/ews/websocket_initiator')
+  EngineWebsocketServer = require('../lib/ews/ew_server')
+  EngineWebsocketSlave = require('../lib/ews/ew_slave')
+  WebsocketInitiator = require('../lib/ews/ws_initiator')
 
   options = {
     journalname: "testjournal"

@@ -4,7 +4,7 @@ enkihelpers = require('enkihelpers')
 
 EventEmitter = require('eemitterport').EventEmitter
 Q = require('q')
-Connection = require('./websocket_connection')
+Connection = require('./ws_connection')
 
 # Protocol = require('./protocol')
 
