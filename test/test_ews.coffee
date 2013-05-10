@@ -38,7 +38,7 @@ describe 'EWS', ->
         finish()
     .done()
 
-  xit 'should replicate', (finish) ->
+  it.only 'should replicate', (finish) ->
     slave = new EngineWebsocketSlave( {wsconfig: 'ws://localhost:6150/'} )
     slave.connect_upstream().then =>
       stump.info 'CONNECTED UPSTREAM'

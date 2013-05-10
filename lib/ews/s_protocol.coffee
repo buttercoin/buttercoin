@@ -4,16 +4,23 @@ Q = require('q')
 
 Protocol = require('./protocol')
 
-# module.exports = class SlaveProtocol extends Protocol
-#   handle_close: =>
-#     # Protocol closed - tell the server to clean up.
-#     @info 'PROTOCOL CLOSED'
-#     @engine_server.connection_lost(@connection)
+module.exports = class SlaveProtocol extends Protocol
+  handle_open: (connection) =>
+    @protocol_ready.resolve(@)
 
-#   handle_parsed_data: (parsed_data) =>
-#     # Received Operation from connected client. Execute it through the PCE.
-#     @pce.forward_operation( parsed_data ).then (result) =>
-#       @info 'PCE COMPLETED', result
+  handle_close: =>
+    # Protocol closed - tell the server to clean up.
+    @info 'SLAVEPROTOCOL CLOSED'
+    if @options.connection_lost
+      @options.connection_lost(@connection)
+    else
+      @warn "Connection Lost Not Implemented"
+
+  handle_parsed_data: (parsed_data) =>
+    @info 'SLAVERESOLVING', parsed_data.operation.opid
+    # Received Operation from connected client. Execute it through the PCE.
+    @options.pce.forward_operation( parsed_data.operation ).then (result) =>
+      @info 'PCE COMPLETED', result
       
-#       @engine_server.send_all( result )
-#     .done()
+      # @engine_server.send_all( result )
+    .done()

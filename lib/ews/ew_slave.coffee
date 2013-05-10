@@ -7,8 +7,7 @@ EngineProtocol = require('./e_protocol')
 
 EngineServer = require('../engine_server')
 
-InitiatorProtocol = require('./i_protocol')
-
+SlaveProtocol = require('./s_protocol')
 
 module.exports = class EngineWebsocketSlave extends EngineServer
   start: =>
@@ -22,7 +21,11 @@ module.exports = class EngineWebsocketSlave extends EngineServer
 
   connect_upstream: =>
     @info 'CONNECT UPSTREAM'
-    @options.protocol = @options.protocol or new InitiatorProtocol( {} )
+    @options.protocol = @options.protocol or new SlaveProtocol({
+      pce: @pce
+      # connection_lost: @connection_lost
+      # send_all: @send_all
+    })
     wsi = new WebsocketInitiator( @options )
     wsi.connect().then =>
       @info 'CONNECTED'
