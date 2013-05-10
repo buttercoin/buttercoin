@@ -5,19 +5,30 @@ Q = require('q')
 EventEmitter = require('eemitterport').EventEmitter
 
 module.exports = class Protocol extends EventEmitter
-  constructor: (@engine_server, @connection, @pce) ->
-    @connection.stumpify(@, @_get_obj_desc)
+  constructor: (@options, @parent) ->
+    if not @parent
+      stump.stumpify(@, @constructor.name)
+    else
+      @parent.stumpify(@, @constructor.name)
+
+    @protocol_ready = Q.defer()
 
   _get_obj_desc: =>
     return @constructor.name
 
-  start: =>
+  start: (@connection) => # Connection has been initialized but not yet connected.
+    @connection = @connection
     @info 'STARTING PROTOCOL'
     @connection.on('parsed_data', @handle_parsed_data)
-    @connection.on('close', @handle_close)
+    @connection.once('close', @handle_close)
+    @connection.once('open', @handle_open)
+    return @protocol_ready.promise
 
   handle_close: =>
-    throw Error("Close Not Implemented")
+    throw Error("close Not Implemented")
 
   handle_parsed_data: (parsed_data) =>
-    throw Error("Parsed_data Not Implemented")
+    throw Error("parsed_data Not Implemented")
+
+  handle_open: (connection) =>
+    throw Error("handle_open Not Implemented")

@@ -7,7 +7,7 @@ Connection = require('./ws_connection')
 module.exports = class WebsocketListener
   constructor: (@options) ->
     stump.stumpify(@, @constructor.name)
-    @options.protocol_factory = @options.protocol_factory or @make_protocol
+    @options.protocol_factory = @options.protocol_factory or @do_not_know_how_to_make_protocol
 
   listen: =>
     @info 'LISTENING'
@@ -22,16 +22,14 @@ module.exports = class WebsocketListener
 
   connection_made: (ws) =>
     conn = new Connection(@)
-    conn.once('open', @establish_protocol)
+    conn.once 'open', (connection) =>
+      @options.protocol_factory(connection)
     conn.socket_accepted(ws)
 
   connect_error: (err) =>
     @error('connect error', err)
 
-  establish_protocol: (connection) =>
-    @options.protocol_factory(connection)
-
-  make_protocol: (connection) =>
+  do_not_know_how_to_make_protocol: (connection) =>
     @error 'DO NOT KNOW HOW TO MAKE PROTOCOL'
     connection.disconnect()
 

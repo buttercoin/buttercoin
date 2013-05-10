@@ -18,34 +18,22 @@ module.exports = class Initiator extends EventEmitter
     @operation_tracker = {}
 
   connect: () =>
-    @connect_deferred = Q.defer()
+    # Create Connection, hook up protocol, and get socket.connect
+    #    - return promise to fire when connected
 
     @connection = new Connection(@)
-    @connection.once 'open', @establish_protocol
+    if @options.protocol
+      promise = @options.protocol.start(@connection)
+    else
+      throw Error("No Protocol in Initiator")
     @connection.connect( @options.wsconfig )
 
-    return @connect_deferred.promise
+    return promise
 
-  establish_protocol: (conn) =>
-    conn.on 'parsed_data', (data) =>
-      @info 'RESOLVING', data.operation.opid
-      deferred = @operation_tracker[data.operation.opid]
-      if deferred
-        delete @operation_tracker[data.operation.opid] 
-        deferred.resolve(data)
-      
-    @connect_deferred.resolve(true)
-
-  execute_operation: (_operation) =>
-    operation = enkihelpers.extend({}, _operation)
-
-    deferred = Q.defer()
-    opid = operation.opid = enkihelpers.generate_id(128)
-    @operation_tracker[opid] = deferred
-
-    @connect_deferred.promise.then =>
-      @connection.send_obj( operation )
-      return deferred.promise
+  execute_operation: (_operation) => 
+  # Send operation to server, provide promise
+  #  - call promise when operation either succeeded or failed.
+    @options.protocol.execute_operation(_operation)
 
 if !module.parent
   initiator = new Initiator( {wsconfig: 'ws://localhost:6150/'} )

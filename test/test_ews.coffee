@@ -3,6 +3,8 @@ describe 'EWS', ->
   EngineWebsocketSlave = require('../lib/ews/ew_slave')
   WebsocketInitiator = require('../lib/ews/ws_initiator')
 
+  InitiatorProtocol = require('../lib/ews/i_protocol')
+
   options = {
     journalname: "testjournal"
   }
@@ -16,10 +18,13 @@ describe 'EWS', ->
     @engine_server.stop().then =>
       finish()
 
-  xit 'should listen and be connectable', (finish) ->
+  it 'should listen and be connectable', (finish) ->
     stump.info('started')
 
-    wsi = new WebsocketInitiator( {wsconfig: 'ws://localhost:6150/'} )
+    wsi = new WebsocketInitiator( {
+      wsconfig: 'ws://localhost:6150/'
+      protocol: new InitiatorProtocol( {} )
+    } )
     wsi.connect().then =>
       wsi.execute_operation(
         {
@@ -33,11 +38,14 @@ describe 'EWS', ->
         finish()
     .done()
 
-  it 'should replicate', (finish) ->
+  xit 'should replicate', (finish) ->
     slave = new EngineWebsocketSlave( {wsconfig: 'ws://localhost:6150/'} )
     slave.connect_upstream().then =>
       stump.info 'CONNECTED UPSTREAM'
-      wsi = new WebsocketInitiator( {wsconfig: 'ws://localhost:6150/'} )
+      wsi = new WebsocketInitiator( {
+        wsconfig: 'ws://localhost:6150/'
+        protocol: new InitiatorProtocol( {} )
+      } )
       wsi.connect().then =>
         wsi.execute_operation(
           {

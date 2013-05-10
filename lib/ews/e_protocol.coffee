@@ -6,13 +6,14 @@ Protocol = require('./protocol')
 
 module.exports = class EngineProtocol extends Protocol
   handle_close: =>
+    # Protocol closed - tell the server to clean up.
     @info 'PROTOCOL CLOSED'
-    @engine_server.connection_lost(@connection)
+    @options.connection_lost(@connection)
 
   handle_parsed_data: (parsed_data) =>
-    # @info 'RECEIVED', parsed_data
-    @pce.forward_operation( parsed_data ).then (result) =>
+    # Received Operation from connected client. Execute it through the PCE.
+    @options.pce.forward_operation( parsed_data ).then (result) =>
       @info 'PCE COMPLETED', result
       
-      @engine_server.send_all( result )
+      @options.send_all( result )
     .done()

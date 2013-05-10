@@ -25,10 +25,14 @@ module.exports = class EngineWebsocketServer extends EngineServer
 
     return @listener.close()
 
-  new_connection: (connection) =>
+  new_connection: (connection) => # this is our protocol factory
     @connection_map[ connection.conncounter ] = connection
-    protocol = new EngineProtocol(@, connection, @pce)
-    protocol.start()
+    protocol = new EngineProtocol({
+      pce: @pce
+      connection_lost: @connection_lost
+      send_all: @send_all
+    })
+    protocol.start(connection)
 
   connection_lost: (connection) =>
     delete @connection_map[connection.conncounter]
