@@ -6,7 +6,8 @@ helpers = require('enkihelpers')
 wrap_error = helpers.wrap_error
 
 stump = require('stump')
-EventEmitter = require('eemitterport').EventEmitter
+# EventEmitter = require('eemitterport').EventEmitter
+EventEmitter = require('chained-emitter').EventEmitter
 
 globalconncounter = 0
 
@@ -52,17 +53,22 @@ module.exports = class Connection extends EventEmitter
     return @constructor.name + ' #' + @conncounter
 
   uncaught_exception: (exc) =>
-    @error 'uncaught exception', exc, '\n', exc.stack
-    if not is_node
-      throw exc
+    # @error 'uncaught exception', exc, '\n', exc.stack
+    # if not is_node
+    #   throw exc
 
-    @disconnect()
+    # @disconnect()
+
+    throw exc
+
 
   handle_error: (error) =>
-    @error 'uncaught error', error, '\n', error.stack
-    @disconnect()
-    if not is_node
-      throw error
+    # @error 'uncaught error', error, '\n', error.stack
+    # @disconnect()
+    # if not is_node
+    #   throw error
+
+    throw error
 
   handle_open: =>
     @info 'handle_open'
@@ -93,4 +99,7 @@ module.exports = class Connection extends EventEmitter
 
   disconnect: =>
     @info 'CLOSING'
+    deferred = Q.defer()
+    @ws.once 'close', deferred.resolve
     @ws.close()
+    return deferred.promise

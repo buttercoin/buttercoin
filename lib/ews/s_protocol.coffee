@@ -16,11 +16,15 @@ module.exports = class SlaveProtocol extends Protocol
     else
       @warn "Connection Lost Not Implemented"
 
+    return true
+
   handle_parsed_data: (parsed_data) =>
     @info 'SLAVERESOLVING', parsed_data.operation.opid
     # Received Operation from connected client. Execute it through the PCE.
-    @options.pce.forward_operation( parsed_data.operation ).then (result) =>
-      @info 'PCE COMPLETED', result
-      
-      # @engine_server.send_all( result )
+    Q.fcall =>
+      @options.pce.forward_operation( parsed_data.operation ).then (result) =>
+        @info 'PCE COMPLETED', result
+        
+        # @engine_server.send_all( result )
     .done()
+    return true

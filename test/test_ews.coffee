@@ -10,15 +10,17 @@ describe 'EWS', ->
   }
 
   beforeEach (finish) ->
+    console.log 'STARTING'
     @engine_server = new EngineWebsocketServer()
     @engine_server.start().then =>
       finish()
 
   afterEach (finish) ->
+    console.log 'CLEANING UP'
     @engine_server.stop().then =>
       finish()
 
-  it 'should listen and be connectable', (finish) ->
+  xit 'should listen and be connectable', (finish) ->
     stump.info('started')
 
     wsi = new WebsocketInitiator( {
@@ -38,8 +40,11 @@ describe 'EWS', ->
         finish()
     .done()
 
-  it.only 'should replicate', (finish) ->
-    slave = new EngineWebsocketSlave( {wsconfig: 'ws://localhost:6150/'} )
+  xit 'should replicate', (finish) ->
+    slave = new EngineWebsocketSlave( {
+      journalname: 'slavejournal'
+      wsconfig: 'ws://localhost:6150/'
+    } )
     slave.connect_upstream().then =>
       stump.info 'CONNECTED UPSTREAM'
       wsi = new WebsocketInitiator( {

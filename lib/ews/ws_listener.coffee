@@ -17,8 +17,8 @@ module.exports = class WebsocketListener
       @wss.on 'error', @connect_error
 
   close: =>
-    Q.fcall =>
-      @wss.close()
+    @wss.close()
+    return Q.when(true)
 
   connection_made: (ws) =>
     conn = new Connection(@)

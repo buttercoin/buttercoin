@@ -13,11 +13,11 @@ module.exports = class EngineWebsocketSlave extends EngineServer
   start: =>
     @pce.start().then =>
       @connect_upstream().then =>
-        listener = new WebsocketListener( { 
-            wsconfig: {port: 6150}
-            protocol_factory: @new_connection
-        } )
-        listener.listen()
+        # listener = new WebsocketListener( { 
+        #     wsconfig: {port: 6150}
+        #     protocol_factory: @new_connection
+        # } )
+        # listener.listen()
 
   connect_upstream: =>
     @info 'CONNECT UPSTREAM'

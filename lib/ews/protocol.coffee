@@ -2,7 +2,8 @@ helpers = require('enkihelpers')
 
 Q = require('q')
 
-EventEmitter = require('eemitterport').EventEmitter
+# EventEmitter = require('eemitterport').EventEmitter
+EventEmitter = require('chained-emitter').EventEmitter
 
 module.exports = class Protocol extends EventEmitter
   constructor: (@options, @parent) ->

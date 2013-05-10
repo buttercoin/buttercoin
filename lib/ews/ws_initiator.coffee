@@ -2,7 +2,9 @@ stump = require('stump')
 
 enkihelpers = require('enkihelpers')
 
-EventEmitter = require('eemitterport').EventEmitter
+# EventEmitter = require('eemitterport').EventEmitter
+EventEmitter = require('chained-emitter').EventEmitter
+
 Q = require('q')
 Connection = require('./ws_connection')
 
