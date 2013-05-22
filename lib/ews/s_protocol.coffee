@@ -1,7 +1,5 @@
 helpers = require('enkihelpers')
-
 Q = require('q')
-
 Protocol = require('./protocol')
 
 module.exports = class SlaveProtocol extends Protocol

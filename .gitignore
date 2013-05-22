@@ -17,4 +17,4 @@ tmp
 transaction.log
 test.log
 vm/
-testjournal
+*testjournal

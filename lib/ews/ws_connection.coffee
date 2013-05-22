@@ -28,7 +28,7 @@ module.exports = class Connection extends EventEmitter
     wrap_error(@handle_open, @uncaught_exception)()
 
   connect: (wsconfig) =>
-    @info 'STARTING TO CONNECT'
+    @info 'STARTING TO CONNECT:', wsconfig
     @ws = new WebSocket( wsconfig )
 
     @prepare_ws()
@@ -43,7 +43,7 @@ module.exports = class Connection extends EventEmitter
       @senddeferred.reject( "Connection closed" )
       # .done()
 
-  prepare_ws: =>  
+  prepare_ws: =>
     @ws.on 'error', @handle_error
     @ws.on 'open', wrap_error(@handle_open, @uncaught_exception)
     @ws.on 'close', wrap_error(@handle_close, @uncaught_exception)

@@ -1,3 +1,4 @@
+_ = require ('underscore')
 stump = require('stump')
 Q = require('q')
 
@@ -8,13 +9,21 @@ EngineServer = require('../engine_server')
 helpers = require('enkihelpers')
 
 module.exports = class EngineWebsocketServer extends EngineServer
+  constructor: (options) ->
+    options = _.extend (options or {}), {
+      port: 6150
+      journalname: 'engine.testjournal'
+    }
+
+    super(options)
+
   start: =>
     @connection_map = {}
     @closed = false
 
     @pce.start().then =>
-      @listener = new WebsocketListener( { 
-          wsconfig: {port: 6150}
+      @listener = new WebsocketListener( {
+          wsconfig: {port: @options.port}
           protocol_factory: @new_connection
       } )
       @listener.listen()

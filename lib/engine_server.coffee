@@ -21,4 +21,4 @@ module.exports = class EngineServer
     throw Error("Not Implemented")
 
   send_all: ( obj ) =>
-    throw Error("Not Implemented")    
+    throw Error("Not Implemented")

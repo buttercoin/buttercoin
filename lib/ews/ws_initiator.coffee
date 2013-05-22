@@ -13,9 +13,9 @@ Connection = require('./ws_connection')
 module.exports = class Initiator extends EventEmitter
   constructor: (@options, @parent) ->
     if not @parent
-      stump.stumpify(@, @constructor.name)
+      stump.stumpify(this, @constructor.name)
     else
-      @parent.stumpify(@, @constructor.name)
+      @parent.stumpify(this, @constructor.name)
 
     @operation_tracker = {}
 
@@ -23,16 +23,18 @@ module.exports = class Initiator extends EventEmitter
     # Create Connection, hook up protocol, and get socket.connect
     #    - return promise to fire when connected
 
-    @connection = new Connection(@)
+    @connection = new Connection(this)
     if @options.protocol
       promise = @options.protocol.start(@connection)
     else
       throw Error("No Protocol in Initiator")
     @connection.connect( @options.wsconfig )
 
+    # XXX - this promise sometimes doesn't get a .done() call
+    # (i.e. exceptions can get swallowed"
     return promise
 
-  execute_operation: (_operation) => 
+  execute_operation: (_operation) =>
   # Send operation to server, provide promise
   #  - call promise when operation either succeeded or failed.
     @options.protocol.execute_operation(_operation)
