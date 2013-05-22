@@ -1,3 +1,6 @@
+Q = require('q')
+stump = require('stump')
+
 describe 'EWS', ->
   EngineWebsocketServer = require('../lib/ews/ew_server')
   EngineWebsocketSlave = require('../lib/ews/ew_slave')
@@ -20,7 +23,7 @@ describe 'EWS', ->
     @engine_server.stop().then =>
       finish()
 
-  xit 'should listen and be connectable', (finish) ->
+  it 'should listen and be connectable', (finish) ->
     stump.info('started')
 
     wsi = new WebsocketInitiator( {

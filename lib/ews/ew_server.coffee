@@ -1,4 +1,5 @@
 stump = require('stump')
+Q = require('q')
 
 WebsocketListener = require('./ws_listener')
 EngineProtocol = require('./e_protocol')

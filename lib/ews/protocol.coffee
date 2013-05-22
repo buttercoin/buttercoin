@@ -1,6 +1,7 @@
 helpers = require('enkihelpers')
 
 Q = require('q')
+stump = require('stump')
 
 # EventEmitter = require('eemitterport').EventEmitter
 EventEmitter = require('chained-emitter').EventEmitter

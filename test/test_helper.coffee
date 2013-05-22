@@ -4,8 +4,8 @@ global.assert = chai.assert
 global.sinon = require('sinon')
 chai.should()
 
-global.Q = require('q')
-global.stump = require('stump')
+# global.Q = require('q')
+# global.stump = require('stump')
 
 fs = require('fs')
 
