@@ -17,7 +17,13 @@ module.exports = class SlaveProtocol extends Protocol
     return true
 
   handle_parsed_data: (parsed_data) =>
-    if parsed_data.operation.kind is "SNAPSHOT_RESULT"
+    if parsed_data.operation.opid is @snapshot_opid
+      @info "SLAVE GOT SNAPSHOT_RESULT"
+      @snapshot_opid = null
+      @snapshot_deferred.resolve(parsed_data)
+      @snapshot_deferred = null
+      return true
+    else if parsed_data.operation.kind is "SNAPSHOT_RESULT"
       @info "IGNORING SNAPSHOT_RESULT"
       return true
 
@@ -30,3 +36,14 @@ module.exports = class SlaveProtocol extends Protocol
         # @engine_server.send_all( result )
     .done()
     return true
+
+  fetch_snapshot: =>
+    @snapshot_opid = helpers.generate_id(128)
+    @snapshot_deferred = Q.defer()
+
+    @protocol_ready.promise.then =>
+      @connection.send_obj
+        kind: "SNAPSHOT"
+        opid: @snapshot_opid
+      return @snapshot_deferred.promise
+

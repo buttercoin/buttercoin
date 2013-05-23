@@ -55,7 +55,6 @@ module.exports = class EngineWebsocketServer extends EngineServer
     delete @connection_map[connection.conncounter]
 
   send_all: ( obj ) =>
-    @info 'SEND ALL', obj
     for x, y of @connection_map
       console.log x
       y.send_obj obj
