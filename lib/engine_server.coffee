@@ -14,8 +14,7 @@ module.exports = class EngineServer
 
     @engine = new BE.TradeEngine()
     @journal = new BE.Journal(@options.journalname)
-    @replication = new BE.Replication()
-    @pce = new ProcessingChainEntrance( @engine, @journal, @replication )
+    @pce = new ProcessingChainEntrance( @engine, @journal )
 
   start: =>
     throw Error("Not Implemented")
