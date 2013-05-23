@@ -17,6 +17,10 @@ module.exports = class SlaveProtocol extends Protocol
     return true
 
   handle_parsed_data: (parsed_data) =>
+    if parsed_data.operation.kind is "SNAPSHOT_RESULT"
+      @info "IGNORING SNAPSHOT_RESULT"
+      return true
+
     @info 'SLAVERESOLVING', parsed_data.operation.opid
     # Received Operation from connected client. Execute it through the PCE.
     Q.fcall =>

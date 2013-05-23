@@ -15,13 +15,24 @@ wsi = new WebsocketInitiator( {
   protocol: new InitiatorProtocol( {} )
 } )
 wsi.connect().then =>
-  wsi.execute_operation(
-    {
-      kind: "ADD_DEPOSIT"
-      account: "peter"
-      amount: "5"
-      currency: 'BTC'
-    }
-  ).then (retval) =>
+  wsi.execute_operation
+    kind: "ADD_DEPOSIT"
+    account: "peter"
+    amount: "5"
+    currency: 'BTC'
+  .then (retval) =>
     stump.info 'GOT RETVAL', retval
+.then =>
+  wsi.execute_operation
+    kind: "ADD_DEPOSIT"
+    account: "tom"
+    amount: "5"
+    currency: 'USD'
+  .then (retval) =>
+    stump.info 'GOT RETVAL', retval
+.then =>
+  wsi.execute_operation
+    kind: "SNAPSHOT"
+  .then (retval) =>
+    stump.info 'GOT SNAPSHOT', retval
 .done()

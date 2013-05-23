@@ -23,8 +23,8 @@ module.exports = class EngineWebsocketServer extends EngineServer
 
     @pce.start().then =>
       @listener = new WebsocketListener( {
-          wsconfig: {port: @options.port}
-          protocol_factory: @new_connection
+        wsconfig: {port: @options.port}
+        protocol_factory: @new_connection
       } )
       @listener.listen()
 
@@ -55,6 +55,8 @@ module.exports = class EngineWebsocketServer extends EngineServer
     delete @connection_map[connection.conncounter]
 
   send_all: ( obj ) =>
-    @info 'SEND ALL'
+    @info 'SEND ALL', obj
     for x, y of @connection_map
+      console.log x
       y.send_obj obj
+
