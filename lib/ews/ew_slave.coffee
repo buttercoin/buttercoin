@@ -22,6 +22,7 @@ module.exports = class EngineWebsocketSlave extends EngineServer
         @options.protocol.fetch_snapshot().then (snapshot) =>
           @info "SLAVE GOT SNAPSHOT"
           @pce.load_snapshot(snapshot.operation)
+          @pce.dump_snapshot()
 
   connect_upstream: =>
     @info 'CONNECT UPSTREAM'
