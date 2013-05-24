@@ -1,11 +1,19 @@
 #!/usr/bin/env bash
 
-if [ "$1" == "stop" ]; then
-    kill -s KILL `cat $TMPDIR/buttercoin.dev-standalone.pid`
-else
-    #rm *.testjournal
+PIDFILE=$TMPDIR/buttercoin.dev-standalone.pid
+
+if [[ "$1" == "stop" ]] || [[ -e $PIDFILE ]]; then
+    kill -s KILL `cat $PIDFILE`
+    rm $PIDFILE
+fi
+
+if [[ "$1" == "clean" ]]; then
+    rm *.testjournal
+fi
+
+if [[ "$1" == "start" ]] || [[ -z "$1" ]]; then
     coffee bin/dev-standalone &
     pid=$!
-    echo $pid > $TMPDIR/buttercoin.dev-standalone.pid 
+    echo $pid > $PIDFILE
 fi
 

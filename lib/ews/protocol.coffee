@@ -18,8 +18,8 @@ module.exports = class Protocol extends EventEmitter
   _get_obj_desc: =>
     return @constructor.name
 
-  start: (@connection) => # Connection has been initialized but not yet connected.
-    @connection = @connection
+  start: (connection) => # Connection has been initialized but not yet connected.
+    @connection = connection
     @info 'STARTING PROTOCOL'
     @connection.on('parsed_data', @handle_parsed_data)
     @connection.once('close', @handle_close)
@@ -27,7 +27,13 @@ module.exports = class Protocol extends EventEmitter
     return @protocol_ready.promise
 
   handle_close: =>
-    throw Error("close Not Implemented")
+    # Protocol closed - tell the server to clean up.
+    @info 'PROTOCOL CLOSED'
+    if @options.connection_lost
+      @options.connection_lost(@connection)
+    else
+      @warn "Connection Lost Not Implemented"
+    return true
 
   handle_parsed_data: (parsed_data) =>
     throw Error("parsed_data Not Implemented")

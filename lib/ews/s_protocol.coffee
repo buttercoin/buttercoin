@@ -6,16 +6,6 @@ module.exports = class SlaveProtocol extends Protocol
   handle_open: (connection) =>
     @protocol_ready.resolve(@)
 
-  handle_close: =>
-    # Protocol closed - tell the server to clean up.
-    @info 'SLAVEPROTOCOL CLOSED'
-    if @options.connection_lost
-      @options.connection_lost(@connection)
-    else
-      @warn "Connection Lost Not Implemented"
-
-    return true
-
   handle_parsed_data: (parsed_data) =>
     if parsed_data.operation.opid is @snapshot_opid
       @info "SLAVE GOT SNAPSHOT_RESULT"

@@ -1,38 +1,16 @@
 stump = require('stump')
+ApiClient = require('./lib/ews/ew_api')
 
-EngineWebsocketServer = require('./lib/ews/ew_server')
-EngineWebsocketSlave = require('./lib/ews/ew_slave')
-WebsocketInitiator = require('./lib/ews/ws_initiator')
+stump.stumpify(this, "[TEST]Client")
 
-InitiatorProtocol = require('./lib/ews/i_protocol')
-
-options = {
-  journalname: "testjournal"
-}
-
-wsi = new WebsocketInitiator( {
-  wsconfig: 'ws://localhost:6150/'
-  protocol: new InitiatorProtocol( {} )
-} )
-wsi.connect().then =>
-  wsi.execute_operation
-    kind: "ADD_DEPOSIT"
-    account: "peter"
-    amount: "5"
-    currency: 'BTC'
-  .then (retval) =>
-    stump.info 'GOT RETVAL', retval
+client = new ApiClient()
+client.start().then =>
+  client.deposit_funds('peter', 'USD', '5').then (result) =>
+    @info "Deposited 5 USD. New balance: $#{result.retval}"
 .then =>
-  wsi.execute_operation
-    kind: "ADD_DEPOSIT"
-    account: "tom"
-    amount: "5"
-    currency: 'USD'
-  .then (retval) =>
-    stump.info 'GOT RETVAL', retval
-.then =>
-  wsi.execute_operation
-    kind: "SNAPSHOT"
-  .then (retval) =>
-    stump.info 'GOT SNAPSHOT', retval
+  client.get_balances('peter').then (result) =>
+    @info "Got balances:"
+    for k, v of result.balances
+      console.log "#{k}:", v
 .done()
+

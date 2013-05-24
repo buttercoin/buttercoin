@@ -67,7 +67,7 @@ module.exports = class Connection extends EventEmitter
     # @disconnect()
     # if not is_node
     #   throw error
-
+    @error error
     throw error
 
   handle_open: =>
@@ -85,7 +85,7 @@ module.exports = class Connection extends EventEmitter
     @emit('parsed_data', obj)
 
   send_obj: (objOrPromise) =>
-    # @info 'READY TO SEND_OBJ', objOrPromise
+    #@info 'READY TO SEND_OBJ', objOrPromise
     Q.when(objOrPromise)
     .then (obj) =>
       @send_raw JSON.stringify( obj )
