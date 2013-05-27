@@ -7,6 +7,7 @@
     "start": "bin/dev-standalone",
     "test": "sh test.sh"
   },
+  "engine": "node >= 0.10.1",
   "repository": {
     "type": "git",
     "url": "git://github.com/buttercoin/buttercoin.git"
