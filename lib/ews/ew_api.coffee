@@ -4,8 +4,9 @@ Q = require('q')
 
 Initiator = require('./ws_initiator')
 InitiatorProtocol = require('./i_protocol')
+EventEmitter = require('chained-emitter').EventEmitter
 
-module.exports = class EngineWebsocketApi
+module.exports = class EngineWebsocketApi extends EventEmitter
   constructor: (options) ->
     @options = options || {
                 query:
@@ -18,6 +19,8 @@ module.exports = class EngineWebsocketApi
 
     @query = @options.query.protocol
     @engine = @options.engine.protocol
+    @engine.on 'data', @handle_engine_data
+    @event_filters = {}
 
     stump.stumpify(this, @constructor.name)
 
@@ -38,6 +41,14 @@ module.exports = class EngineWebsocketApi
 
     wsi = new Initiator( ws_options )
     wsi.connect()
+
+  handle_engine_data: (data) =>
+    filter = @event_filters[data?.operation?.kind]
+    if filter
+      for e in filter(data)
+        @emit e.name, e.data
+    else
+      @emit 'data', data
 
   deposit_funds: (account_id, currency, amount) =>
     @info "DEPOSITING #{amount} #{currency} to account #{account_id}"

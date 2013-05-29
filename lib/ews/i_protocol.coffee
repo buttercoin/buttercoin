@@ -14,6 +14,8 @@ module.exports = class InitiatorProtocol extends Protocol
       delete @operation_tracker[data.operation.opid]
       deferred.resolve(data)
 
+    @emit 'data', data
+
   execute_operation: (_operation) =>
     operation = helpers.extend({}, _operation)
 

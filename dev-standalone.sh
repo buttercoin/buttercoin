@@ -1,5 +1,9 @@
 #!/usr/bin/env bash
 
+if [[ ! -e $TMPDIR ]]; then
+    TMPDIR=/tmp
+fi
+
 PIDFILE=$TMPDIR/buttercoin.dev-standalone.pid
 
 if [[ "$1" == "stop" ]] || [[ -e $PIDFILE ]]; then

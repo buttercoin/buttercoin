@@ -18,3 +18,4 @@ transaction.log
 test.log
 vm/
 *testjournal
+*.swp
