@@ -5,7 +5,7 @@ Vagrant is a very useful tool for separating your development environment from y
 
 After cloning the repository but before doing anything else (such as `npm install`)
 
-- install the following prerequisites.
+- Install the following prerequisites.
   - Virtualbox - https://www.virtualbox.org/wiki/Downloads
   - Vagrant - http://downloads.vagrantup.com/
 - Install the following vagrant plugins to enable Chef and the very useful Berkshelf that manages Chef cookbooks
