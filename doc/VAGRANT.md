@@ -36,19 +36,19 @@ vagrant@buttercoin:~$ cd /vagrant/
 - Install the node module dependencies within the vagrant instance to ensure platform specific stuff is built correctly
 
 ```
-vagrant@buttercoin:~$ npm install
+vagrant@buttercoin:/vagrant$ npm install
 ```
 
 - If you run into issues installing dependencies from `git://` urls (corporate firewalls may block the required port) the following git command should help
 
 ```
-vagrant@buttercoin:~$ git config --global url.https://github.com/.insteadOf git://github.com/
+vagrant@buttercoin:/vagrant$ git config --global url.https://github.com/.insteadOf git://github.com/
 ```
 
 - Run the tests
 
 ```
-vagrant@buttercoin:~$ npm test
+vagrant@buttercoin:/vagrant$ npm test
 ```
 
 - If you have a problem running the test.sh script (which happens if you check out on Windows as line endings may confuse things) the following git command should help (be warned this will also discard any local changes so run it before you make any)
@@ -60,7 +60,7 @@ vagrant@buttercoin:/vagrant$ git reset --hard
 - Start the buttercoin server (this may also require the above git command to fix the scripts if they were checked out on Windows)
 
 ```
-vagrant@buttercoin:~$ npm start
+vagrant@buttercoin:/vagrant$ npm start
 ```
 
 - And connect to it on the virtual machine's IP (33.33.33.50)
