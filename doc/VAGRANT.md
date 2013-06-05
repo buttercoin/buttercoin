@@ -3,8 +3,6 @@ Using Vagrant
 
 Vagrant is a very useful tool for separating your development environment from your desktop environment. It utilizes virtual machines and chef to build a known development platform as required.
 
-After cloning the repository but before doing anything else (such as `npm install`)
-
 - Install the following prerequisites.
   - Virtualbox - https://www.virtualbox.org/wiki/Downloads
   - Vagrant - http://downloads.vagrantup.com/
@@ -13,6 +11,18 @@ After cloning the repository but before doing anything else (such as `npm instal
 ```
 $ vagrant plugin install vagrant-omnibus
 $ vagrant plugin install vagrant-berkshelf
+```
+
+- Clone the repository
+
+```
+$ git clone https://github.com/buttercoin/buttercoin.git
+```
+
+- Change directory to the root of the project
+
+```
+$ cd buttercoin
 ```
 
 - You can then bring up the vagrant virtual machine (The first time you do this it may take quite a long time while the machine is instantiated and node.js is compiled and installed at the correct version)
