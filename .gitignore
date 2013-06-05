@@ -19,3 +19,6 @@ test.log
 vm/
 *testjournal
 *.swp
+
+Berksfile.lock
+.vagrant
