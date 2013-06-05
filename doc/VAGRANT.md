@@ -1,9 +1,9 @@
 Using Vagrant
 =============
 
-Vagrant is a very useful tool for separating your development environment from your desktop environment. It utilizes virtual machines and chef to build a known development platform as required. The following is s simple guide to working on Buttercoin with vagrant.
+Vagrant is a very useful tool for separating your development environment from your desktop environment. It utilizes virtual machines and chef to build a known development platform as required.
 
-After cloning the repository and before doing anything else (ie. `npm install`)...
+After cloning the repository but before doing anything else (such as `npm install`)
 
 - install the following prerequisites.
   - Virtualbox - https://www.virtualbox.org/wiki/Downloads
