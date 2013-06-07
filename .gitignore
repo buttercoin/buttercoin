@@ -19,6 +19,7 @@ test.log
 vm/
 *testjournal
 *.swp
+*.un~
 
 Berksfile.lock
 .vagrant

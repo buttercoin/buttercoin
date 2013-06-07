@@ -50,6 +50,9 @@ module.exports = class EngineWebsocketApi extends EventEmitter
     else
       @emit 'data', data
 
+  process_data_event: (data) =>
+    @warn "Ignoring data event:", data
+
   deposit_funds: (account_id, currency, amount) =>
     @info "DEPOSITING #{amount} #{currency} to account #{account_id}"
     @engine.execute_operation

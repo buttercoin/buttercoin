@@ -8,11 +8,13 @@ module.exports = class InitiatorProtocol extends Protocol
     @operation_tracker = {}
 
   handle_parsed_data: (data) =>
-    @info 'RESOLVING', data.operation.opid
     deferred = @operation_tracker[data.operation.opid]
     if deferred
       delete @operation_tracker[data.operation.opid]
       deferred.resolve(data)
+    else
+      # don't emit transactional responses
+      @emit('data', data)
 
     @emit 'data', data
 

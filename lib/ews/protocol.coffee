@@ -29,6 +29,7 @@ module.exports = class Protocol extends EventEmitter
   handle_close: =>
     # Protocol closed - tell the server to clean up.
     @info 'PROTOCOL CLOSED'
+    @emit('closed', this)
     if @options.connection_lost
       @options.connection_lost(@connection)
     else
