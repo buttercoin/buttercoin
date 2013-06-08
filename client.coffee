@@ -6,8 +6,12 @@ stump.stumpify(this, "[TEST]Client")
 client = new ApiClient()
 client.event_filters.ADD_DEPOSIT = (data) ->
   [
-    {name: "ADD_DEPOSIT", data: data},
     {name: "ADD_DEPOSIT?account=#{data.operation.account}", data: data}
+  ]
+
+client.event_filters.WITHDRAW_FUNDS = (data) ->
+  [
+    {name: "WITHDRAW_FUNDS?account=#{data.operation.account}", data: data}
   ]
 
 client.event_filters.CREATE_LIMIT_ORDER = (data) ->
@@ -26,6 +30,9 @@ initUser = (u) ->
   stump.stumpify(@[u], "[TEST]#{u}")
   client.on "ADD_DEPOSIT?account=#{u}", (data) =>
     @[u].info "Added #{data.operation.amount} #{data.operation.currency}. New balance: #{data.retval}"
+
+  client.on "WITHDRAW_FUNDS?account=#{u}", (data) =>
+    @[u].info "Withdrew #{data.operation.amount} #{data.operation.currency}. New balance: #{data.retval}"
 
   client.on "CREATE_LIMIT_ORDER?account=#{u}", (data) =>
     @[u].info "Created order #{data.retval[0].order.uuid}"
@@ -51,5 +58,9 @@ client.start().then =>
     offered_amount: '1'
     received_currency: 'USD'
     received_amount: '10'
+.then =>
+  client.withdraw_funds('peter', 'BTC', '1')
+.then =>
+  client.withdraw_funds('sally', 'USD', '10')
 .done()
 

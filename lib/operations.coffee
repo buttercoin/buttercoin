@@ -1,7 +1,2 @@
-module.exports = {
-  ADD_DEPOSIT:'ADD_DEPOSIT'
-  ADD_WITHDRAWAL: 'ADD_WITHDRAWAL'
-  INTERNAL_TRANSFER: 'INTERNAL_TRANSFER'
-  ADD_ORDER: 'ADD_ORDER'
-  CANCEL_ORDER: 'CANCEL_ORDER'
-}
+module.exports = require('buttercoin-engine').operations
+
