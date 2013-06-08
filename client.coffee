@@ -18,35 +18,38 @@ client.event_filters.CREATE_LIMIT_ORDER = (data) ->
 
 peter = {}
 stump.stumpify(peter, "[TEST]Peter")
+sally = {}
+stump.stumpify(sally, "[TEST]Sally")
 
-client.on "ADD_DEPOSIT?account=peter", (data) ->
-  peter.info "Added #{data.operation.amount} #{data.operation.currency}. New balance: #{data.retval}"
+initUser = (u) ->
+  @[u] = {}
+  stump.stumpify(@[u], "[TEST]#{u}")
+  client.on "ADD_DEPOSIT?account=#{u}", (data) =>
+    @[u].info "Added #{data.operation.amount} #{data.operation.currency}. New balance: #{data.retval}"
 
-#client.on "CREATE_LIMIT_ORDER", (data) ->
-  #peter.error "DATA:", data
+  client.on "CREATE_LIMIT_ORDER?account=#{u}", (data) =>
+    @[u].info "Created order #{data.retval[0].order.uuid}"
+    client.get_balances(u).then (result) =>
+      @[u].info "Got balances:"
+      for k, v of result.balances
+        @[u].info "\t#{k}:", v
 
-client.on "CREATE_LIMIT_ORDER?account=peter", (data) ->
-  peter.info "Created order #{data.retval[0].order.uuid}"
-  client.get_balances('peter').then (result) =>
-    peter.info "Got balances:"
-    for k, v of result.balances
-      peter.info "\t#{k}:", v
-
-#client.on "pump", (data) ->
-  #peter.info "PUMP", data
+initUser(u) for u in ["peter", "sally"]
 
 client.start().then =>
-  client.get_balances('peter').then (result) =>
-    peter.info "Got balances:"
-    for k, v of result.balances
-      peter.info "\t#{k}:", v
-.then =>
   client.deposit_funds('peter', 'USD', '100')
+  client.deposit_funds('sally', 'BTC', '20')
 .then =>
   client.place_limit_order 'peter',
     offered_currency: 'USD'
     offered_amount: '10'
     received_currency: 'BTC'
     received_amount: '1'
+.then =>
+  client.place_limit_order 'sally',
+    offered_currency: 'BTC'
+    offered_amount: '1'
+    received_currency: 'USD'
+    received_amount: '10'
 .done()
 
