@@ -61,6 +61,12 @@ module.exports = class EngineWebsocketApi extends EventEmitter
       amount: amount
       currency: currency
 
+  place_limit_order: (account_id, order) =>
+    order.account = account_id
+    order.kind = "CREATE_LIMIT_ORDER"
+    @info "CREATING LIMIT ORDER #{JSON.stringify(order)}"
+    @engine.execute_operation(order)
+
   get_balances: (account_id) =>
     @info "SENDING GET_BALANCES"
     @query.execute_operation
