@@ -8,15 +8,14 @@ EventEmitter = require('chained-emitter').EventEmitter
 BC = require('buttercoin-engine')
 
 module.exports = class EngineWebsocketApi extends EventEmitter
-  constructor: (options) ->
-    @options = options || {
-                query:
-                  port: 6151
-                  protocol: new InitiatorProtocol({})
-                engine:
-                  port: 6150
-                  protocol: new InitiatorProtocol({})
-              }
+  @default_options:
+    engine: { port: 6150 }
+    query: { port: 6151 }
+
+  constructor: (options={}) ->
+    @options = _.extend(EngineWebsocketApi.default_options, options)
+    @options.query.protocol ||= new InitiatorProtocol({})
+    @options.engine.protocol ||= new InitiatorProtocol({})
 
     @query = @options.query.protocol
     @engine = @options.engine.protocol
