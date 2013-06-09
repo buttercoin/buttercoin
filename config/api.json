@@ -1,0 +1,10 @@
+{
+	"master": {
+		"port": 6150,
+		"journalname": "journal/engine.journal"
+	},
+	"slaves": [
+		{"port": 6151,
+		 "upstream_port": 6150,
+		 "journalname": "journal/slave.1.journal" }]
+}

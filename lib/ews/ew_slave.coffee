@@ -9,12 +9,13 @@ SlaveProtocol = require('./s_protocol')
 QueryProtocol = require('./q_protocol')
 
 module.exports = class EngineWebsocketSlave extends EngineServer
-  constructor: (options) ->
-    options = _.extend (options or {}), {
-      port: 6151
-      upstream_port: 6150
-      journalname: 'slave.testjournal'
-    }
+  @default_options =
+    port: 6151
+    upstream_port: 6150
+    journalname: 'slave.testjournal'
+
+  constructor: (options={}) ->
+    options = _.extend(EngineWebsocketSlave.default_options, options)
 
     super(options)
 

@@ -9,12 +9,12 @@ EngineServer = require('../engine_server')
 helpers = require('enkihelpers')
 
 module.exports = class EngineWebsocketServer extends EngineServer
-  constructor: (options) ->
-    options = _.extend (options or {}), {
-      port: 6150
-      journalname: 'engine.testjournal'
-    }
+  @default_options =
+    port: 6150
+    journalname: 'engine.testjournal'
 
+  constructor: (options={}) ->
+    options = _.extend(EngineWebsocketServer.default_options, options)
     super(options)
 
   start: =>
