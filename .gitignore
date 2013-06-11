@@ -18,7 +18,6 @@ transaction.log
 test.log
 vm/
 *testjournal
-journal/
 *.swp
 *.un~
 
