@@ -1,7 +1,4 @@
 WebSocket = require('wsany')
-#is_node = require('isnode')
-
-#Q = require('q')
 wrap_error = require('enkihelpers').wrap_error
 
 Connection = require('../connection')
@@ -28,3 +25,4 @@ module.exports = class WsConnection extends Connection
     @transport.close()
 
   parse_data: JSON.parse
+  prepare_data: JSON.stringify

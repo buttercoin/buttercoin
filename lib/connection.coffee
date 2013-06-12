@@ -35,7 +35,7 @@ module.exports = class Connection extends EventEmitter
   send_obj: (objOrPromise) =>
     Q.when(objOrPromise)
     .then (obj) =>
-      @send_raw JSON.stringify( obj )
+      @send_raw @prepare_data(obj)
 
   send_raw: (data) =>
     Q.invoke(@senddeferred.promise, "call", @transport, data)

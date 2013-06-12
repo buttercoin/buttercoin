@@ -1,6 +1,7 @@
 _ = require('underscore')
 EngineApi = require('../ews/ew_api')
 WebsocketListener = require('../ews/ws_listener')
+SocketIOListener = require('../socket.io/listener')
 ApiProtocol = require('./api_protocol')
 operations = require('../operations')
 stump = require('stump')
@@ -8,6 +9,7 @@ stump = require('stump')
 module.exports = class ApiServer
   @default_options:
     port: 3001
+    socketio: {port: 3002 }
     engine: { port: 6150 }
     query: { port: 6151 }
 
@@ -38,6 +40,13 @@ module.exports = class ApiServer
         wsconfig: {port: @options.port}
         protocol_factory: @new_connection
       @listener.listen()
+      @info "API websocket interface listening on port: #{@options.port}"
+    .then =>
+      @socketio_listener = new SocketIOListener
+        port: @options.socketio.port
+        protocol_factory: @new_connection
+      @socketio_listener.listen()
+      @info "API socket.io interface listening on port: #{@options.socketio.port}"
     .then =>
       @info "API service started"
 

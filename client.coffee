@@ -1,28 +1,45 @@
 stump = require('stump')
-ApiClient = require('./lib/ews/ew_api')
-ApiServer = require('./lib/api/server')
-Connection = require('./lib/ews/ws_connection')
+#ApiClient = require('./lib/ews/ew_api')
 
-stump.stumpify(this, "[TEST]Client")
+if process.argv[2] is 'client'
+  stump.stumpify(this, "[TEST]Client")
+  io = require('socket.io-client')
+  alice = io.connect('localhost', port: 3002)
+  alice.on 'connecting', (transport_type) =>
+    @info "CONNECTING ALICE:", transport_type
 
-alice = new Connection(stump)
-alice.on 'open', =>
-  @warn "CONNECTED ALICE"
-  alice.send_obj
-    kind: 'AUTH'
-    account_id: 'alice'
-  .then =>
-    @warn "SENT AUTH"
-  .fail (error) =>
-    @error error
-  .done()
+  alice.on 'connect_failed', =>
+    @error "ALICE FAILED TO CONNECT"
 
-alice.on 'parsed_data', (data) =>
-  @info "ALICE GOT:", data
+  alice.on 'connect', =>
+    @info "CONNECTED ALICE"
+    alice.send(JSON.stringify({kind: 'AUTH', account_id: 'alice'}))
+    #alice.send_obj
+      #kind: 'AUTH'
+      #account_id: 'alice'
+    #.then =>
+      #@warn "SENT AUTH"
+    #.fail (error) =>
+      #@error error
+    #.done()
+
+  alice.on 'message', (msg) =>
+    @warn "Alice msg:", msg
+  alice.on 'parsed_data', (data) =>
+    @info "ALICE GOT:", data
+else
+  stump.stumpify(this, "[TEST]Server")
+  ApiServer = require('./lib/api/server')
+  fork = require('child_process').fork
+
+  server = new ApiServer()
+  server.start().then =>
+    @info "Started, launching client process"
+    fork('./client.coffee', ['client'])
 
 #server = new ApiServer()
 #server.start().then =>
-alice.connect('ws://localhost:3001')
+#alice.connect('http://localhost:8888')
   #.then =>
 #.done()
 
