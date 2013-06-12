@@ -1,105 +1,30 @@
 WebSocket = require('wsany')
-is_node = require('isnode')
+#is_node = require('isnode')
 
-Q = require('q')
-helpers = require('enkihelpers')
-wrap_error = helpers.wrap_error
+#Q = require('q')
+wrap_error = require('enkihelpers').wrap_error
 
-stump = require('stump')
-# EventEmitter = require('eemitterport').EventEmitter
-EventEmitter = require('chained-emitter').EventEmitter
+Connection = require('../connection')
 
-globalconncounter = 0
+module.exports = class WsConnection extends Connection
+  create_transport: (config) =>
+    @info "CREATING WEBSOCKET CONNECTION"
+    new WebSocket( config )
 
-module.exports = class Connection extends EventEmitter
-  constructor: (@parent) ->
-    @parent.stumpify(@, @_get_obj_desc)
+  ###
+  # Setup transport callbacks and return the function used to send data over the
+  # transport.
+  ###
+  prepare_transport: =>
+    @transport.on 'error', @handle_error
+    @transport.on 'open', wrap_error(@handle_open, @uncaught_exception)
+    @transport.on 'close', wrap_error(@handle_close, @uncaught_exception)
+    @transport.on 'message', wrap_error(@handle_data, @uncaught_exception)
 
-    @conncounter = globalconncounter
-    globalconncounter += 1
+    return @transport.send
 
-    @ws = null
-    deferred = Q.defer()
-    @senddeferred = deferred
+  shutdown_transport: (completed) =>
+    @transport.once 'close', completed
+    @transport.close()
 
-  socket_accepted: (@ws) =>
-    @prepare_ws()
-    @senddeferred.resolve(@ws.send)
-    wrap_error(@handle_open, @uncaught_exception)()
-
-  connect: (wsconfig) =>
-    @info 'STARTING TO CONNECT:', wsconfig
-    @ws = new WebSocket( wsconfig )
-
-    @prepare_ws()
-
-    @once 'open', =>
-      @info 'ONCEOPEN'
-      @senddeferred.resolve(@ws.send)
-      # .done()
-
-    @once 'close', =>
-      @info 'ONCECLOSE'
-      @senddeferred.reject( "Connection closed" )
-      # .done()
-
-  prepare_ws: =>
-    @ws.on 'error', @handle_error
-    @ws.on 'open', wrap_error(@handle_open, @uncaught_exception)
-    @ws.on 'close', wrap_error(@handle_close, @uncaught_exception)
-    @ws.on 'message', wrap_error(@handle_data, @uncaught_exception)
-
-  _get_obj_desc: =>
-    return @constructor.name + ' #' + @conncounter
-
-  uncaught_exception: (exc) =>
-    # @error 'uncaught exception', exc, '\n', exc.stack
-    # if not is_node
-    #   throw exc
-
-    # @disconnect()
-
-    throw exc
-
-
-  handle_error: (error) =>
-    # @error 'uncaught error', error, '\n', error.stack
-    # @disconnect()
-    # if not is_node
-    #   throw error
-    @error error
-    throw error
-
-  handle_open: =>
-    @info 'handle_open'
-    @emit('open', @)
-
-  handle_close: =>
-    @info 'Connection Closed'
-    @emit('close')
-
-  handle_data: (data, flags) =>
-    # @info 'handle_data', data
-    obj = JSON.parse(data)
-
-    @emit('parsed_data', obj)
-
-  send_obj: (objOrPromise) =>
-    #@info 'READY TO SEND_OBJ', objOrPromise
-    Q.when(objOrPromise)
-    .then (obj) =>
-      @send_raw JSON.stringify( obj )
-
-  send_raw: (data) =>
-    Q.invoke(@senddeferred.promise, "call", @ws, data)
-    .fail (error) =>
-      @warn 'FAILED TO SEND. SHUTTING DOWN PROTOCOL'
-      return Q.reject(error)
-      #@disconnect() # we are already closed...
-
-  disconnect: =>
-    @info 'CLOSING'
-    deferred = Q.defer()
-    @ws.once 'close', deferred.resolve
-    @ws.close()
-    return deferred.promise
+  parse_data: JSON.parse
