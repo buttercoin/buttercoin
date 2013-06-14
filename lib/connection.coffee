@@ -9,7 +9,10 @@ module.exports = class Connection extends EventEmitter
   @conncounter = 0
   constructor: (@parent) ->
     @conncounter = Connection.conncounter
-    @parent.stumpify(this, "#{@constructor.name} ##{@conncounter}")
+    if @parent
+      @parent.stumpify(this, "#{@constructor.name} ##{@conncounter}")
+    else
+      stump.stumpify(this, "#{@constructor.name} ##{@conncounter}")
     Connection.conncounter += 1
 
     @senddeferred = Q.defer()

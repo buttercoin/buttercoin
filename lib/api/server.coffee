@@ -3,13 +3,14 @@ EngineApi = require('../ews/ew_api')
 WebsocketListener = require('../ews/ws_listener')
 SocketIOListener = require('../socket.io/listener')
 ApiProtocol = require('./api_protocol')
+MtGoxProtocol = require('./mtgox/protocol')
 operations = require('../operations')
 stump = require('stump')
 
 module.exports = class ApiServer
   @default_options:
     port: 3001
-    socketio: {port: 3002 }
+    goxlike: { port: 3002 }
     engine: { port: 6150 }
     query: { port: 6151 }
 
@@ -42,19 +43,30 @@ module.exports = class ApiServer
       @listener.listen()
       @info "API websocket interface listening on port: #{@options.port}"
     .then =>
-      @socketio_listener = new SocketIOListener
-        port: @options.socketio.port
-        protocol_factory: @new_connection
-      @socketio_listener.listen()
-      @info "API socket.io interface listening on port: #{@options.socketio.port}"
+      @goxlike_listener = new SocketIOListener
+        port: @options.goxlike.port
+        protocol_factory: @new_gox_connection
+      @goxlike_listener.listen()
+      @info "API gox-like interface listening on port: #{@options.goxlike.port}"
     .then =>
       @info "API service started"
 
-  new_connection: (connection) =>
+  init_protocol_with_connection: (protocol, connection) =>
     try
       @connection_map[ connection.conncounter ] = connection
-      protocol = new ApiProtocol({event_source: @api}, this)
+      @warn "GONNA START THIS PROTOCOL:", protocol.constructor.name
       protocol.start(connection)
+      @warn '- - yah, did it'
     catch e
       @error e
       console.log e.stack
+
+  new_connection: (connection) =>
+    protocol = new ApiProtocol({event_source: @api}, this)
+    @init_protocol_with_connection(protocol, connection)
+
+  new_gox_connection: (connection) =>
+    protocol = new MtGoxProtocol(
+      {api: {event_source: @api}}
+      this)
+    @init_protocol_with_connection(protocol, connection)

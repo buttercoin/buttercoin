@@ -14,7 +14,6 @@ module.exports = class ApiProtocol extends Protocol
       [operations.CANCEL_ORDER, @report_cancelled]]
 
   handle_open: (connection) =>
-    @error "HANDLE_OPEN"
     @authenticated = false
     @event_source = @options.event_source
     for x in @mkGeneralListeners()
@@ -36,7 +35,6 @@ module.exports = class ApiProtocol extends Protocol
         result: 'bad_request'
 
   handle_auth_request: (data) =>
-    @warn "HANDLING AUTH REQUEST:", data
     # TODO - real auth
     unless @authenticated and data.account_id
       @authenticated = true
@@ -52,7 +50,6 @@ module.exports = class ApiProtocol extends Protocol
     @connection.send_obj
       operation: data
       result: 'success'
-    @warn "DONE"
 
   handle_auth_failure: (data) =>
     @info "AUTH FAILURE"
