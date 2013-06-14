@@ -15,14 +15,12 @@ module.exports = class MtGoxProtocol extends Protocol
     @proxy.on('received_data', @handle_proxied_data)
 
   start: (connection) =>
-    @error "GOX PROTOCOL TOTALLY GONNA START BRAH"
     @proxy.connect()
     Q.all([
       super(connection)
-      @api.start(@proxy) ]).then => @error "GOX PROTOCOL TOTALLY STARTED BRAH"
+      @api.start(@proxy) ])
 
   handle_open: (connection) =>
-    @warn "THIS CONNECTION>>> IS OPEN!!!"
     @protocol_ready.resolve(this)
 
   handle_proxied_data: (data) =>

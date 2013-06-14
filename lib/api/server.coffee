@@ -54,9 +54,7 @@ module.exports = class ApiServer
   init_protocol_with_connection: (protocol, connection) =>
     try
       @connection_map[ connection.conncounter ] = connection
-      @warn "GONNA START THIS PROTOCOL:", protocol.constructor.name
       protocol.start(connection)
-      @warn '- - yah, did it'
     catch e
       @error e
       console.log e.stack
