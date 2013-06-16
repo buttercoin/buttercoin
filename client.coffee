@@ -25,6 +25,7 @@ if process.argv[2] is 'client'
 
   alice.on 'message', (msg) =>
     @warn "Alice msg:", msg
+
   alice.on 'parsed_data', (data) =>
     @info "ALICE GOT:", data
 else
