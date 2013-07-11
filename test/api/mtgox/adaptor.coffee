@@ -1,7 +1,7 @@
 crypto = require 'crypto'
 Adaptor = require '../../../lib/api/mtgox/adaptor'
 
-test_api_key = "12345678abcd1234abcd50286e649d5c" # 16-bytes
+test_api_key = "534ae7aea872406cbbae6ba2dd5ec515" # 16-bytes
 test_api_secret = "SEKRET-MESSAGE-KEY"
 
 describe 'MtGoxAdaptor', ->
@@ -22,6 +22,7 @@ describe 'MtGoxAdaptor', ->
     cursor = 0
 
     buffer.write(test_api_key, cursor, 'hex')
+    console.log "bin_key:", buffer.slice(0, 16).toString()
     cursor += 16
     buffer.write(signature, cursor, 'hex')
     cursor += 64
