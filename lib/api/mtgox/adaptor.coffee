@@ -1,9 +1,5 @@
 crypto = require 'crypto'
 
-api_key_bytes = 16
-signature_start = api_key_bytes
-payload_start = signature_start + 64
-
 channels = {}
 channels['dbf1dee9-4f2e-4a08-8cb7-748919a71b21'] = 'Trades'
 channels['d5f06780-30a8-4a48-a2f8-7ed181b4a13f'] = 'Ticker'
@@ -12,6 +8,11 @@ for k, v of channels
   channels[v] = k.toLowerCase()
 
 module.exports = class MtGoxAdaptor
+  @api_key_bytes: 16
+  @signature_start: @api_key_bytes
+  @signature_bytes: 64
+  @payload_start: @signature_start + @signature_bytes
+
   constructor: (@auth_provider) ->
 
   handle_open: (connection) =>
@@ -22,9 +23,9 @@ module.exports = class MtGoxAdaptor
 
   decode_inbound: (msg) =>
     buffer = new Buffer(msg, 'base64')
-    api_key = buffer.slice(0, api_key_bytes).toString('hex')
-    signature = buffer.slice(signature_start, payload_start).toString('hex')
-    message = buffer.slice(payload_start).toString('utf8')
+    api_key = buffer.slice(0, MtGoxAdaptor.api_key_bytes).toString('hex')
+    signature = buffer.slice(MtGoxAdaptor.signature_start, MtGoxAdaptor.payload_start).toString('hex')
+    message = buffer.slice(MtGoxAdaptor.payload_start).toString('utf8')
 
     secret = new Buffer(@auth_provider[api_key], 'base64')
     hmac = crypto.createHmac('sha512', secret)

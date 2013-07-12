@@ -2,7 +2,7 @@ crypto = require 'crypto'
 Adaptor = require '../../../lib/api/mtgox/adaptor'
 
 test_api_key = "534ae7aea872406cbbae6ba2dd5ec515" # 16-bytes
-test_api_secret = "SEKRET-MESSAGE-KEY"
+test_api_secret = (new Buffer("SEKRET-MESSAGE-KEY")).toString('base64')
 
 describe 'MtGoxAdaptor', ->
   beforeEach ->
@@ -10,22 +10,21 @@ describe 'MtGoxAdaptor', ->
     auth_provider[test_api_key] = test_api_secret
     @adaptor = new Adaptor(auth_provider)
 
-  it 'should be able to decode an inbound REST-call', ->
+  it 'should be able to decode an inbound message', ->
     request = {foo: "bar"}
     request_json = JSON.stringify(request)
-    hmac = crypto.createHmac('sha512', test_api_secret)
+    hmac = crypto.createHmac('sha512', new Buffer(test_api_secret, 'base64'))
     hmac.update(request_json)
     signature = hmac.digest('hex')
 
-    size = 16 + 64 + request_json.length
+    size = Adaptor.payload_start + request_json.length
     buffer = new Buffer(size)
     cursor = 0
 
     buffer.write(test_api_key, cursor, 'hex')
-    console.log "bin_key:", buffer.slice(0, 16).toString()
-    cursor += 16
+    cursor += Adaptor.api_key_bytes
     buffer.write(signature, cursor, 'hex')
-    cursor += 64
+    cursor += Adaptor.signature_bytes
     buffer.write(request_json, cursor, 'utf8')
 
     request = buffer.toString('base64')

@@ -1,3 +1,5 @@
+op = require('buttercoin-engine').operations
+
 module.exports = class Router
   routers = {}
   @register: (route, builder) => routers[route] = builder
@@ -21,7 +23,7 @@ class CreateOrderTranslator extends Translator
     currency_pair: [pair.slice(0,3), pair.slice(3)]
 
   translate: (params) =>
-    result = {operation: 'CREATE_LIMIT_ORDER'}
+    result = {operation: op.CREATE_LIMIT_ORDER}
 
     price_int = (params.amount_int * params.price_int / 1e8) | 0
 
