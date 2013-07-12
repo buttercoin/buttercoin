@@ -21,12 +21,13 @@ describe 'MtGoxQueriesTranslator', ->
     mtgox_params = undefined
     request = undefined
     translator = undefined
-    a_int = undefined
-    p_int = undefined
+    a_int = 1.234 * 1e8
+    p_int = 100.12 * 1e5
+    expected_btc_amount = a_int
+    expected_usd_amount = (a_int * p_int / 1e8) | 0
+
 
     beforeEach ->
-      a_int = 8720121
-      p_int = 8840055
       request =
         url: '/api/1/BTCUSD/private/order/add'
 
@@ -38,18 +39,32 @@ describe 'MtGoxQueriesTranslator', ->
   
     it 'should be able to find a router for an existing route', ->
       expect(translator).to.be.ok
-      translator.constructor.name.should.equal "CreateOrderTranslator"
+      translator.constructor.name.should.equal 'CreateOrderTranslator'
+
+    it 'should extract the currency pair from a valid route', ->
+      generate_currency_code = (starts_with) ->
+        possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+        rand_char = -> possible.charAt(Math.floor(Math.random() * possible.length))
+        return starts_with + rand_char() + rand_char()
+
+      expected_pair = [generate_currency_code('A'), generate_currency_code('B')]
+      translator = Router.route(url: "/api/1/#{expected_pair.join("")}/order/add")
+      expect(translator).to.be.ok
+      translator.options.currency_pair.toString().should.equal expected_pair.toString()
 
     it.only 'should translate ask create order method from MtGox to ButterCoin', ->
       mtgox_params['type'] = 'ask'
       bc_request = translator.translate(mtgox_params)
 
+      expected_btc_amount = a_int
+      expected_usd_amount = (a_int * p_int / 1e8) | 0
+
       expect(bc_request).to.be.ok
       bc_request.operation.should.equal 'CREATE_LIMIT_ORDER'
       #bc_request.account.should.equal aid
-      bc_request.offered_amount.should.equal a_int
+      bc_request.offered_amount.should.equal expected_btc_amount
       bc_request.offered_currency.should.equal 'BTC'
-      bc_request.received_amount.should.equal p_int
+      bc_request.received_amount.should.equal expected_usd_amount
       bc_request.received_currency.should.equal 'USD'
 
     it 'should translate bid create order method from MtGox to ButterCoin', ->

@@ -1,31 +1,7 @@
-class Translator
-
-class CreateOrderTranslator extends Translator
-  constructor: (@options) ->
-  translate: (params) ->
-    result = {operation: 'CREATE_LIMIT_ORDER'}
-
-    #if params.type is 'bid'
-    #else if params.type is 'ask'
-    #else
-      #error
-
-    result.offered_amount = params.amount_int
-    result.offered_currency = 'BTC'
-    result.received_amount = params.price_int
-    result.received_currency = 'USD'
-
-    return result
-    
-
-routers = {
-  #"^/api/1/(.*)/(private/)?order/add$"
-  "^/api/1/(.*)/(private/)?order/add$": (match) ->
-    new CreateOrderTranslator
-      currency_pair: match[1]
-}
-
 module.exports = class Router
+  routers = {}
+  @register: (route, builder) => routers[route] = builder
+
   @route: (request) =>
     for k,v of routers
       regex = new RegExp(k)
@@ -34,6 +10,31 @@ module.exports = class Router
 
     throw new Error("Couldn't match route: #{request.url}")
 
-  #@CreateOrder = class CreateOrder
-    #@translate_inbound: ->
+class Translator
+  @route: (pattern, builder) ->
+    _builder = (match) => new this(builder(match))
+    Router.register(pattern, _builder)
+  constructor: (@options) ->
+
+class CreateOrderTranslator extends Translator
+  @route "^/api/1/([A-Z]{6})/(private/)?order/add$", (match) ->
+    { currency_pair: [match[1].slice(0,3), match[1].slice(3)] }
+
+  translate: (params) =>
+    result = {operation: 'CREATE_LIMIT_ORDER'}
+
+    #if params.type is 'bid'
+    #else if params.type is 'ask'
+    #else
+      #error
+    
+    price_int = (params.amount_int * params.price_int / 1e8) | 0
+
+    result.offered_amount = params.amount_int
+    result.offered_currency = @options.currency_pair[0]
+    result.received_amount = price_int
+    result.received_currency = @options.currency_pair[1]
+
+    return result
+    
 
