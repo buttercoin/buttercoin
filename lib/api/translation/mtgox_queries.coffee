@@ -39,5 +39,27 @@ class CreateOrderTranslator extends Translator
       #error
 
     return result
+
+class CancelOrderTranslator extends Translator
+  @route "^/api/1/([A-Z]{6})/(private/)?order/cancel$", (_, pair) ->
+    currency_pair: [pair.slice(0,3), pair.slice(3)]
+
+  translate: (params) =>
+    result = 
+      operation: 'CANCEL_ORDER'
+      order_id: params.oid
     
+    return result
+
+class SendBitCoinTranslator extends Translator
+  @route "^/api/1/generic/bitcoin/sendsimple$", (match) ->
+
+  translate: (params) =>
+    console.log ('@@@@@@@@@ TRANSLATE @@@@@@@@@@')
+    result = 
+      operation: 'SEND_BITCOINS'
+      address: params.address
+      amount: params.amount_int
+
+    return result
 
