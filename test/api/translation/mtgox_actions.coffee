@@ -52,7 +52,7 @@ describe 'MtGoxQueriesTranslator', ->
       expect(translator).to.be.ok
       translator.options.currency_pair.toString().should.equal expected_pair.toString()
 
-    it.only 'should translate ask create order method from MtGox to ButterCoin', ->
+    it 'should translate ask create order method from MtGox to ButterCoin', ->
       mtgox_params['type'] = 'ask'
       bc_request = translator.translate(mtgox_params)
 
@@ -67,12 +67,13 @@ describe 'MtGoxQueriesTranslator', ->
       bc_request.received_amount.should.equal expected_usd_amount
       bc_request.received_currency.should.equal 'USD'
 
-    it 'should translate bid create order method from MtGox to ButterCoin', ->
-      mtgox_request['type'] = 'bid'
-      
-      bc_request = Translator.CreateOrder.translate_inbound(request_url, mtgox_request)
-      bc_request.operation should equal 'CREATE_LIMIT_ORDER'
-      bc_request.account.should.equal aid
+    it.only 'should translate bid create order method from MtGox to ButterCoin', ->
+      mtgox_params['type'] = 'bid'
+      bc_request = translator.translate(mtgox_params)
+
+      expect(bc_request).to.be.ok
+      bc_request.operation.should.equal 'CREATE_LIMIT_ORDER'
+      # bc_request.account.should.equal aid
       bc_request.offered_amount.should.equal p_int
       bc_request.offered_currency.should.equal 'USD'
       bc_request.received_amount.should.equal a_int
