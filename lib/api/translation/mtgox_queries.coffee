@@ -5,15 +5,18 @@ class CreateOrderTranslator extends Translator
   translate: (params) ->
     result = {operation: 'CREATE_LIMIT_ORDER'}
 
-    #if params.type is 'bid'
-    #else if params.type is 'ask'
-    #else
+    if params.type is 'ask'
+      result.offered_amount = params.amount_int
+      result.offered_currency = 'BTC'
+      result.received_amount = params.price_int
+      result.received_currency = 'USD'
+    else if params.type is 'bid'
+      result.offered_amount = params.price_int
+      result.offered_currency = 'USD'
+      result.received_amount = params.amount_int
+      result.received_currency = 'BTC'
+    else
       #error
-
-    result.offered_amount = params.amount_int
-    result.offered_currency = 'BTC'
-    result.received_amount = params.price_int
-    result.received_currency = 'USD'
 
     return result
     
