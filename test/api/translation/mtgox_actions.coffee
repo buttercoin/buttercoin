@@ -67,16 +67,19 @@ describe 'MtGoxQueriesTranslator', ->
       bc_request.received_amount.should.equal expected_usd_amount
       bc_request.received_currency.should.equal 'USD'
 
-    it.only 'should translate bid create order method from MtGox to ButterCoin', ->
+    it 'should translate bid create order method from MtGox to ButterCoin', ->
       mtgox_params['type'] = 'bid'
       bc_request = translator.translate(mtgox_params)
+
+      expected_btc_amount = a_int
+      expected_usd_amount = (a_int * p_int / 1e8) | 0
 
       expect(bc_request).to.be.ok
       bc_request.operation.should.equal 'CREATE_LIMIT_ORDER'
       # bc_request.account.should.equal aid
-      bc_request.offered_amount.should.equal p_int
+      bc_request.offered_amount.should.equal expected_usd_amount
       bc_request.offered_currency.should.equal 'USD'
-      bc_request.received_amount.should.equal a_int
+      bc_request.received_amount.should.equal expected_btc_amount
       bc_request.received_currency.should.equal 'BTC'
 
   # Cancel an order
