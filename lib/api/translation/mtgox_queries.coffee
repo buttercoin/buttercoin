@@ -12,13 +12,13 @@ module.exports = class Router
 
 class Translator
   @route: (pattern, builder) ->
-    _builder = (match) => new this(builder(match))
+    _builder = (match) => new this(builder(match...))
     Router.register(pattern, _builder)
   constructor: (@options) ->
 
 class CreateOrderTranslator extends Translator
-  @route "^/api/1/([A-Z]{6})/(private/)?order/add$", (match) ->
-    { currency_pair: [match[1].slice(0,3), match[1].slice(3)] }
+  @route "^/api/1/([A-Z]{6})/(private/)?order/add$", (_, pair) ->
+    currency_pair: [pair.slice(0,3), pair.slice(3)]
 
   translate: (params) =>
     result = {operation: 'CREATE_LIMIT_ORDER'}
