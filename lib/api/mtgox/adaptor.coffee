@@ -1,4 +1,7 @@
 crypto = require 'crypto'
+Translator = require('../translation/routing').Translator
+require '../translation/mtgox_queries'
+require '../translation/mtgox_actions'
 
 channels = {}
 channels['dbf1dee9-4f2e-4a08-8cb7-748919a71b21'] = 'Trades'
