@@ -1,5 +1,7 @@
 Adaptor = require '../../../lib/api/mtgox/adaptor'
-Router = require '../../../lib/api/translation/mtgox_actions'
+Router = require('../../../lib/api/translation/routing').Router
+require '../../../lib/api/translation/mtgox_actions'
+
 
 test_api_key = "534ae7aea872406cbbae6ba2dd5ec515" # 16-bytes
 test_api_secret = "SEKRET-MESSAGE-KEY"

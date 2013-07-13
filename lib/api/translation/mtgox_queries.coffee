@@ -1,29 +1,12 @@
+Translator = require('./routing').Translator
 op = require('buttercoin-engine').operations
-
-module.exports = class Router
-  routers = {}
-  @register: (route, builder) => routers[route] = builder
-
-  @route: (request) =>
-    for k,v of routers
-      regex = new RegExp(k)
-      match = regex.exec(request.url)
-      return v(match) unless match is null or match is undefined
-
-    throw new Error("Couldn't match route: #{request.url}")
-
-class Translator
-  @route: (pattern, builder) ->
-    _builder = (match) => new this(builder(match...))
-    Router.register(pattern, _builder)
-  constructor: (@options) ->
 
 class OpenOrdersTranslator extends Translator
   @route "^/api/1/generic/private/orders$", (match) ->
 
   translate: (params) =>
     result =
-      operation: op.CREATE_LIMIT_ORDER
+      operation: op.OPEN_ORDERS
       # account: params.account_id
 
     return result
@@ -33,7 +16,7 @@ class OrderInfoTranslator extends Translator
 
   translate: (params) =>
     result =
-      operation: 'ORDER_INFO'
+      operation: op.ORDER_INFO
       order_id: params.order
       # account: params.account_id
 

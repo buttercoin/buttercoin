@@ -1,20 +1,4 @@
-module.exports = class Router
-  routers = {}
-  @register: (route, builder) => routers[route] = builder
-
-  @route: (request) =>
-    for k,v of routers
-      regex = new RegExp(k)
-      match = regex.exec(request.url)
-      return v(match) unless match is null or match is undefined
-
-    throw new Error("Couldn't match route: #{request.url}")
-
-class Translator
-  @route: (pattern, builder) ->
-    _builder = (match) => new this(builder(match...))
-    Router.register(pattern, _builder)
-  constructor: (@options) ->
+Translator = require('./routing').Translator
 
 class CreateOrderTranslator extends Translator
   @route "^/api/1/([A-Z]{6})/(private/)?order/add$", (_, pair) ->

@@ -1,5 +1,5 @@
-
-Router = require '../../../lib/api/translation/mtgox_queries'
+Router = require('../../../lib/api/translation/routing').Router
+require '../../../lib/api/translation/mtgox_queries'
 
 describe 'MtGoxQueriesTranslator', ->
   aid = undefined
