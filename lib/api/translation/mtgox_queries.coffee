@@ -1,4 +1,4 @@
-Translator = require('./translator').Translator
+Translator = require('./routing').Translator
 op = require('buttercoin-engine').operations
 
 class OpenOrdersTranslator extends Translator
