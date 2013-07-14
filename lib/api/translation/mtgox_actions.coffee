@@ -1,11 +1,12 @@
+op = require('buttercoin-engine').operations
 Translator = require('./routing').Translator
 
 class CreateOrderTranslator extends Translator
-  @route "^/api/1/([A-Z]{6})/(private/)?order/add$", (_, pair) ->
+  @route "^([A-Z]{6})/(private/)?order/add$", (_, pair) ->
     currency_pair: [pair.slice(0,3), pair.slice(3)]
 
   translate: (params) =>
-    result = {operation: 'CREATE_LIMIT_ORDER'}
+    result = {operation: op.CREATE_LIMIT_ORDER}
 
     price_int = (params.amount_int * params.price_int / 1e8) | 0
 
@@ -25,22 +26,22 @@ class CreateOrderTranslator extends Translator
     return result
 
 class CancelOrderTranslator extends Translator
-  @route "^/api/1/([A-Z]{6})/(private/)?order/cancel$", (_, pair) ->
+  @route "^([A-Z]{6})/(private/)?order/cancel$", (_, pair) ->
     currency_pair: [pair.slice(0,3), pair.slice(3)]
 
   translate: (params) =>
-    result = 
-      operation: 'CANCEL_ORDER'
+    result =
+      operation: op.CANCEL_ORDER
       order_id: params.oid
     
     return result
 
 class SendBitCoinTranslator extends Translator
-  @route "^/api/1/generic/bitcoin/sendsimple$", (match) ->
+  @route "^bitcoin/sendsimple$", (match) ->
 
   translate: (params) =>
-    result = 
-      operation: 'SEND_BITCOINS'
+    result =
+      operation: op.SEND_BITCOINS
       address: params.address
       amount: params.amount_int
 
