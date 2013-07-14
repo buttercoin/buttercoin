@@ -1,8 +1,8 @@
-Translator = require('./routing').Translator
+Translator = require('./translator').Translator
 op = require('buttercoin-engine').operations
 
 class OpenOrdersTranslator extends Translator
-  @route "^/api/1/generic/private/orders$", (match) ->
+  @route "^(private/)?orders$", (match) ->
 
   translate: (params) =>
     result =
@@ -12,7 +12,7 @@ class OpenOrdersTranslator extends Translator
     return result
 
 class OrderInfoTranslator extends Translator
-  @route "^/api/1/generic/private/order/result$", (match) ->
+  @route "^(private/)?order/result$", (match) ->
 
   translate: (params) =>
     result =

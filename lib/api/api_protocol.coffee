@@ -15,9 +15,9 @@ module.exports = class ApiProtocol extends Protocol
 
   handle_open: (connection) =>
     @authenticated = false
-    @event_source = @options.event_source
+    @api = @options.event_source
     for x in @mkGeneralListeners()
-      @event_source.on(x...)
+      @api.on(x...)
 
     @protocol_ready.resolve(this)
 
@@ -27,8 +27,12 @@ module.exports = class ApiProtocol extends Protocol
   report_user_cancelled_order: =>
 
   handle_parsed_data: (data) =>
-    if data.kind is 'AUTH'
+    if data.operation is 'AUTH'
       @handle_auth_request(data)
+    else if data.operation isnt undefined
+      @api.engine.execute_operation(data)
+    else if data.query isnt undefined
+      @api.query.execute_operation(data)
     else
       @connection.send_obj
         operation: data
@@ -59,8 +63,8 @@ module.exports = class ApiProtocol extends Protocol
 
   handle_close: =>
     for x in @mkGeneralListeners()
-      @event_source.removeListener(x...)
+      @api.removeListener(x...)
 
     if @account_id
       for x in @mkAcctListeners(@account_id)
-        @event_source.removeListener(x...)
+        @api.removeListener(x...)
