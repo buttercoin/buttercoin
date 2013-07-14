@@ -1,5 +1,7 @@
 crypto = require 'crypto'
 Adaptor = require '../../../lib/api/mtgox/adaptor'
+Router = require('../../../lib/api/translation/routing').Router
+require '../../../lib/api/translation/mtgox_actions'
 
 test_api_key = "534ae7aea872406cbbae6ba2dd5ec515" # 16-bytes
 test_api_secret = (new Buffer("SEKRET-MESSAGE-KEY")).toString('base64')
@@ -35,12 +37,28 @@ describe 'MtGoxAdaptor', ->
     JSON.stringify(result).should.equal request_json
 
   it 'should decode an inbound message if required', ->
-    request = {foo: "bar"}
-    signed_msg = create_signed_message(JSON.stringify(request))
-
-    result = @adaptor.translate_inbound
+    msg =
       op: 'call'
-      call: signed_msg
+      call: 'this is the message'
 
-    expect(result).to.be.ok
-    JSON.stringify(result).should.equal JSON.stringify(request)
+    @adaptor.should_decode(msg).should.be.true
+
+  it 'should decode an inbound message if required', ->
+    msg =
+      op: 'auth'
+      call: 'this is the message'
+
+    @adaptor.should_decode(msg).should.be.false
+
+  it 'should invoke translator in translate_inbound', =>
+    msg =
+      op: 'call'
+      call: 'bitcoin/sendsimple'
+    
+    translator = Router.route(msg)
+    msg = translator.translate(msg)
+    msg.operation.should.equal "SEND_BITCOINS"
+
+    
+
+

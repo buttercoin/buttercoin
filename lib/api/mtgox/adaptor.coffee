@@ -39,6 +39,9 @@ module.exports = class MtGoxAdaptor
     else
       return false
 
+  should_decode: (msg) =>
+    return msg.op is 'call'
+
   translate_inbound: (msg) =>
     if msg.op is 'auth'
       return {
@@ -46,7 +49,7 @@ module.exports = class MtGoxAdaptor
         account_id: msg.username
       }
       
-    if msg.op is 'call'
+    if @should_decode(msg)
       msg = @decode_inbound(msg.call)
 
   translate_outbound: (msg) =>

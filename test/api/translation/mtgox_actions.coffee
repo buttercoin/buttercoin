@@ -32,7 +32,7 @@ describe 'MtGoxActionsTranslator', ->
 
     beforeEach ->
       request =
-        url: 'BTCUSD/private/order/add'
+        call: 'BTCUSD/private/order/add'
 
       mtgox_params =
         amount_int: a_int
@@ -53,7 +53,7 @@ describe 'MtGoxActionsTranslator', ->
         return starts_with + rand_char() + rand_char()
 
       expected_pair = [generate_currency_code('A'), generate_currency_code('B')]
-      translator = Router.route(url: "#{expected_pair.join("")}/order/add")
+      translator = Router.route(call: "#{expected_pair.join("")}/order/add")
       expect(translator).to.be.ok
       translator.options.currency_pair.toString().should.equal expected_pair.toString()
 
@@ -91,7 +91,7 @@ describe 'MtGoxActionsTranslator', ->
   # oid <the order ID>
   it 'should translate cancel order method from MtGox to ButterCoin', ->
     request =
-        url: 'BTCUSD/private/order/cancel'
+        call: 'BTCUSD/private/order/cancel'
 
     translator = Router.route(request)
 
@@ -116,7 +116,7 @@ describe 'MtGoxActionsTranslator', ->
   ## green <bool> not required
   it 'should translate send bitcoins method from MtGox to ButterCoin', ->
     request =
-        url: 'bitcoin/sendsimple'
+        call: 'bitcoin/sendsimple'
 
     translator = Router.route(request)
 

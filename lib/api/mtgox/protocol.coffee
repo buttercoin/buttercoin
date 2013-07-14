@@ -32,6 +32,8 @@ module.exports = class MtGoxProtocol extends Protocol
     @connection.send_obj(@adaptor.translate_outbound(data))
 
   handle_parsed_data: (data) =>
+    if @adaptor.should_decode(data)
+      data = @adaptor.decode_inbound(data)
     data = @adaptor.translate_inbound(data)
     @info "CLIENT SAID:", data
     @proxy.emit(

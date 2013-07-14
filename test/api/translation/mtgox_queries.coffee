@@ -12,7 +12,7 @@ describe 'MtGoxQueriesTranslator', ->
   # no MtGox Params
   it 'should translate open orders query method from MtGox to ButterCoin', ->
     request =
-      url: 'orders'
+      call: 'orders'
     translator = Router.route(request)
 
     mtgox_params = {}
@@ -32,7 +32,7 @@ describe 'MtGoxQueriesTranslator', ->
     beforeEach ->
       oid = 'afdadfas098098908uiofsdsdf'
       request =
-        url: 'order/result'
+        call: 'order/result'
       translator = Router.route(request)
 
     it 'should be able to find a router for an existing route', ->
@@ -63,6 +63,6 @@ describe 'MtGoxQueriesTranslator', ->
 
   xit 'should translate market depth query method from MtGox', ->
     request =
-      url: 'orders'
+      call: 'orders'
     translator = Router.route(request)
 

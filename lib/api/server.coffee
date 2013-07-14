@@ -1,5 +1,5 @@
 _ = require('underscore')
-EngineApi = require('../ews/ew_api')
+EngineWebsocketApi = require('../ews/ew_api')
 WebsocketListener = require('../ews/ws_listener')
 SocketIOListener = require('../socket.io/listener')
 ApiProtocol = require('./api_protocol')
@@ -17,7 +17,7 @@ module.exports = class ApiServer
   constructor: (options={}) ->
     stump.stumpify(this, @constructor.name)
     @options = _.extend(ApiServer.default_options, options)
-    @api = new EngineApi(options)
+    @api = new EngineWebsocketApi(options)
   
     # Setup API event emitter filters.
     # Create account level and all-up result events.
