@@ -2,44 +2,73 @@ stump = require('stump')
 #ApiClient = require('./lib/ews/ew_api')
 
 if process.argv[2] is 'client'
+  crypto = require 'crypto'
+  Adaptor = require './lib/api/mtgox/adaptor'
+  test_api_key = "534ae7aea872406cbbae6ba2dd5ec515" # 16-bytes
+  test_api_secret = "UW+9oWmPtmeNwOv8hVSY5QBmg51r74aSlyUe3x3r/UhaCsyNZDSFidNCfQfjQCIFfPLHjpPi7hT7PYQzghZcmw=="
+  create_signed_message = (message) ->
+    hmac = crypto.createHmac('sha512', new Buffer(test_api_secret, 'base64'))
+    hmac.update(message)
+    signature = hmac.digest('hex')
+
+    size = Adaptor.payload_start + message.length
+    buffer = new Buffer(size)
+    cursor = 0
+
+    buffer.write(test_api_key, cursor, 'hex')
+    cursor += Adaptor.api_key_bytes
+    buffer.write(signature, cursor, 'hex')
+    cursor += Adaptor.signature_bytes
+    buffer.write(message, cursor, 'utf8')
+
+    request = buffer.toString('base64')
+
   stump.stumpify(this, "[TEST]Client")
-  WebSocket = require('ws')
+  #WebSocket = require('ws')
 
-  socket = new WebSocket("http://localhost:3001")
-  socket.on 'open', =>
-    @error "sending"
-    socket.send(JSON.stringify
-      query: "TICKER"
-      currencies: ['USD', 'BTC'])
+  #socket = new WebSocket("http://localhost:3001")
+  #socket.on 'open', =>
+    #@error "sending"
+    #socket.send(JSON.stringify
+      #query: "TICKER"
+      #currencies: ['USD', 'BTC'])
 
-  socket.on 'message', (message) =>
-    @error message
+  #socket.on 'message', (message) =>
+    #@error message
   
-  #io = require('socket.io-client')
-  #alice = io.connect('localhost', port: 3002)
-  #alice.on 'connecting', (transport_type) =>
-    #@info "CONNECTING ALICE:", transport_type
+  io = require('socket.io-client')
+  alice = io.connect('localhost', port: 3002)
+  alice.on 'connecting', (transport_type) =>
+    @info "CONNECTING ALICE:", transport_type
 
-  #alice.on 'connect_failed', =>
-    #@error "ALICE FAILED TO CONNECT"
+  alice.on 'connect_failed', =>
+    @error "ALICE FAILED TO CONNECT"
 
-  #alice.on 'connect', =>
-    #@info "CONNECTED ALICE"
+  alice.on 'connect', =>
+    @info "CONNECTED ALICE"
     #alice.send(JSON.stringify({op: 'auth', username: 'alice'}))
-    ##alice.send_obj
-      ##kind: 'AUTH'
-      ##account_id: 'alice'
-    ##.then =>
-      ##@warn "SENT AUTH"
-    ##.fail (error) =>
-      ##@error error
-    ##.done()
+    msg = {
+      op: 'call'
+      id: "some-id"
+      call: create_signed_message(JSON.stringify(call: 'BTCUSD/ticker'))
+      context: 'mtgox.com'
+    }
 
-  #alice.on 'message', (msg) =>
-    #@warn "Alice msg:", msg
+    alice.send(JSON.stringify msg)
+    #alice.send_obj
+      #kind: 'AUTH'
+      #account_id: 'alice'
+    #.then =>
+      #@warn "SENT AUTH"
+    #.fail (error) =>
+      #@error error
+    #.done()
 
-  #alice.on 'parsed_data', (data) =>
-    #@info "ALICE GOT:", data
+  alice.on 'message', (msg) =>
+    @warn "Alice msg:", msg
+
+  alice.on 'parsed_data', (data) =>
+    @info "ALICE GOT:", data
 else
   stump.stumpify(this, "[TEST]Server")
   ApiServer = require('./lib/api/server')

@@ -5,10 +5,10 @@ module.exports.Router = class Router
   @route: (request) =>
     for k,v of routers
       regex = new RegExp(k)
-      match = regex.exec(request.call)
+      match = regex.exec(request)
       return v(match) unless match is null or match is undefined
 
-    throw new Error("Couldn't match route: #{request.call}")
+    throw new Error("Couldn't match route: #{request}")
 
 module.exports.Translator = class Translator
   @route: (pattern, builder) ->

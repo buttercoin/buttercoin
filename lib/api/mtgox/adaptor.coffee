@@ -1,5 +1,5 @@
 crypto = require 'crypto'
-Translator = require('../translation/routing').Translator
+Router = require('../translation/routing').Router
 require '../translation/mtgox_queries'
 require '../translation/mtgox_actions'
 
@@ -25,6 +25,7 @@ module.exports = class MtGoxAdaptor
         channel: k
 
   decode_inbound: (msg) =>
+    msg = msg.call
     buffer = new Buffer(msg, 'base64')
     api_key = buffer.slice(0, MtGoxAdaptor.api_key_bytes).toString('hex')
     signature = buffer.slice(MtGoxAdaptor.signature_start, MtGoxAdaptor.payload_start).toString('hex')
@@ -49,11 +50,12 @@ module.exports = class MtGoxAdaptor
         account_id: msg.username
       }
 
-    translator = Router.route(msg.call)
-
+    try
+      translator = Router.route(msg.call)
+    catch e
+      console.log "error:", e
     msg = translator.translate(msg)
     
-
   translate_outbound: (msg) =>
     msg
 
