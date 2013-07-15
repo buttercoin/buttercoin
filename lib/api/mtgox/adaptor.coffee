@@ -45,12 +45,14 @@ module.exports = class MtGoxAdaptor
   translate_inbound: (msg) =>
     if msg.op is 'auth'
       return {
-        operation: 'AUTH'
+        kind: 'AUTH'
         account_id: msg.username
       }
-      
-    if @should_decode(msg)
-      msg = @decode_inbound(msg.call)
+
+    translator = Router.route(msg.call)
+
+    msg = translator.translate(msg)
+    
 
   translate_outbound: (msg) =>
     msg
