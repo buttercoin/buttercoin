@@ -3,31 +3,43 @@ stump = require('stump')
 
 if process.argv[2] is 'client'
   stump.stumpify(this, "[TEST]Client")
-  io = require('socket.io-client')
-  alice = io.connect('localhost', port: 3002)
-  alice.on 'connecting', (transport_type) =>
-    @info "CONNECTING ALICE:", transport_type
+  WebSocket = require('ws')
 
-  alice.on 'connect_failed', =>
-    @error "ALICE FAILED TO CONNECT"
+  socket = new WebSocket("http://localhost:3001")
+  socket.on 'open', =>
+    @error "sending"
+    socket.send(JSON.stringify
+      query: "TICKER"
+      currencies: ['USD', 'BTC'])
 
-  alice.on 'connect', =>
-    @info "CONNECTED ALICE"
-    alice.send(JSON.stringify({kind: 'AUTH', account_id: 'alice'}))
-    #alice.send_obj
-      #kind: 'AUTH'
-      #account_id: 'alice'
-    #.then =>
-      #@warn "SENT AUTH"
-    #.fail (error) =>
-      #@error error
-    #.done()
+  socket.on 'message', (message) =>
+    @error message
+  
+  #io = require('socket.io-client')
+  #alice = io.connect('localhost', port: 3002)
+  #alice.on 'connecting', (transport_type) =>
+    #@info "CONNECTING ALICE:", transport_type
 
-  alice.on 'message', (msg) =>
-    @warn "Alice msg:", msg
+  #alice.on 'connect_failed', =>
+    #@error "ALICE FAILED TO CONNECT"
 
-  alice.on 'parsed_data', (data) =>
-    @info "ALICE GOT:", data
+  #alice.on 'connect', =>
+    #@info "CONNECTED ALICE"
+    #alice.send(JSON.stringify({op: 'auth', username: 'alice'}))
+    ##alice.send_obj
+      ##kind: 'AUTH'
+      ##account_id: 'alice'
+    ##.then =>
+      ##@warn "SENT AUTH"
+    ##.fail (error) =>
+      ##@error error
+    ##.done()
+
+  #alice.on 'message', (msg) =>
+    #@warn "Alice msg:", msg
+
+  #alice.on 'parsed_data', (data) =>
+    #@info "ALICE GOT:", data
 else
   stump.stumpify(this, "[TEST]Server")
   ApiServer = require('./lib/api/server')

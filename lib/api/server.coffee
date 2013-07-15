@@ -52,12 +52,9 @@ module.exports = class ApiServer
       @info "API service started"
 
   init_protocol_with_connection: (protocol, connection) =>
-    try
-      @connection_map[ connection.conncounter ] = connection
-      protocol.start(connection)
-    catch e
-      @error e
-      console.log e.stack
+    @connection_map[ connection.conncounter ] = connection
+    protocol.start(connection)
+    protocol.handle_open(connection)
 
   new_connection: (connection) =>
     protocol = new ApiProtocol({event_source: @api}, this)

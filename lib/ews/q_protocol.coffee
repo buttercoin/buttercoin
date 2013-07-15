@@ -8,7 +8,7 @@ module.exports = class QueryProtocol extends Protocol
     @query_interface = @options.query_provider
     @handlers =
       GET_BALANCES: @get_balances
-      GET_TICKER: @get_ticker
+      TICKER: @get_ticker
 
   handle_close: =>
     @info 'QUERY PROTOCOL CLOSED'
@@ -16,14 +16,14 @@ module.exports = class QueryProtocol extends Protocol
 
   handle_parsed_data: (parsed_data) =>
     unless parsed_data?.query in Object.keys(@handlers)
-      @info "INVALID OPERATION", parsed_data?.kind
+      @info "INVALID QUERY", parsed_data?.kind
       @options.send({
         status: "error",
         message: "Invalid operation: #{parsed_data?.kind}"
         operation: parsed_data
       })
 
-    result = @handlers[parsed_data.kind](parsed_data)
+    result = @handlers[parsed_data.query](parsed_data)
     result.operation = parsed_data
     @options.send(result)
 
@@ -32,6 +32,6 @@ module.exports = class QueryProtocol extends Protocol
     return {balances: res}
 
   get_ticker: (query) =>
-    return @query_interface.get_ticker(query.pair...)
+    return @query_interface.get_ticker(query.currencies...)
     
     

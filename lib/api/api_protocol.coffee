@@ -30,9 +30,11 @@ module.exports = class ApiProtocol extends Protocol
     if data.operation is 'AUTH'
       @handle_auth_request(data)
     else if data.operation isnt undefined
-      @api.engine.execute_operation(data)
+      @api.engine.execute_operation(data).then (result) =>
+        @connection.send_obj result
     else if data.query isnt undefined
-      @api.query.execute_operation(data)
+      @api.query.execute_operation(data).then (result) =>
+        @connection.send_obj result
     else
       @connection.send_obj
         operation: data

@@ -45,7 +45,7 @@ module.exports = class MtGoxAdaptor
   translate_inbound: (msg) =>
     if msg.op is 'auth'
       return {
-        kind: 'AUTH'
+        operation: 'AUTH'
         account_id: msg.username
       }
       
