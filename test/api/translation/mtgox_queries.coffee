@@ -13,14 +13,14 @@ describe 'MtGoxQueriesTranslator', ->
   it 'should translate open orders query method from MtGox to ButterCoin', ->
     request =
       call: 'orders'
-    translator = Router.route(request)
+    translator = Router.route(request.call)
 
     mtgox_params = {}
 
     bc_request = translator.translate(mtgox_params)
     expect(bc_request).to.be.ok
 
-    bc_request.operation.should.equal 'OPEN_ORDERS'
+    bc_request.query.should.equal 'OPEN_ORDERS'
 
   # Order result
   # type <bid or ask>
@@ -33,7 +33,7 @@ describe 'MtGoxQueriesTranslator', ->
       oid = 'afdadfas098098908uiofsdsdf'
       request =
         call: 'order/result'
-      translator = Router.route(request)
+      translator = Router.route(request.call)
 
     it 'should be able to find a router for an existing route', ->
       expect(translator).to.be.ok
@@ -48,7 +48,7 @@ describe 'MtGoxQueriesTranslator', ->
       bc_request = translator.translate(mtgox_params)
       expect(bc_request).to.be.ok
 
-      bc_request.operation.should.equal 'ORDER_INFO'
+      bc_request.query.should.equal 'ORDER_INFO'
 
     it 'should translate order result ask query method from MtGox to ButterCoin', ->
       
@@ -59,10 +59,10 @@ describe 'MtGoxQueriesTranslator', ->
       bc_request = translator.translate(mtgox_params)
       expect(bc_request).to.be.ok
 
-      bc_request.operation.should.equal 'ORDER_INFO'
+      bc_request.query.should.equal 'ORDER_INFO'
 
   xit 'should translate market depth query method from MtGox', ->
     request =
       call: 'orders'
-    translator = Router.route(request)
+    translator = Router.route(request.call)
 

@@ -38,7 +38,7 @@ describe 'MtGoxActionsTranslator', ->
         amount_int: a_int
         price_int: p_int
 
-      translator = Router.route(request)
+      translator = Router.route(request.call)
 
 
         
@@ -53,7 +53,7 @@ describe 'MtGoxActionsTranslator', ->
         return starts_with + rand_char() + rand_char()
 
       expected_pair = [generate_currency_code('A'), generate_currency_code('B')]
-      translator = Router.route(call: "#{expected_pair.join("")}/order/add")
+      translator = Router.route("#{expected_pair.join("")}/order/add")
       expect(translator).to.be.ok
       translator.options.currency_pair.toString().should.equal expected_pair.toString()
 
@@ -93,7 +93,7 @@ describe 'MtGoxActionsTranslator', ->
     request =
         call: 'BTCUSD/private/order/cancel'
 
-    translator = Router.route(request)
+    translator = Router.route(request.call)
 
     oid = "lkjhadfasdf2341234134"
     
@@ -118,7 +118,7 @@ describe 'MtGoxActionsTranslator', ->
     request =
         call: 'bitcoin/sendsimple'
 
-    translator = Router.route(request)
+    translator = Router.route(request.call)
 
     address = 'asdaf'
     a_int = 8720121

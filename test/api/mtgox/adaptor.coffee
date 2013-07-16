@@ -33,7 +33,7 @@ describe 'MtGoxAdaptor', ->
     request = {foo: "bar"}
     request_json = JSON.stringify(request)
     signed_msg = create_signed_message(request_json)
-    result = @adaptor.decode_inbound(signed_msg)
+    result = @adaptor.decode_inbound(call: signed_msg)
     JSON.stringify(result).should.equal request_json
 
   it 'should decode an inbound message if required', ->
@@ -51,11 +51,12 @@ describe 'MtGoxAdaptor', ->
     @adaptor.should_decode(msg).should.be.false
 
   it 'should invoke translator in translate_inbound', =>
+    # TODO - test translate_inbound w/ mocking
     msg =
       op: 'call'
       call: 'bitcoin/sendsimple'
     
-    translator = Router.route(msg)
+    translator = Router.route(msg.call)
     msg = translator.translate(msg)
     msg.operation.should.equal "SEND_BITCOINS"
 
