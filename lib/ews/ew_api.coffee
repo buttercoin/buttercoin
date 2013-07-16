@@ -11,14 +11,21 @@ module.exports = class EngineWebsocketApi extends EventEmitter
   @default_options:
     engine: { port: 6150 }
     query: { port: 6151 }
+    auth: {
+      host: "localhost"
+      port: 6152
+      path: "/authorize"
+    }
 
   constructor: (options={}) ->
     @options = _.extend(EngineWebsocketApi.default_options, options)
     @options.query.protocol ||= new InitiatorProtocol({})
     @options.engine.protocol ||= new InitiatorProtocol({})
+    @options.auth.protocol ||= new InitiatorProtocol({})
 
     @query = @options.query.protocol
     @engine = @options.engine.protocol
+    @auth = @options.auth.protocol
     @engine.on 'data', @handle_engine_data
     @event_filters = {}
 
@@ -26,6 +33,7 @@ module.exports = class EngineWebsocketApi extends EventEmitter
 
   start: =>
     Q.all([
+      @connect_to(@options.auth)
       @connect_to(@options.engine)
       @connect_to(@options.query)
     ]).then =>
@@ -34,8 +42,9 @@ module.exports = class EngineWebsocketApi extends EventEmitter
       @error "COULDN'T CONNECT:", error
 
   connect_to: (options) =>
+    wsconfig = "#{options.scheme || "ws"}://#{options.host || "localhost"}:#{options.port || 80}#{options.path || ''}"
     ws_options =
-      wsconfig: "ws://localhost:#{options.port}"
+      wsconfig: wsconfig
       protocol: options.protocol
     @info "CONNECTING TO", ws_options.wsconfig
 

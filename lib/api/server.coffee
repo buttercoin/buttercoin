@@ -13,6 +13,11 @@ module.exports = class ApiServer
     goxlike: { port: 3002 }
     engine: { port: 6150 }
     query: { port: 6151 }
+    auth: {
+      host: "localhost"
+      port: 6152
+      path: "/authorize"
+    }
 
   constructor: (options={}) ->
     stump.stumpify(this, @constructor.name)
