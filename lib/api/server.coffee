@@ -14,7 +14,6 @@ module.exports = class ApiServer
     engine: { port: 6150 }
     query: { port: 6151 }
     auth: {
-      host: "localhost"
       port: 6152
       path: "/authorize"
     }
