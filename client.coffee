@@ -5,8 +5,7 @@ if process.argv[2] is 'client'
   WebSocket = require('ws')
 
   id = "f81d4fae-7dec-11d0-a765-00a0c91e6bf6"
-  query = new WebSocket("ws://localhost:9001/api/v1/query")
-  engine = new WebSocket("ws://localhost:9001/engine")
+  engine = new WebSocket("ws://localhost:8080/api/v1/websocket")
   engine.on 'open', =>
     #@error "sending"
     ops = ->
@@ -38,41 +37,58 @@ if process.argv[2] is 'client'
         #offered: {currency: "BTC", amount: "3"}
         #received: {currency: "USD", amount: "315.06"})
 
+      #engine.send(JSON.stringify
+        #operation: "CREATE_LIMIT_ORDER"
+        #offered: {currency: "USD", amount: "105.02"}
+        #received: {currency: "BTC", amount: "1"})
+
+      #query.send(JSON.stringify
+        #query: "TICKER"
+        #currencies: ["BTC", "USD"])
+
+      ##query.send(JSON.stringify
+        ##query: "TICKER"
+        ##currencies: ["USD", "BTC"])
+
       engine.send(JSON.stringify
-        operation: "CREATE_LIMIT_ORDER"
-        offered: {currency: "USD", amount: "105.02"}
-        received: {currency: "BTC", amount: "1"})
+        query: "BALANCES")
+
+      engine.send(JSON.stringify
+        operation: "VERIFY_ACCOUNT"
+        first_name: "Ben"
+        middle_name: null
+        last_name: "Hoffman"
+        date_of_birth: "1983-10-23"
+        birth_country: "USA"
+        address:
+          line1: "Foo"
+          line2: null
+          city: "Bar"
+          region: "CA"
+          zip_code: "12345"
+          country: "USA")
+
+      engine.send(JSON.stringify
+        operation: "ADD_BANK_ACCOUNT"
+        full_name: "Ben Hoffman"
+        routing_number: "42"
+        account_number: "42"
+        type: "CheckingAccount")
+
+      ##query.send(JSON.stringify
+        ##query: "OPEN_ORDERS"
+        ##account_id: id)
 
     engine.send(JSON.stringify
       operation: "AUTHENTICATE"
       credentials:
         type: "bearer-token"
-        evidence: "Bearer 1a44ab8f7823382aaceb4eff03001637a09fe7431d993e9189121beadf4fd2fefb2f3cac3caab847f91fd4b54aa2399f1d1e72f5438fa8fccebcfdddb3bc2798e108f4787475adce0e62e38bca933e70bbe46a62bca023567fd82751479af5e4dcc9a0dc7dc1c9e3335084b7192c50ca741833abdebf227f3e779feec10efa51b32ffb794a0c0322bb60eb47271f8a43582604fac83291bbbdd83cdff79863e6fd57a76b78f4be98e71a18d1b0b7eb0b28a6db885147fa58551378b3bc55a6cdbb98f158f7d0f83ccf0b1cf7f0882b620c2a50e8688ffc679b003e3d1121873f47633b1674bbb9b21da4ab65e06ebec471896105d50af1abb5a3f623a3de9ff3")
+        evidence: "Bearer 6555cae5f8e6052be5d946753af3cc30823c2709f025fe96bf9a5c5e1e5691b4055f861a193eec98f5f56ba18945f7db7fca78af744a4497ac8c0e4bfa1fbcbcdccdd0a80949298dde68e2c3208b8780e21f6367661b2cd305b95dbc502ce922bf6545797b941f5b9c3535d1529cf2175f925137fc7df3f28b8f26e2f5f1071660ca0bc98e70a6adb62210b64bf1a56e1d68db61556a5addc0527993ec9e0880cd7abd36ecac9def7503962ce9ffc6ed59949e4fc4e559331a84f88ba5ae37594258191c4d24a7e6c32fc7a0c9fd1e49ff1449705ea9e724777cfaaf1cf679e304aa8767baf62ce813dc926785192055b523213795a7de2aaed7fd7e04473279")
 
     setTimeout(ops, 1000)
 
-  query.on 'open', =>
-    #query.send(JSON.stringify
-      #query: "TICKER"
-      #currencies: ["BTC", "USD"])
-
-    ##query.send(JSON.stringify
-      ##query: "TICKER"
-      ##currencies: ["USD", "BTC"])
-
-    query.send(JSON.stringify
-      query: "BALANCES"
-      account_id: "ddb3fe2b-4363-472a-9700-377a9090b140")
-
-    ##query.send(JSON.stringify
-      ##query: "OPEN_ORDERS"
-      ##account_id: id)
-
   engine.on 'message', (message) =>
     @error message
-  query.on 'message', (message) =>
-    @warn message
-  
 else
   fork = require('child_process').fork
 
