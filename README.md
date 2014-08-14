@@ -1,3 +1,7 @@
+This project is deprecated— we encourage you to fork it and continue the work
+=============================================================================
+
+
 Buttercoin
 ==========
 ### An Open Source Bitcoin Exchange
