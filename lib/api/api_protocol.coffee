@@ -14,11 +14,10 @@ module.exports = class ApiProtocol extends Protocol
       [operations.CANCEL_ORDER, @report_cancelled]]
 
   handle_open: (connection) =>
-    @error "HANDLE_OPEN"
     @authenticated = false
-    @event_source = @options.event_source
+    @api = @options.event_source
     for x in @mkGeneralListeners()
-      @event_source.on(x...)
+      @api.on(x...)
 
     @protocol_ready.resolve(this)
 
@@ -28,15 +27,20 @@ module.exports = class ApiProtocol extends Protocol
   report_user_cancelled_order: =>
 
   handle_parsed_data: (data) =>
-    if data.kind is 'AUTH'
+    if data.operation is 'AUTH'
       @handle_auth_request(data)
+    else if data.operation isnt undefined
+      @api.engine.execute_operation(data).then (result) =>
+        @connection.send_obj result
+    else if data.query isnt undefined
+      @api.query.execute_operation(data).then (result) =>
+        @connection.send_obj result
     else
       @connection.send_obj
         operation: data
         result: 'bad_request'
 
   handle_auth_request: (data) =>
-    @warn "HANDLING AUTH REQUEST:", data
     # TODO - real auth
     unless @authenticated and data.account_id
       @authenticated = true
@@ -52,7 +56,6 @@ module.exports = class ApiProtocol extends Protocol
     @connection.send_obj
       operation: data
       result: 'success'
-    @warn "DONE"
 
   handle_auth_failure: (data) =>
     @info "AUTH FAILURE"
@@ -62,8 +65,8 @@ module.exports = class ApiProtocol extends Protocol
 
   handle_close: =>
     for x in @mkGeneralListeners()
-      @event_source.removeListener(x...)
+      @api.removeListener(x...)
 
     if @account_id
       for x in @mkAcctListeners(@account_id)
-        @event_source.removeListener(x...)
+        @api.removeListener(x...)

@@ -32,7 +32,9 @@
     "engine.io-client": "0.5.0",
     "engine.io": "0.5.0",
     "underscore": "*",
-    "optimist": "*"
+    "optimist": "*",
+    "socket.io": "0.9.16",
+    "pg": "*"
   },
   "devDependencies": {
     "chai": "*",
@@ -41,7 +43,8 @@
     "coffee-script": "*",
     "sinon": "*",
     "sinon-chai": "*",
-    "temporary": "*"
+    "temporary": "*",
+    "socket.io-client": "0.9.16"
   },
   "keywords": [
     "bitcoin",

@@ -24,7 +24,7 @@ module.exports = class WebsocketListener
     conn = new Connection(@)
     conn.once 'open', (connection) =>
       @options.protocol_factory(connection)
-    conn.socket_accepted(ws)
+    conn.handle_accept(ws)
 
   connect_error: (err) =>
     @error('connect error', err)
