@@ -1,0 +1,40 @@
+//
+// Hero unit
+// --------------------------------------------------
+
+
+.hero-unit {
+	padding: 60px;
+	margin-bottom: 30px;
+	font-size: 18px;
+	font-weight: 500;
+	line-height: @baseLineHeight * 1.5;
+	color: @heroUnitLeadColor;
+	background-color: @heroUnitBackground;
+	.border-radius(6px);
+	h1 {
+		margin-bottom: 0;
+		font-size: 4.5em;
+		line-height: 1.1;
+		color: fadeout(@yellow, 90%);
+		letter-spacing: -1px;
+		.inset-text;
+
+	}
+	// inset text shadow from http://jsfiddle.net/mbHB4/3/
+	.inset-text {
+		/* Shadows are visible under slightly transparent text color */
+		text-shadow: 0px 1px 1px fadeout(yellow, 40%), 0 0 0 #000, 0px 2px 2px fadeout(@black, 50%);
+	}
+
+	/* Hide shadow when text is selected */
+	::-moz-selection { background: #5af; color: #fff; text-shadow: none; }
+	::selection { background: #5af; color: #fff; text-shadow: none; }
+
+	li {
+		line-height: @baseLineHeight * 1.5; // Reset since we specify in type.less
+	}
+	p.lead {
+		font-size: 2em;
+	}
+}
