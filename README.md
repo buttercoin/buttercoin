@@ -22,12 +22,12 @@ information or see http://opensource.org/licenses/MIT.
 Development process
 -------------------
 
-Developers work in their own trees, then submit pull requests when they are **sure**
-their feature or bug fix is ready.
+Developers work in their own trees, and submit pull requests when their features or 
+bug fixes are ready.
 
-The patch will be accepted if there is broad consensus that it is a good thing.
-Developers should expect to rework and resubmit patches if the code doesn't
-match the project's coding conventions or are controversial.
+The patch will be accepted if the content is broad consensus. Developers are expected 
+to rework and resubmit patches if the code does not match the project's coding conventions 
+or it is controversial.
 
 The `master` branch is regularly built and tested, but is not guaranteed to be
 completely stable.
